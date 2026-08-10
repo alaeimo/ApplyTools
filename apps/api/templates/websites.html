@@ -135,6 +135,25 @@
             margin-top: 4px;
             word-break: break-word;
         }
+
+        .match-progress-container {
+            background: #e8f4f8;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            border-left: 3px solid #0d6efd;
+        }
+
+        .match-progress-container .progress {
+            height: 8px;
+        }
+
+        .match-status-text {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 4px;
+            word-break: break-word;
+        }
     </style>
 </head>
 
@@ -374,6 +393,43 @@
 </div>
 
 <!-- =========================================================
+     CV MODAL
+========================================================= -->
+
+<div class="modal fade" id="cvModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-alt me-2"></i> Match Positions
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">CV Text *</label>
+                    <textarea class="form-control" id="cvText" rows="10" placeholder="Paste your CV text here..."></textarea>
+                    <small class="text-muted">Paste your full CV text for AI matching.</small>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Language</label>
+                    <input type="text" class="form-control" id="matchLanguage" value="English" placeholder="English">
+                </div>
+                <input type="hidden" id="matchWebsiteId" value="">
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-success" id="startMatchBtn">
+                    <i class="fas fa-play me-1"></i> Start Matching
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================
      BOOTSTRAP JS
 ========================================================= -->
 
@@ -518,7 +574,7 @@
                             </div>
                         </div>
 
-                        <!-- Progress Bar Container -->
+                        <!-- Scrape Progress Bar -->
                         <div class="progress-container" id="progress-${w.id}" style="display:none;">
                             <div class="d-flex align-items-center gap-2">
                                 <div class="spinner-border spinner-border-sm text-primary" role="status">
@@ -531,6 +587,20 @@
                             </div>
                             <div class="scrape-status-text">Initializing...</div>
                         </div>
+
+                        <!-- Match Progress Bar -->
+                        <div class="match-progress-container" id="match-progress-${w.id}" style="display:none;">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="spinner-border spinner-border-sm text-success" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <div class="progress flex-grow-1">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width:0%;"></div>
+                                </div>
+                                <small class="text-muted match-progress-text">0%</small>
+                            </div>
+                            <div class="match-status-text">Initializing...</div>
+                        </div>
                     </div>
 
                     <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between align-items-center flex-wrap gap-2 pb-3">
@@ -542,9 +612,14 @@
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
-                        <button class="btn btn-sm btn-primary scrape-btn" data-id="${w.id}" data-name="${escapeJsString(w.name)}">
-                            <i class="fas fa-play me-1"></i> Scrape
-                        </button>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-sm btn-primary scrape-btn" data-id="${w.id}" data-name="${escapeJsString(w.name)}">
+                                <i class="fas fa-play me-1"></i> Scrape
+                            </button>
+                            <button class="btn btn-sm btn-success match-btn" data-id="${w.id}" data-name="${escapeJsString(w.name)}" onclick="openMatchModal(${w.id})">
+                                <i class="fas fa-brain me-1"></i> Match
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -556,6 +631,173 @@
             btn.removeEventListener('click', handleScrapeClick);
             btn.addEventListener('click', handleScrapeClick);
         });
+    }
+
+    // =========================================================
+    // MATCH FUNCTION (SSE)
+    // =========================================================
+
+    function openMatchModal(websiteId) {
+        document.getElementById('matchWebsiteId').value = websiteId;
+        document.getElementById('cvText').value = '';
+        document.getElementById('matchLanguage').value = 'English';
+        const modal = new bootstrap.Modal(document.getElementById('cvModal'));
+        modal.show();
+    }
+
+    document.getElementById('startMatchBtn').addEventListener('click', function() {
+        const websiteId = document.getElementById('matchWebsiteId').value;
+        const cv = document.getElementById('cvText').value.trim();
+        const language = document.getElementById('matchLanguage').value.trim() || 'English';
+
+        if (!cv) {
+            alert('Please paste your CV text.');
+            return;
+        }
+
+        // Close modal
+        bootstrap.Modal.getInstance(document.getElementById('cvModal')).hide();
+
+        // Start matching
+        startMatching(websiteId, cv, language);
+    });
+
+    function startMatching(websiteId, cv, language) {
+        const card = document.getElementById(`website-card-${websiteId}`);
+        const matchContainer = document.getElementById(`match-progress-${websiteId}`);
+        const progressBar = matchContainer.querySelector('.progress-bar');
+        const progressText = matchContainer.querySelector('.match-progress-text');
+        const statusText = matchContainer.querySelector('.match-status-text');
+        const spinner = matchContainer.querySelector('.spinner-border');
+
+        // Show match progress
+        matchContainer.style.display = 'block';
+        progressBar.style.width = '0%';
+        progressText.textContent = '0%';
+        statusText.textContent = 'Connecting to matcher...';
+        if (spinner) {
+            spinner.style.display = 'inline-block';
+        }
+
+        // Close any existing event source
+        if (window.matchEventSource) {
+            window.matchEventSource.close();
+        }
+
+        // Start SSE connection
+        const url = `/api/v1/match/stream/`;
+        console.log('🔗 Connecting to match SSE:', url);
+
+        const eventSource = new EventSource(url);
+        window.matchEventSource = eventSource;
+
+        // Send CV via POST (EventSource doesn't support POST, so we need to use fetch)
+        // We'll use fetch to send the CV and get the stream
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cv: cv, language: language })
+        }).then(response => {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+
+            function readStream() {
+                reader.read().then(({ done, value }) => {
+                    if (done) {
+                        console.log('Stream complete');
+                        return;
+                    }
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n\n');
+                    buffer = lines.pop() || '';
+
+                    lines.forEach(line => {
+                        if (line.startsWith('data: ')) {
+                            try {
+                                const data = JSON.parse(line.substring(6));
+                                handleMatchEvent(data, card, matchContainer, progressBar, progressText, statusText, spinner);
+                            } catch (e) {
+                                console.error('Parse error:', e);
+                            }
+                        }
+                    });
+
+                    readStream();
+                });
+            }
+
+            readStream();
+        }).catch(error => {
+            console.error('Fetch error:', error);
+            statusText.textContent = '❌ Connection error: ' + error.message;
+            progressBar.classList.add('bg-danger');
+            if (spinner) {
+                spinner.style.display = 'none';
+            }
+        });
+    }
+
+    function handleMatchEvent(data, card, matchContainer, progressBar, progressText, statusText, spinner) {
+        console.log('📨 Match event:', data.type, data);
+
+        switch(data.type) {
+            case 'start':
+                statusText.textContent = data.message;
+                progressBar.style.width = '5%';
+                progressText.textContent = '5%';
+                break;
+
+            case 'progress':
+                statusText.textContent = data.message;
+                progressBar.style.width = `${data.percentage}%`;
+                progressText.textContent = `${data.percentage}%`;
+                break;
+
+            case 'position_matched':
+                const score = data.score || 0;
+                const category = data.category || 'unknown';
+                const emoji = score >= 70 ? '🌟' : score >= 50 ? '✅' : '📌';
+                statusText.textContent = `${emoji} ${data.title.substring(0, 40)}... → ${score}% (${category})`;
+                break;
+
+            case 'position_failed':
+                statusText.textContent = `❌ ${data.title.substring(0, 40)}... → ${data.error}`;
+                break;
+
+            case 'complete':
+                progressBar.style.width = '100%';
+                progressText.textContent = '100%';
+                progressBar.classList.remove('progress-bar-animated');
+                progressBar.classList.add('bg-success');
+                if (spinner) {
+                    spinner.style.display = 'none';
+                }
+                statusText.textContent = data.summary || '✅ Match analysis complete!';
+
+                // Update stats on card
+                const statsSpan = card.querySelector('.text-muted.d-flex.justify-content-between');
+                if (statsSpan) {
+                    statsSpan.innerHTML = `
+                        <span><i class="fas fa-file-alt me-1"></i>✅ Matched</span>
+                        <span>${new Date().toLocaleDateString()}</span>
+                        <span><i class="fas fa-clock me-1"></i>Just now</span>
+                    `;
+                }
+                break;
+
+            case 'error':
+                progressBar.style.width = '100%';
+                progressText.textContent = 'Error';
+                progressBar.classList.remove('progress-bar-animated');
+                progressBar.classList.add('bg-danger');
+                if (spinner) {
+                    spinner.style.display = 'none';
+                }
+                statusText.textContent = `❌ ${data.message}`;
+                break;
+        }
     }
 
     // =========================================================
@@ -643,7 +885,6 @@
                         progressBar.classList.remove('progress-bar-animated');
                         progressBar.classList.add('bg-success');
                         
-                        // ✅ Hide the spinner
                         if (spinner) {
                             spinner.style.display = 'none';
                         }
@@ -654,7 +895,6 @@
                             statusText.textContent = `✅ Done! Saved ${data.saved} new positions (${data.skipped} skipped, ${data.failed || 0} failed)`;
                         }
 
-                        // Update stats on card
                         const statsSpan = card.querySelector('.text-muted.d-flex.justify-content-between');
                         if (statsSpan) {
                             statsSpan.innerHTML = `
@@ -664,7 +904,13 @@
                             `;
                         }
 
-                        // Reset button after delay
+                        // Enable match button after scrape
+                        const matchBtn = card.querySelector('.match-btn');
+                        if (matchBtn && data.total > 0) {
+                            matchBtn.disabled = false;
+                            matchBtn.innerHTML = '<i class="fas fa-brain me-1"></i> Match';
+                        }
+
                         setTimeout(() => {
                             btn.disabled = false;
                             btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
@@ -715,6 +961,7 @@
             eventSource.close();
         };
     }
+
     // =========================================================
     // PREPARE ADD
     // =========================================================

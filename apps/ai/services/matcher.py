@@ -1,7 +1,10 @@
 import json
 import logging
+import time
 from typing import Dict, Any, Optional
 from datetime import datetime
+from django.db import transaction
+from django.core.exceptions import ObjectDoesNotExist
 
 from apps.ai.deepseek import DeepSeekClient
 from apps.ai.models import PromptTemplate
@@ -335,18 +338,148 @@ def quick_match_from_files(
     return matcher.match_from_files(cv_file, position_file)
 
 
-def match_and_save(cv: str, position_id: int, language: str = "English", conversation_id: Optional[str] = None,) -> Dict[str, Any]:
-    """Match a specific position by ID and save the result."""
+def match_and_save(
+    cv: str,
+    position_id: int,
+    language: str = "English",
+    conversation_id: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Match a specific position by ID and save the result.
+    
+    Args:
+        cv: Candidate CV text
+        position_id: ID of the Position object
+        language: Response language (default: English)
+        conversation_id: Optional conversation ID for continuing chat
+        
+    Returns:
+        Dict containing the match result with status metadata
+        
+    Raises:
+        ValueError: If position not found or invalid
+        Exception: For other errors (with detailed logging)
+    """
     from apps.positions.models import Position, PositionMatch
-
-    position = Position.objects.get(id=position_id)
-    matcher = PositionMatcher(language=language)
-    result = matcher.match(cv, position.cleaned_text, conversation_id=conversation_id)
-
-    match = PositionMatch.create_from_json(position, result)
-    match.save()
-
-    position.status = 'MATCHED'
-    position.save(update_fields=['status'])
-
-    return result
+    time.sleep(1.5)
+    try:
+        # ─── Step 1: Get Position ────────────────────────────────────
+        try:
+            position = Position.objects.get(id=position_id)
+            logger.info(f"📌 Processing position: {position.id} - {position.title[:50]}...")
+        except ObjectDoesNotExist:
+            logger.error(f"❌ Position {position_id} not found")
+            return {
+                'error': f'Position {position_id} not found',
+                '_metadata': {
+                    'status': 'failed',
+                    'error_type': 'position_not_found',
+                    'position_id': position_id,
+                    'processed_at': datetime.now().isoformat(),
+                }
+            }
+        
+        # ─── Step 2: Check if already matched ───────────────────────
+        if hasattr(position, 'match') and position.match:
+            logger.warning(f"⚠️ Position {position_id} already has a match (ID: {position.match.id})")
+            return {
+                'error': 'Position already has a match',
+                'existing_match_id': position.match.id,
+                '_metadata': {
+                    'status': 'skipped',
+                    'error_type': 'already_matched',
+                    'position_id': position_id,
+                    'match_id': position.match.id,
+                    'processed_at': datetime.now().isoformat(),
+                }
+            }
+        
+        # ─── Step 3: Run Matcher ─────────────────────────────────────
+        try:
+            matcher = PositionMatcher(language=language)
+            logger.info(f"🔄 Running matcher for position {position_id}")
+            result = matcher.match(cv, position.cleaned_text, conversation_id=conversation_id)
+        except Exception as e:
+            logger.error(f"❌ Matcher failed for position {position_id}: {e}")
+            # Return structured error with matcher failure
+            return {
+                'error': f'Matcher failed: {str(e)}',
+                '_metadata': {
+                    'status': 'failed',
+                    'error_type': 'matcher_error',
+                    'position_id': position_id,
+                    'error_detail': str(e),
+                    'processed_at': datetime.now().isoformat(),
+                }
+            }
+        
+        # ─── Step 4: Validate Result ─────────────────────────────────
+        if result.get('final_verdict', {}).get('match_category') == 'error':
+            logger.warning(f"⚠️ Matcher returned error for position {position_id}: {result.get('_metadata', {}).get('error', 'Unknown error')}")
+            # Still save but mark as failed
+            result['_metadata']['status'] = 'failed'
+            result['_metadata']['error_type'] = 'matcher_returned_error'
+            # We'll still try to save, but mark position as FAILED
+        
+        # ─── Step 5: Save Match (Atomic Transaction) ─────────────────
+        try:
+            with transaction.atomic():
+                logger.info(f"💾 Saving match for position {position_id}")
+                match = PositionMatch.create_from_json(position, result)
+                match.save()
+                logger.info(f"✅ Match saved (ID: {match.id}) for position {position_id}")
+                
+                # Update position status based on match success
+                if result.get('final_verdict', {}).get('match_category') == 'error':
+                    position.status = 'FAILED'
+                    logger.warning(f"⚠️ Position {position_id} marked as FAILED due to matcher error")
+                else:
+                    position.status = 'MATCHED'
+                    logger.info(f"✅ Position {position_id} marked as MATCHED")
+                
+                position.save(update_fields=['status'])
+                
+                # Add success metadata
+                result['_metadata']['status'] = 'success'
+                result['_metadata']['match_id'] = match.id
+                result['_metadata']['position_status'] = position.status
+                
+                logger.info(
+                    f"🎉 Match complete for position {position_id}: "
+                    f"Score: {match.overall_score:.1f}%, "
+                    f"Category: {match.match_category}"
+                )
+                
+                return result
+                
+        except Exception as e:
+            logger.error(f"❌ Database save failed for position {position_id}: {e}")
+            # Return structured error with save failure
+            return {
+                'error': f'Failed to save match: {str(e)}',
+                '_metadata': {
+                    'status': 'failed',
+                    'error_type': 'database_error',
+                    'position_id': position_id,
+                    'error_detail': str(e),
+                    'processed_at': datetime.now().isoformat(),
+                },
+                # Include the result even though save failed (for debugging)
+                'partial_result': result
+            }
+            
+    except Exception as e:
+        # ─── Catch-all for unexpected errors ────────────────────────
+        logger.error(f"❌ Unexpected error in match_and_save for position {position_id}: {e}")
+        import traceback
+        traceback.print_exc()
+        return {
+            'error': f'Unexpected error: {str(e)}',
+            '_metadata': {
+                'status': 'failed',
+                'error_type': 'unexpected_error',
+                'position_id': position_id,
+                'error_detail': str(e),
+                'processed_at': datetime.now().isoformat(),
+            }
+        }
