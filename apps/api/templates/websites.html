@@ -447,7 +447,14 @@
 
     const API_URL = '/api/v1/websites/';
     let editingId = null;
+    function getCSRFToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='));
+        return cookieValue ? cookieValue.split('=')[1] : '';
+    }
 
+    const CSRF_TOKEN = getCSRFToken();
     // =========================================================
     // FETCH WEBSITES
     // =========================================================
@@ -1069,7 +1076,7 @@
         try {
             const res = await fetch(url, {
                 method: method,
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
                 body: JSON.stringify(payload)
             });
 
@@ -1125,7 +1132,7 @@
         try {
             const res = await fetch(`${API_URL}${id}/`, {
                 method: 'DELETE',
-                headers: { 'Accept': 'application/json' }
+                headers: { 'Accept': 'application/json', 'X-CSRFToken': CSRF_TOKEN }
             });
 
             if (!res.ok) {

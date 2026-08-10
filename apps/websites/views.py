@@ -28,7 +28,7 @@ def scrape_website_stream(request, website_id):
             website = Website.objects.get(id=website_id, is_active=True)
             logger.info(f"✅ Found website: {website.name}")
             max_pages = request.GET.get('max_pages')
-            max_pages = 10 
+            max_pages = 60 
             if max_pages:
                 max_pages = int(max_pages)
                 logger.info(f"📄 Max pages: {max_pages}")
