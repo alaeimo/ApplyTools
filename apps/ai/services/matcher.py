@@ -191,6 +191,7 @@ class PositionMatcher:
             
             # Add metadata
             validated_data['_metadata'] = {
+                'conversation_id': response.conversation_id,
                 'prompt_id': self.prompt_template.id,
                 'prompt_name': self.prompt_template.name,
                 'prompt_version': self.prompt_template.version,
@@ -226,6 +227,7 @@ class PositionMatcher:
         cv_file: str,
         position_file: str,
         language: Optional[str] = None,
+        conversation_id: Optional[str] = None,
         encoding: str = "utf-8",
     ) -> Dict[str, Any]:
         """
@@ -235,6 +237,7 @@ class PositionMatcher:
             cv_file: Path to CV text file
             position_file: Path to position text file
             language: Override response language (optional)
+            conversation_id: Optional conversation ID for continuing chat
             encoding: File encoding (default: utf-8)
             
         Returns:
@@ -246,13 +249,14 @@ class PositionMatcher:
         with open(position_file, "r", encoding=encoding) as f:
             position = f.read()
         
-        return self.match(cv, position, language=language)
+        return self.match(cv, position, language, conversation_id)
     
     def stream_match(
         self,
         cv: str,
         position: str,
         language: Optional[str] = None,
+        conversation_id: Optional[str] = None,
         callback=None,
     ) -> Dict[str, Any]:
         """
@@ -262,6 +266,7 @@ class PositionMatcher:
             cv: Candidate CV text
             position: Position advertisement text
             language: Override response language (optional)
+            conversation_id: Optional conversation ID for continuing chat
             callback: Optional callback function called with each chunk
             
         Returns:
@@ -274,7 +279,7 @@ class PositionMatcher:
         prompt = self._build_prompt(cv, position)
         full_response = ""
         
-        for chunk in self.client.stream(prompt):
+        for chunk in self.client.stream(prompt, conversation_id):
             full_response += chunk
             if callback:
                 callback(chunk)
@@ -330,3 +335,18 @@ def quick_match_from_files(
     return matcher.match_from_files(cv_file, position_file)
 
 
+def match_and_save(cv: str, position_id: int, language: str = "English", conversation_id: Optional[str] = None,) -> Dict[str, Any]:
+    """Match a specific position by ID and save the result."""
+    from apps.positions.models import Position, PositionMatch
+
+    position = Position.objects.get(id=position_id)
+    matcher = PositionMatcher(language=language)
+    result = matcher.match(cv, position.cleaned_text, conversation_id=conversation_id)
+
+    match = PositionMatch.create_from_json(position, result)
+    match.save()
+
+    position.status = 'MATCHED'
+    position.save(update_fields=['status'])
+
+    return result

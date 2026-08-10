@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApplyTools – Position Dashboard</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        body { background: #f0f2f5; }
+
+        /* ─── Header ────────────────────────────────────────────────── */
+        .dashboard-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            padding: 1.75rem 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid #e94560;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .dashboard-header h1 { font-weight: 800; letter-spacing: -0.5px; }
+        .dashboard-header .badge-count {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* ─── Filter Bar ───────────────────────────────────────────── */
+        .filter-bar {
+            background: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 1.5rem;
+        }
+        .filter-bar .btn-group .btn {
+            border-radius: 50px !important;
+            padding: 0.35rem 1.2rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .filter-bar .btn-group .btn.active {
+            background: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+
+        /* ─── Position Row ──────────────────────────────────────────── */
+        .position-row {
+            background: white;
+            border-radius: 14px;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            transition: all 0.25s ease;
+            border: 1px solid #eef1f4;
+            overflow: hidden;
+        }
+        .position-row:hover {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            border-color: #d0d7de;
+            transform: translateY(-2px);
+        }
+
+        /* ─── Row Header (collapsed view) ──────────────────────────── */
+        .row-header {
+            display: flex;
+            align-items: stretch;
+            padding: 0;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .row-header:hover { background: #f8fafc; }
+
+        /* Score column */
+        .score-col {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 90px;
+            padding: 1rem 1.25rem;
+            background: #f8fafc;
+            border-right: 1px solid #eef1f4;
+            flex-shrink: 0;
+        }
+        .score-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            transition: transform 0.2s;
+        }
+        .score-circle:hover { transform: scale(1.05); }
+        .score-circle.excellent { background: linear-gradient(135deg, #00b894, #00a381); }
+        .score-circle.good { background: linear-gradient(135deg, #0984e3, #6c5ce7); }
+        .score-circle.possible { background: linear-gradient(135deg, #fdcb6e, #f39c12); }
+        .score-circle.weak { background: linear-gradient(135deg, #e17055, #d63031); }
+        .score-circle .score-label {
+            position: absolute;
+            bottom: -18px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        /* Main content column */
+        .main-col {
+            flex: 1;
+            padding: 0.85rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+        }
+        .main-col .title-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .main-col .title-row h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+            color: #1a1a2e;
+            line-height: 1.3;
+        }
+        .main-col .title-row h5 a {
+            color: #1a1a2e;
+            text-decoration: none;
+        }
+        .main-col .title-row h5 a:hover { color: #0d6efd; }
+        .main-col .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            margin-top: 0.25rem;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        .main-col .meta-row .institution { font-weight: 500; color: #2d3436; }
+        .main-col .meta-row .badge-deadline {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 50px;
+        }
+        .badge-deadline.urgent { background: #ffeaa7; color: #6c5200; }
+        .badge-deadline.critical { background: #fab1a0; color: #7a2e1a; }
+        .badge-deadline.safe { background: #b2dfdb; color: #004d40; }
+        .badge-deadline.passed { background: #dfe6e9; color: #636e72; }
+
+        /* Right column (badges & expand toggle) */
+        .right-col {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1.25rem;
+            flex-shrink: 0;
+            border-left: 1px solid #eef1f4;
+            background: #fafbfc;
+            min-width: 140px;
+            justify-content: flex-end;
+        }
+        .right-col .badge-match-cat {
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.3rem 0.7rem;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .right-col .expand-icon {
+            color: #adb5bd;
+            transition: transform 0.25s ease;
+            font-size: 0.9rem;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f1f3f5;
+        }
+        .position-row.expanded .expand-icon { transform: rotate(180deg); }
+        .right-col .expand-icon:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        /* ─── Row Detail (expanded) ────────────────────────────────── */
+        .row-detail {
+            display: none;
+            padding: 1.25rem 1.5rem 1.5rem;
+            border-top: 1px solid #eef1f4;
+            background: #fafbfc;
+        }
+        .position-row.expanded .row-detail { display: block; }
+
+        /* Detail grid */
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem 2rem;
+        }
+        @media (max-width: 768px) { .detail-grid { grid-template-columns: 1fr; } }
+
+        .detail-item { margin-bottom: 0.5rem; }
+        .detail-item .label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #6c757d;
+            margin-bottom: 0.1rem;
+        }
+        .detail-item .value {
+            font-size: 0.85rem;
+            color: #1a1a2e;
+            line-height: 1.4;
+        }
+        .detail-item .value .tag {
+            display: inline-block;
+            background: #eef1f4;
+            padding: 0.1rem 0.6rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            margin: 0.1rem 0.15rem;
+            color: #2d3436;
+        }
+        .detail-item .value .tag.mandatory { background: #ffe0e0; color: #a02c2c; }
+        .detail-item .value .tag.core { background: #ffecd2; color: #7a5a1a; }
+        .detail-item .value .tag.preferred { background: #d4edda; color: #155724; }
+
+        /* Score bars */
+        .score-bar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.25rem;
+        }
+        .score-bar-wrap .bar-label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #495057;
+            min-width: 110px;
+        }
+        .score-bar-wrap .bar-track {
+            flex: 1;
+            height: 5px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            max-width: 180px;
+        }
+        .score-bar-wrap .bar-track .bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.6s ease;
+        }
+        .score-bar-wrap .bar-value {
+            font-size: 0.7rem;
+            font-weight: 600;
+            min-width: 32px;
+            text-align: right;
+            color: #1a1a2e;
+        }
+
+        /* Evidence tags */
+        .evidence-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.6rem;
+            border-radius: 50px;
+            margin: 0.1rem 0.2rem;
+        }
+        .evidence-tag.direct { background: #d4edda; color: #155724; }
+        .evidence-tag.transferable { background: #fff3cd; color: #856404; }
+        .evidence-tag.missing { background: #f8d7da; color: #721c24; }
+        .evidence-tag.unclear { background: #e2e3e5; color: #383d41; }
+
+        /* Recommendation badge */
+        .rec-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.8rem;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .rec-badge.strongly_recommended { background: #00b894; color: white; }
+        .rec-badge.recommended { background: #0984e3; color: white; }
+        .rec-badge.possible_but_risky { background: #fdcb6e; color: #2d3436; }
+        .rec-badge.not_recommended { background: #e17055; color: white; }
+
+        /* ─── Pagination ────────────────────────────────────────────── */
+        .pagination .page-link {
+            border-radius: 50px;
+            margin: 0 0.2rem;
+            border: none;
+            color: #1a1a2e;
+            font-weight: 500;
+        }
+        .pagination .page-item.active .page-link {
+            background: #0d6efd;
+            color: white;
+        }
+        .pagination .page-item .page-link:hover {
+            background: #e9ecef;
+        }
+
+        /* ─── Empty / Loading ───────────────────────────────────────── */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 4rem 1rem;
+        }
+        .empty-state i { font-size: 3.5rem; color: #adb5bd; margin-bottom: 1rem; }
+
+        /* ─── Misc ──────────────────────────────────────────────────── */
+        .text-truncate-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .gap-1 { gap: 0.25rem; }
+        .gap-2 { gap: 0.5rem; }
+    </style>
+</head>
+<body>
+
+    <!-- ─── Header ──────────────────────────────────────────────────── -->
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h1 class="display-6 fw-bold mb-0"><i class="fas fa-briefcase me-2"></i>Position Dashboard</h1>
+                    <p class="mb-0 opacity-75 small">AI-matched academic positions ranked by fit</p>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge-count" id="totalCount">0 positions</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- ─── Filter Bar ──────────────────────────────────────────── -->
+        <div class="filter-bar d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-sliders-h text-muted"></i>
+                <span class="fw-semibold small me-1">Status:</span>
+                <div class="btn-group btn-group-sm" role="group" id="statusFilter">
+                    <button class="btn btn-outline-secondary active" data-status="">All</button>
+                    <button class="btn btn-outline-success" data-status="MATCHED">Matched</button>
+                    <button class="btn btn-outline-warning" data-status="SCRAPED">Scraped</button>
+                    <button class="btn btn-outline-danger" data-status="FAILED">Failed</button>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-sort-amount-down text-muted small"></i>
+                <span class="text-muted small">Sorted by score</span>
+            </div>
+        </div>
+
+        <!-- ─── Positions Container ─────────────────────────────────── -->
+        <div id="positionsContainer"></div>
+
+        <!-- ─── Loading ──────────────────────────────────────────────── -->
+        <div id="loadingSpinner" class="loading-spinner">
+            <div class="spinner-border text-primary" style="width: 2.5rem; height: 2.5rem;" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <!-- ─── No Results ──────────────────────────────────────────── -->
+        <div id="noResults" class="empty-state d-none">
+            <i class="fas fa-search"></i>
+            <h5 class="fw-bold">No positions found</h5>
+            <p class="text-muted small">Adjust your filters or run the matcher first.</p>
+        </div>
+
+        <!-- ─── Pagination ──────────────────────────────────────────── -->
+        <nav aria-label="Page navigation" class="mt-4 d-none" id="paginationNav">
+            <ul class="pagination justify-content-center" id="paginationList"></ul>
+        </nav>
+
+    </div>
+
+    <!-- ─── Scripts ────────────────────────────────────────────────── -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        // ─── Configuration ───────────────────────────────────────────
+        const API_BASE = '/api/v1/positions/dashboard/';
+        const PAGE_SIZE = 12;
+
+        // ─── State ───────────────────────────────────────────────────
+        let currentPage = 1;
+        let currentStatus = '';
+        let totalCount = 0;
+
+        // ─── DOM refs ────────────────────────────────────────────────
+        const container = document.getElementById('positionsContainer');
+        const spinner = document.getElementById('loadingSpinner');
+        const noResults = document.getElementById('noResults');
+        const totalSpan = document.getElementById('totalCount');
+        const paginationNav = document.getElementById('paginationNav');
+        const paginationList = document.getElementById('paginationList');
+
+        // ─── Helpers ──────────────────────────────────────────────────
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '—';
+            return new Date(dateStr).toLocaleDateString('en-US', {
+                year: 'numeric', month: 'short', day: 'numeric'
+            });
+        }
+
+        function getScoreClass(score) {
+            if (score >= 80) return 'excellent';
+            if (score >= 60) return 'good';
+            if (score >= 40) return 'possible';
+            return 'weak';
+        }
+
+        function getDeadlineBadge(days) {
+            if (days === null || days === undefined) return { cls: 'safe', label: 'No deadline' };
+            if (days < 0) return { cls: 'passed', label: '⚠️ Passed' };
+            if (days <= 7) return { cls: 'critical', label: `🔥 ${days}d left` };
+            if (days <= 30) return { cls: 'urgent', label: `📅 ${days}d left` };
+            return { cls: 'safe', label: `📅 ${days}d left` };
+        }
+
+        function getRecBadgeClass(rec) {
+            const map = {
+                'strongly_recommended': 'strongly_recommended',
+                'recommended': 'recommended',
+                'possible_but_risky': 'possible_but_risky',
+                'not_recommended': 'not_recommended',
+            };
+            return map[rec] || 'recommended';
+        }
+
+        function renderEvidenceTags(evidence, type) {
+            if (!evidence || !evidence[type] || evidence[type].length === 0) return '';
+            return evidence[type].map(t => `<span class="evidence-tag ${type}">${escapeHtml(t)}</span>`).join(' ');
+        }
+
+        // ─── Render Position Row ─────────────────────────────────────
+        function renderRow(pos) {
+            const match = pos.match;
+            if (!match) return null;
+
+            const score = match.overall_score ?? 0;
+            const scoreClass = getScoreClass(score);
+            const days = match.days_until_deadline ?? null;
+            const deadlineInfo = getDeadlineBadge(days);
+            const recClass = getRecBadgeClass(match.application_recommendation);
+
+            // Build skills tags
+            const skills = match.required_skills || {};
+            const allSkills = [
+                ...(skills.mandatory || []).map(s => ({ text: s, type: 'mandatory' })),
+                ...(skills.core || []).map(s => ({ text: s, type: 'core' })),
+                ...(skills.preferred || []).map(s => ({ text: s, type: 'preferred' })),
+            ];
+
+            // Build evidence
+            const evidence = match.evidence || {};
+            const directMatches = evidence.direct_matches || [];
+            const transferable = evidence.transferable_matches || [];
+            const missing = evidence.missing_requirements || [];
+            const unclear = evidence.unclear_requirements || [];
+
+            // Scores for bars
+            const scoreBars = [
+                { label: 'Eligibility', key: 'eligibility_score' },
+                { label: 'Academic', key: 'academic_fit_score' },
+                { label: 'Research', key: 'research_fit_score' },
+                { label: 'Technical', key: 'technical_methodological_fit_score' },
+                { label: 'Domain', key: 'domain_fit_score' },
+                { label: 'Research Exp.', key: 'research_experience_score' },
+                { label: 'Competitive', key: 'competitiveness_score' },
+            ];
+
+            // Weighted dimensions
+            const wd = match.weighted_dimensions || {};
+            const wdLabels = {
+                'mandatory_requirements': 'Mandatory',
+                'research_project_fit': 'Project Fit',
+                'research_experience': 'Research Exp.',
+                'technical_methodological_fit': 'Technical',
+                'domain_application_fit': 'Domain',
+                'education_academic_record': 'Education',
+                'research_outputs': 'Outputs',
+                'lab_supervisor_fit': 'Supervisor Fit',
+                'preferred_requirements': 'Preferred',
+            };
+
+            const row = document.createElement('div');
+            row.className = 'position-row';
+
+            row.innerHTML = `
+                <!-- ─── Row Header ──────────────────────────────────── -->
+                <div class="row-header" onclick="toggleRow(this.closest('.position-row'))">
+                    <!-- Score -->
+                    <div class="score-col">
+                        <div class="score-circle ${scoreClass}">
+                            ${score.toFixed(0)}
+                            <span class="score-label">${match.match_category_label || 'Match'}</span>
+                        </div>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="main-col">
+                        <div class="title-row">
+                            <h5><a href="${escapeHtml(pos.url)}" target="_blank">${escapeHtml(pos.title)}</a></h5>
+                            ${match.application_recommendation ? `<span class="rec-badge ${recClass}">${match.application_recommendation_label || match.application_recommendation}</span>` : ''}
+                        </div>
+                        <div class="meta-row">
+                            <span class="institution"><i class="fas fa-university me-1"></i>${escapeHtml(match.institution || pos.company || 'Unknown')}</span>
+                            ${match.position_type ? `<span><i class="fas fa-tag me-1"></i>${escapeHtml(match.position_type)}</span>` : ''}
+                            ${match.country ? `<span><i class="fas fa-map-pin me-1"></i>${escapeHtml(match.country)}${match.city ? ', ' + escapeHtml(match.city) : ''}</span>` : ''}
+                            <span class="badge-deadline ${deadlineInfo.cls}">${deadlineInfo.label}</span>
+                            ${match.start_date ? `<span><i class="far fa-calendar-plus me-1"></i>${formatDate(match.start_date)}</span>` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Right -->
+                    <div class="right-col">
+                        <span class="badge-match-cat" style="background:${score>=80?'#d4edda':score>=60?'#cce5ff':score>=40?'#fff3cd':'#f8d7da'}; color:${score>=80?'#155724':score>=60?'#004085':score>=40?'#856404':'#721c24'}">
+                            ${score >= 80 ? '🌟 Strong' : score >= 60 ? '✅ Good' : score >= 40 ? '📌 Possible' : '⚠️ Weak'}
+                        </span>
+                        <span class="expand-icon"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                </div>
+
+                <!-- ─── Row Detail (expanded) ────────────────────────── -->
+                <div class="row-detail">
+                    <div class="detail-grid">
+
+                        <!-- Left column -->
+                        <div>
+
+                            <!-- Summary -->
+                            ${match.summary ? `
+                            <div class="detail-item">
+                                <div class="label"><i class="far fa-file-alt me-1"></i>Summary</div>
+                                <div class="value small">${escapeHtml(match.summary)}</div>
+                            </div>
+                            ` : ''}
+
+                            ${match.main_reason ? `
+                            <div class="detail-item">
+                                <div class="label"><i class="fas fa-bullseye me-1"></i>Main Reason</div>
+                                <div class="value small text-muted">${escapeHtml(match.main_reason)}</div>
+                            </div>
+                            ` : ''}
+
+                            <!-- Funding -->
+                            ${match.funding_and_duration ? `
+                            <div class="detail-item">
+                                <div class="label"><i class="fas fa-coins me-1"></i>Funding &amp; Duration</div>
+                                <div class="value small">${escapeHtml(match.funding_and_duration)}</div>
+                            </div>
+                            ` : ''}
+
+                            <!-- Research Area -->
+                            ${match.research_area && match.research_area.length > 0 ? `
+                            <div class="detail-item">
+                                <div class="label"><i class="fas fa-microscope me-1"></i>Research Areas</div>
+                                <div class="value">${match.research_area.map(a => `<span class="tag">${escapeHtml(a)}</span>`).join(' ')}</div>
+                            </div>
+                            ` : ''}
+
+                            <!-- Skills -->
+                            ${allSkills.length > 0 ? `
+                            <div class="detail-item">
+                                <div class="label"><i class="fas fa-tools me-1"></i>Required Skills</div>
+                                <div class="value">${allSkills.map(s => `<span class="tag ${s.type}">${escapeHtml(s.text)}</span>`).join(' ')}</div>
+                            </div>
+                            ` : ''}
+
+                            <!-- Evidence -->
+                            ${directMatches.length > 0 || transferable.length > 0 || missing.length > 0 || unclear.length > 0 ? `
+                            <div class="detail-item">
+                                <div class="label"><i class="fas fa-clipboard-check me-1"></i>Evidence</div>
+                                <div class="value">
+                                    ${renderEvidenceTags(evidence, 'direct_matches')}
+                                    ${renderEvidenceTags(evidence, 'transferable_matches')}
+                                    ${renderEvidenceTags(evidence, 'missing_requirements')}
+                                    ${renderEvidenceTags(evidence, 'unclear_requirements')}
+                                </div>
+                            </div>
+                            ` : ''}
+
+                        </div>
+
+                        <!-- Right column -->
+                        <div>
+
+                            <!-- Weighted Dimensions -->
+                            ${Object.keys(wd).length > 0 ? `
+                            <div class="detail-item">
+                                <div class="label"><i class="fas fa-weight-hanging me-1"></i>Weighted Dimensions</div>
+                                <div class="value" style="display:flex; flex-wrap:wrap; gap:0.2rem 1rem;">
+                                    ${Object.entries(wd).filter(([k,v]) => v !== undefined && v !== null).map(([k, v]) => `
+                                        <span style="font-size:0.75rem; background:#f1f3f5; padding:0.1rem 0.5rem; border-radius:4px;">
+                                            ${wdLabels[k] || k}: <strong>${v}%</strong>
+                                        </span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            ` : ''}
+
+                            <!-- Score Bars -->
+                            <div class="detail-item">
+                                <div class="label"><i class="fas fa-chart-bar me-1"></i>Detailed Scores</div>
+                                <div class="value">
+                                    ${scoreBars.map(sb => {
+                                        const val = match[sb.key] ?? 0;
+                                        const color = val >= 70 ? '#00b894' : val >= 50 ? '#fdcb6e' : '#e17055';
+                                        return `
+                                        <div class="score-bar-wrap">
+                                            <span class="bar-label">${sb.label}</span>
+                                            <div class="bar-track">
+                                                <div class="bar-fill" style="width:${Math.min(val, 100)}%; background:${color};"></div>
+                                            </div>
+                                            <span class="bar-value">${val.toFixed(0)}</span>
+                                        </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Confidence & Metadata -->
+                            <div class="detail-item" style="margin-top:0.25rem;">
+                                <div class="value" style="font-size:0.7rem; color:#6c757d;">
+                                    ${match.confidence_label ? `<span class="me-2">Confidence: ${match.confidence_label}</span>` : ''}
+                                    ${match.matched_at ? `<span><i class="far fa-clock me-1"></i>${new Date(match.matched_at).toLocaleString()}</span>` : ''}
+                                    ${match.application_url ? `<span class="ms-2"><a href="${escapeHtml(match.application_url)}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-paper-plane me-1"></i>Apply</a></span>` : ''}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            return row;
+        }
+
+        // ─── Toggle Row ──────────────────────────────────────────────
+        function toggleRow(row) {
+            row.classList.toggle('expanded');
+        }
+        window.toggleRow = toggleRow;
+
+        // ─── Render All ──────────────────────────────────────────────
+        function renderCards(positions) {
+            container.innerHTML = '';
+            if (!positions || positions.length === 0) {
+                noResults.classList.remove('d-none');
+                return;
+            }
+            noResults.classList.add('d-none');
+
+            positions.forEach(pos => {
+                const row = renderRow(pos);
+                if (row) container.appendChild(row);
+            });
+        }
+
+        // ─── Pagination ──────────────────────────────────────────────
+        function renderPagination(count, currentPage) {
+            const totalPages = Math.ceil(count / PAGE_SIZE);
+            if (totalPages <= 1) {
+                paginationNav.classList.add('d-none');
+                return;
+            }
+            paginationNav.classList.remove('d-none');
+            paginationList.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+                li.querySelector('a').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentPage = i;
+                    fetchPositions(currentPage);
+                });
+                paginationList.appendChild(li);
+            }
+        }
+
+        // ─── Fetch ────────────────────────────────────────────────────
+        async function fetchPositions(page = 1) {
+            spinner.classList.remove('d-none');
+            container.innerHTML = '';
+            noResults.classList.add('d-none');
+            paginationNav.classList.add('d-none');
+
+            try {
+                const params = new URLSearchParams({ page, status: currentStatus });
+                const response = await fetch(`${API_BASE}?${params.toString()}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const data = await response.json();
+                spinner.classList.add('d-none');
+
+                const results = data.results || [];
+                totalCount = data.count || 0;
+
+                if (results.length > 0) {
+                    renderCards(results);
+                    renderPagination(totalCount, page);
+                    totalSpan.textContent = `${totalCount} positions`;
+                } else {
+                    noResults.classList.remove('d-none');
+                    totalSpan.textContent = '0 positions';
+                }
+            } catch (error) {
+                spinner.classList.add('d-none');
+                container.innerHTML = `
+                    <div class="text-center text-danger py-4">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                        <p>Failed to load positions. Make sure the server is running.</p>
+                        <p class="small text-muted">${error.message}</p>
+                    </div>
+                `;
+                console.error(error);
+            }
+        }
+
+        // ─── Event Listeners ─────────────────────────────────────────
+        document.getElementById('statusFilter').addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            document.querySelectorAll('#statusFilter .btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentStatus = btn.dataset.status;
+            currentPage = 1;
+            fetchPositions(currentPage);
+        });
+
+        // ─── Initial Load ────────────────────────────────────────────
+        fetchPositions(1);
+    </script>
+</body>
+</html>

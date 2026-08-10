@@ -12,15 +12,36 @@ MATCH_JSON_STRUCTURE = {
         "title": "",
         "institution": "",
         "country": "",
+        "city": "",
+        "address": "",
         "position_type": "",
         "research_area": [],
         "main_research_objective": "",
         "key_topics": [],
-        "required_background": [],
-        "required_skills": [],
-        "preferred_skills": [],
-        "funding_and_duration": ""
+        "research_methods": [],
+        "target_application_domain": [],
+        "required_background": {
+            "mandatory": [],
+            "core": [],
+            "preferred": []
+        },
+        "required_skills": {
+            "mandatory": [],
+            "core": [],
+            "preferred": []
+        },
+        "funding_and_duration": "",
+        "application_deadline": "",
+        "application_deadline_timezone": "",
+        "application_deadline_iso": "",
+        "start_date": "",
+        "start_date_iso": "",
+        "application_url": "",
+        "contact_email": "",
+        "contact_name": "",
+        "required_documents": []
     },
+
     "candidate_profile_summary": {
         "education_background": "",
         "research_background": "",
@@ -28,17 +49,44 @@ MATCH_JSON_STRUCTURE = {
         "professional_experience": "",
         "publication_and_academic_record": ""
     },
+
     "matching_score": {
         "overall_score": 0,
         "confidence": "low/medium/high",
+
         "evaluation_rounds": {
+            "eligibility_score": 0,
             "academic_fit_score": 0,
             "research_fit_score": 0,
+            "technical_methodological_fit_score": 0,
+            "domain_fit_score": 0,
+            "research_experience_score": 0,
             "competitiveness_score": 0
+        },
+
+        "weighted_dimensions": {
+            "mandatory_requirements": 0,
+            "research_project_fit": 0,
+            "research_experience": 0,
+            "technical_methodological_fit": 0,
+            "domain_application_fit": 0,
+            "education_academic_record": 0,
+            "research_outputs": 0,
+            "lab_supervisor_fit": 0,
+            "preferred_requirements": 0
+        },
+
+        "evidence": {
+            "direct_matches": [],
+            "transferable_matches": [],
+            "missing_requirements": [],
+            "unclear_requirements": []
         }
     },
+
     "final_verdict": {
         "match_category": "excellent_match/good_match/possible_match/weak_match",
+        "application_recommendation": "strongly_recommended/recommended/possible_but_risky/not_recommended",
         "summary": "",
         "main_reason": ""
     }
@@ -50,14 +98,34 @@ MATCH_JSON_STRUCTURE_STR = """{
         "title": "",
         "institution": "",
         "country": "",
+        "city": "",
+        "address": "",
         "position_type": "",
         "research_area": [],
         "main_research_objective": "",
         "key_topics": [],
-        "required_background": [],
-        "required_skills": [],
-        "preferred_skills": [],
-        "funding_and_duration": ""
+        "research_methods": [],
+        "target_application_domain": [],
+        "required_background": {
+            "mandatory": [],
+            "core": [],
+            "preferred": []
+        },
+        "required_skills": {
+            "mandatory": [],
+            "core": [],
+            "preferred": []
+        },
+        "funding_and_duration": "",
+        "application_deadline": "",
+        "application_deadline_timezone": "",
+        "application_deadline_iso": "",
+        "start_date": "",
+        "start_date_iso": "",
+        "application_url": "",
+        "contact_email": "",
+        "contact_name": "",
+        "required_documents": []
     },
     "candidate_profile_summary": {
         "education_background": "",
@@ -70,13 +138,35 @@ MATCH_JSON_STRUCTURE_STR = """{
         "overall_score": 0,
         "confidence": "low/medium/high",
         "evaluation_rounds": {
+            "eligibility_score": 0,
             "academic_fit_score": 0,
             "research_fit_score": 0,
+            "technical_methodological_fit_score": 0,
+            "domain_fit_score": 0,
+            "research_experience_score": 0,
             "competitiveness_score": 0
+        },
+        "weighted_dimensions": {
+            "mandatory_requirements": 0,
+            "research_project_fit": 0,
+            "research_experience": 0,
+            "technical_methodological_fit": 0,
+            "domain_application_fit": 0,
+            "education_academic_record": 0,
+            "research_outputs": 0,
+            "lab_supervisor_fit": 0,
+            "preferred_requirements": 0
+        },
+        "evidence": {
+            "direct_matches": [],
+            "transferable_matches": [],
+            "missing_requirements": [],
+            "unclear_requirements": []
         }
     },
     "final_verdict": {
         "match_category": "excellent_match/good_match/possible_match/weak_match",
+        "application_recommendation": "strongly_recommended/recommended/possible_but_risky/not_recommended",
         "summary": "",
         "main_reason": ""
     }
@@ -92,15 +182,44 @@ MATCH_JSON_SCHEMA = {
                 "title": {"type": "string"},
                 "institution": {"type": "string"},
                 "country": {"type": "string"},
+                "city": {"type": "string"},
+                "address": {"type": "string"},
                 "position_type": {"type": "string"},
                 "research_area": {"type": "array", "items": {"type": "string"}},
                 "main_research_objective": {"type": "string"},
                 "key_topics": {"type": "array", "items": {"type": "string"}},
-                "required_background": {"type": "array", "items": {"type": "string"}},
-                "required_skills": {"type": "array", "items": {"type": "string"}},
-                "preferred_skills": {"type": "array", "items": {"type": "string"}},
-                "funding_and_duration": {"type": "string"}
-            }
+                "research_methods": {"type": "array", "items": {"type": "string"}},
+                "target_application_domain": {"type": "array", "items": {"type": "string"}},
+                "required_background": {
+                    "type": "object",
+                    "properties": {
+                        "mandatory": {"type": "array", "items": {"type": "string"}},
+                        "core": {"type": "array", "items": {"type": "string"}},
+                        "preferred": {"type": "array", "items": {"type": "string"}}
+                    },
+                    "additionalProperties": False
+                },
+                "required_skills": {
+                    "type": "object",
+                    "properties": {
+                        "mandatory": {"type": "array", "items": {"type": "string"}},
+                        "core": {"type": "array", "items": {"type": "string"}},
+                        "preferred": {"type": "array", "items": {"type": "string"}}
+                    },
+                    "additionalProperties": False
+                },
+                "funding_and_duration": {"type": "string"},
+                "application_deadline": {"type": "string"},
+                "application_deadline_timezone": {"type": "string"},
+                "application_deadline_iso": {"type": "string"},
+                "start_date": {"type": "string"},
+                "start_date_iso": {"type": "string"},
+                "application_url": {"type": "string"},
+                "contact_email": {"type": "string"},
+                "contact_name": {"type": "string"},
+                "required_documents": {"type": "array", "items": {"type": "string"}}
+            },
+            "additionalProperties": False
         },
         "candidate_profile_summary": {
             "type": "object",
@@ -110,7 +229,8 @@ MATCH_JSON_SCHEMA = {
                 "technical_and_methodological_skills": {"type": "string"},
                 "professional_experience": {"type": "string"},
                 "publication_and_academic_record": {"type": "string"}
-            }
+            },
+            "additionalProperties": False
         },
         "matching_score": {
             "type": "object",
@@ -120,12 +240,43 @@ MATCH_JSON_SCHEMA = {
                 "evaluation_rounds": {
                     "type": "object",
                     "properties": {
+                        "eligibility_score": {"type": "number"},
                         "academic_fit_score": {"type": "number"},
                         "research_fit_score": {"type": "number"},
+                        "technical_methodological_fit_score": {"type": "number"},
+                        "domain_fit_score": {"type": "number"},
+                        "research_experience_score": {"type": "number"},
                         "competitiveness_score": {"type": "number"}
-                    }
+                    },
+                    "additionalProperties": False
+                },
+                "weighted_dimensions": {
+                    "type": "object",
+                    "properties": {
+                        "mandatory_requirements": {"type": "number"},
+                        "research_project_fit": {"type": "number"},
+                        "research_experience": {"type": "number"},
+                        "technical_methodological_fit": {"type": "number"},
+                        "domain_application_fit": {"type": "number"},
+                        "education_academic_record": {"type": "number"},
+                        "research_outputs": {"type": "number"},
+                        "lab_supervisor_fit": {"type": "number"},
+                        "preferred_requirements": {"type": "number"}
+                    },
+                    "additionalProperties": False
+                },
+                "evidence": {
+                    "type": "object",
+                    "properties": {
+                        "direct_matches": {"type": "array", "items": {"type": "string"}},
+                        "transferable_matches": {"type": "array", "items": {"type": "string"}},
+                        "missing_requirements": {"type": "array", "items": {"type": "string"}},
+                        "unclear_requirements": {"type": "array", "items": {"type": "string"}}
+                    },
+                    "additionalProperties": False
                 }
-            }
+            },
+            "additionalProperties": False
         },
         "final_verdict": {
             "type": "object",
@@ -134,14 +285,19 @@ MATCH_JSON_SCHEMA = {
                     "type": "string",
                     "enum": ["excellent_match", "good_match", "possible_match", "weak_match"]
                 },
+                "application_recommendation": {
+                    "type": "string",
+                    "enum": ["strongly_recommended", "recommended", "possible_but_risky", "not_recommended"]
+                },
                 "summary": {"type": "string"},
                 "main_reason": {"type": "string"}
-            }
+            },
+            "additionalProperties": False
         }
     },
     "required": [
         "position_summary",
-        "candidate_profile_summary", 
+        "candidate_profile_summary",
         "matching_score",
         "final_verdict"
     ]
@@ -153,14 +309,34 @@ DEFAULT_MATCH_RESPONSE = {
         "title": "",
         "institution": "",
         "country": "",
+        "city": "",
+        "address": "",
         "position_type": "",
         "research_area": [],
         "main_research_objective": "",
         "key_topics": [],
-        "required_background": [],
-        "required_skills": [],
-        "preferred_skills": [],
-        "funding_and_duration": ""
+        "research_methods": [],
+        "target_application_domain": [],
+        "required_background": {
+            "mandatory": [],
+            "core": [],
+            "preferred": []
+        },
+        "required_skills": {
+            "mandatory": [],
+            "core": [],
+            "preferred": []
+        },
+        "funding_and_duration": "",
+        "application_deadline": "",
+        "application_deadline_timezone": "",
+        "application_deadline_iso": "",
+        "start_date": "",
+        "start_date_iso": "",
+        "application_url": "",
+        "contact_email": "",
+        "contact_name": "",
+        "required_documents": []
     },
     "candidate_profile_summary": {
         "education_background": "",
@@ -173,13 +349,35 @@ DEFAULT_MATCH_RESPONSE = {
         "overall_score": 0,
         "confidence": "low",
         "evaluation_rounds": {
+            "eligibility_score": 0,
             "academic_fit_score": 0,
             "research_fit_score": 0,
+            "technical_methodological_fit_score": 0,
+            "domain_fit_score": 0,
+            "research_experience_score": 0,
             "competitiveness_score": 0
+        },
+        "weighted_dimensions": {
+            "mandatory_requirements": 0,
+            "research_project_fit": 0,
+            "research_experience": 0,
+            "technical_methodological_fit": 0,
+            "domain_application_fit": 0,
+            "education_academic_record": 0,
+            "research_outputs": 0,
+            "lab_supervisor_fit": 0,
+            "preferred_requirements": 0
+        },
+        "evidence": {
+            "direct_matches": [],
+            "transferable_matches": [],
+            "missing_requirements": [],
+            "unclear_requirements": []
         }
     },
     "final_verdict": {
         "match_category": "weak_match",
+        "application_recommendation": "",
         "summary": "",
         "main_reason": ""
     }
