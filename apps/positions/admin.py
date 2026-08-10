@@ -32,12 +32,50 @@ class PositionMatchAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Position', {'fields': ('position',)}),
-        ('Position Summary', {'fields': ('position_title', 'institution', 'country', 'position_type', 'research_area', 'main_research_objective', 'key_topics', 'required_background', 'required_skills', 'preferred_skills', 'funding_and_duration'), 'classes': ('collapse',)}),
-        ('Candidate Profile', {'fields': ('education_background', 'research_background', 'technical_and_methodological_skills', 'professional_experience', 'publication_and_academic_record'), 'classes': ('collapse',)}),
-        ('Match Scores', {'fields': ('overall_score', 'confidence', 'academic_fit_score', 'research_fit_score', 'competitiveness_score')}),
-        ('Final Verdict', {'fields': ('match_category', 'summary', 'main_reason')}),
-        ('Metadata', {'fields': ('prompt_id', 'prompt_name', 'prompt_version', 'language', 'raw_response', 'full_json_response'), 'classes': ('collapse',)}),
-        ('Timestamps', {'fields': ('matched_at', 'updated_at')}),
+        ('Position Summary', {
+            'fields': (
+                'position_title', 'institution', 'country', 'city', 'address',
+                'position_type', 'research_area', 'main_research_objective',
+                'key_topics', 'research_methods', 'target_application_domain',
+                'required_background', 'required_skills',
+                'funding_and_duration',
+                'application_deadline', 'application_deadline_timezone',
+                'application_deadline_iso', 'start_date', 'start_date_iso',
+                'application_url', 'contact_email', 'contact_name', 'required_documents'
+            ),
+            'classes': ('wide', 'collapse')
+        }),
+        ('Candidate Profile', {
+            'fields': (
+                'education_background', 'research_background',
+                'technical_and_methodological_skills', 'professional_experience',
+                'publication_and_academic_record'
+            ),
+            'classes': ('wide', 'collapse')
+        }),
+        ('Match Scores', {
+            'fields': (
+                'overall_score', 'confidence',
+                'eligibility_score', 'academic_fit_score', 'research_fit_score',
+                'technical_methodological_fit_score', 'domain_fit_score',
+                'research_experience_score', 'competitiveness_score',
+                'weighted_dimensions', 'evidence'
+            ),
+            'classes': ('wide', 'collapse')
+        }),
+        ('Final Verdict', {
+            'fields': ('match_category', 'application_recommendation', 'summary', 'main_reason')
+        }),
+        ('Metadata', {
+            'fields': (
+                'prompt_id', 'prompt_name', 'prompt_version',
+                'language', 'raw_response', 'full_json_response'
+            ),
+            'classes': ('collapse',)
+        }),
+        ('Timestamps', {
+            'fields': ('matched_at', 'updated_at')
+        }),
     )
 
     def overall_score_display(self, obj):

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from apps.positions.models import Position, PositionMatch
+from datetime import date
 
 
 class PositionMatchSerializer(serializers.ModelSerializer):
@@ -34,22 +35,30 @@ class PositionMatchSerializer(serializers.ModelSerializer):
             # ─── Position Summary ──────────────────────────────────
             'position_title',
             'institution',
+            'country',
+            'city',
             'position_type',
             'research_area',
             'main_research_objective',
             'research_methods',
+            'target_application_domain',
             'required_skills',
             'required_background',
             'funding_and_duration',
             
             # ─── Dates ──────────────────────────────────────────────
             'application_deadline',
+            'application_deadline_iso',
             'days_until_deadline',
             'is_deadline_passed',
             'start_date',
+            'start_date_iso',
             
             # ─── Application Info ──────────────────────────────────
             'application_url',
+            'contact_email',
+            'contact_name',
+            'required_documents',
             
             # ─── Detailed Scores ────────────────────────────────────
             'eligibility_score',
@@ -82,14 +91,26 @@ class PositionMatchSerializer(serializers.ModelSerializer):
 
     # ─── Calculated Fields ──────────────────────────────────────────
     def get_days_until_deadline(self, obj):
+        if obj.application_deadline_iso:
+            try:
+                from datetime import datetime
+                deadline = datetime.fromisoformat(obj.application_deadline_iso.replace('Z', '+00:00')).date()
+                return (deadline - date.today()).days
+            except (ValueError, TypeError):
+                pass
         if obj.application_deadline:
-            from datetime import date
             return (obj.application_deadline - date.today()).days
         return None
 
     def get_is_deadline_passed(self, obj):
+        if obj.application_deadline_iso:
+            try:
+                from datetime import datetime
+                deadline = datetime.fromisoformat(obj.application_deadline_iso.replace('Z', '+00:00')).date()
+                return deadline < date.today()
+            except (ValueError, TypeError):
+                pass
         if obj.application_deadline:
-            from datetime import date
             return obj.application_deadline < date.today()
         return False
 

@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from rest_framework import viewsets, permissions
+from .models import Website
+from .serializers import WebsiteSerializer
 
-# Create your views here.
+
+class WebsiteViewSet(viewsets.ModelViewSet):
+    queryset = Website.objects.all()
+    serializer_class = WebsiteSerializer
+    permission_classes = [permissions.AllowAny]  

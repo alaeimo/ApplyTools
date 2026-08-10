@@ -18,11 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from apps.api.views import dashboard_view
+from apps.api.views import dashboard_view, websites_view
 
 urlpatterns = [
     path('', dashboard_view, name='dashboard'),
-    path('api/', include('apps.api.urls')),
+    path('websites/', websites_view, name='websites'),
+    path('api/v1/', include('apps.api.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.ENABLE_DJANGO_ADMIN_PANEL:
