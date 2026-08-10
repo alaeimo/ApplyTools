@@ -5,122 +5,137 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>ApplyTools – Websites</title>
 
-<title>ApplyTools – Websites</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
 
-<link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    >
 
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
->
+    <style>
+        body {
+            background: #f0f2f5;
+            font-family: 'Inter', sans-serif;
+        }
 
-<style>
-    body {
-        background: #f0f2f5;
-        font-family: 'Inter', sans-serif;
-    }
+        .dashboard-header {
+            background: linear-gradient(
+                135deg,
+                #1a1a2e 0%,
+                #16213e 50%,
+                #0f3460 100%
+            );
+            color: white;
+            padding: 1.75rem 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid #e94560;
+        }
 
-    .dashboard-header {
-        background: linear-gradient(
-            135deg,
-            #1a1a2e 0%,
-            #16213e 50%,
-            #0f3460 100%
-        );
-        color: white;
-        padding: 1.75rem 0;
-        margin-bottom: 1.5rem;
-        border-bottom: 3px solid #e94560;
-    }
+        .dashboard-header h1 {
+            font-weight: 800;
+        }
 
-    .dashboard-header h1 {
-        font-weight: 800;
-    }
+        .card-website {
+            border-radius: 14px;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: 0.2s;
+        }
 
-    .card-website {
-        border-radius: 14px;
-        border: none;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        transition: 0.2s;
-    }
+        .card-website:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
 
-    .card-website:hover {
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-        transform: translateY(-2px);
-    }
+        .badge-status {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.3rem 0.7rem;
+            border-radius: 50px;
+            white-space: nowrap;
+        }
 
-    .badge-status {
-        font-size: 0.7rem;
-        font-weight: 600;
-        padding: 0.3rem 0.7rem;
-        border-radius: 50px;
-        white-space: nowrap;
-    }
+        .badge-active {
+            background: #d4edda;
+            color: #155724;
+        }
 
-    .badge-active {
-        background: #d4edda;
-        color: #155724;
-    }
+        .badge-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
 
-    .badge-inactive {
-        background: #f8d7da;
-        color: #721c24;
-    }
+        .selector-preview {
+            background: #f8f9fa;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #495057;
+            word-break: break-all;
+        }
 
-    .selector-preview {
-        background: #f8f9fa;
-        padding: 0.5rem 0.75rem;
-        border-radius: 6px;
-        font-family: monospace;
-        font-size: 0.75rem;
-        color: #495057;
-        word-break: break-all;
-    }
+        .action-btn {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+        }
 
-    .action-btn {
-        font-size: 0.8rem;
-        padding: 0.2rem 0.6rem;
-    }
+        .modal-content {
+            border-radius: 14px;
+        }
 
-    .modal-content {
-        border-radius: 14px;
-    }
+        .website-url {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-    .website-url {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+        .scrape-stat {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+        }
 
-    .scrape-stat {
-        background: #f8f9fa;
-        border-radius: 10px;
-        padding: 10px;
-        text-align: center;
-    }
+        .scrape-stat .number {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0d6efd;
+        }
 
-    .scrape-stat .number {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #0d6efd;
-    }
+        .scrape-stat .label {
+            font-size: 0.7rem;
+            color: #6c757d;
+        }
 
-    .scrape-stat .label {
-        font-size: 0.7rem;
-        color: #6c757d;
-    }
+        .error-box {
+            max-width: 700px;
+            margin: 0 auto;
+        }
 
-    .error-box {
-        max-width: 700px;
-        margin: 0 auto;
-    }
-</style>
+        .progress-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+        }
 
+        .progress-container .progress {
+            height: 8px;
+        }
 
+        .scrape-status-text {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 4px;
+            word-break: break-word;
+        }
+    </style>
 </head>
 
 <body>
@@ -132,41 +147,38 @@
 <div class="dashboard-header">
     <div class="container d-flex justify-content-between align-items-center">
 
+        <div>
+            <h1 class="display-6 fw-bold mb-1">
+                <i class="fas fa-globe me-2"></i>
+                Websites
+            </h1>
 
-    <div>
-        <h1 class="display-6 fw-bold mb-1">
-            <i class="fas fa-globe me-2"></i>
-            Websites
-        </h1>
+            <p class="mb-0 opacity-75 small">
+                Manage scraping sources
+            </p>
+        </div>
 
-        <p class="mb-0 opacity-75 small">
-            Manage scraping sources
-        </p>
+        <div>
+            <button
+                class="btn btn-light btn-sm"
+                onclick="window.location.href='/'"
+            >
+                <i class="fas fa-arrow-left me-1"></i>
+                Dashboard
+            </button>
+
+            <button
+                class="btn btn-success btn-sm ms-2"
+                data-bs-toggle="modal"
+                data-bs-target="#websiteModal"
+                onclick="prepareAddWebsite()"
+            >
+                <i class="fas fa-plus me-1"></i>
+                Add Website
+            </button>
+        </div>
+
     </div>
-
-    <div>
-        <button
-            class="btn btn-light btn-sm"
-            onclick="window.location.href='/'"
-        >
-            <i class="fas fa-arrow-left me-1"></i>
-            Dashboard
-        </button>
-
-        <button
-            class="btn btn-success btn-sm ms-2"
-            data-bs-toggle="modal"
-            data-bs-target="#websiteModal"
-            onclick="prepareAddWebsite()"
-        >
-            <i class="fas fa-plus me-1"></i>
-            Add Website
-        </button>
-    </div>
-
-</div>
-
-
 </div>
 
 <!-- =========================================================
@@ -175,81 +187,33 @@
 
 <div class="container">
 
-
-<!-- Loading -->
-<div id="loading" class="text-center py-5">
-
-    <div
-        class="spinner-border text-primary"
-        role="status"
-    >
-        <span class="visually-hidden">
-            Loading...
-        </span>
+    <!-- Loading -->
+    <div id="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="mt-3 text-muted small">Loading websites...</div>
     </div>
 
-    <div class="mt-3 text-muted small">
-        Loading websites...
+    <!-- Error -->
+    <div id="errorMessage" class="alert alert-danger error-box d-none" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <span id="errorText">Error loading websites.</span>
+        <button class="btn btn-sm btn-outline-danger ms-3" onclick="fetchWebsites()">Retry</button>
     </div>
 
-</div>
+    <!-- Websites Grid -->
+    <div id="websiteGrid" class="row g-3" style="display: none;"></div>
 
-
-<!-- Error -->
-<div
-    id="errorMessage"
-    class="alert alert-danger error-box d-none"
-    role="alert"
->
-    <i class="fas fa-exclamation-triangle me-2"></i>
-
-    <span id="errorText">
-        Error loading websites.
-    </span>
-
-    <button
-        class="btn btn-sm btn-outline-danger ms-3"
-        onclick="fetchWebsites()"
-    >
-        Retry
-    </button>
-</div>
-
-
-<!-- Websites Grid -->
-<div
-    id="websiteGrid"
-    class="row g-3"
-    style="display: none;"
-></div>
-
-
-<!-- No results -->
-<div
-    id="noWebsites"
-    class="text-center py-5 d-none"
->
-    <i class="fas fa-globe fa-3x text-muted mb-3"></i>
-
-    <h5>
-        No websites configured
-    </h5>
-
-    <p class="text-muted small">
-        Add your first scraping source.
-    </p>
-
-    <button
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#websiteModal"
-        onclick="prepareAddWebsite()"
-    >
-        <i class="fas fa-plus me-1"></i>
-        Add Website
-    </button>
-</div>
-
+    <!-- No results -->
+    <div id="noWebsites" class="text-center py-5 d-none">
+        <i class="fas fa-globe fa-3x text-muted mb-3"></i>
+        <h5>No websites configured</h5>
+        <p class="text-muted small">Add your first scraping source.</p>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#websiteModal" onclick="prepareAddWebsite()">
+            <i class="fas fa-plus me-1"></i> Add Website
+        </button>
+    </div>
 
 </div>
 
@@ -257,469 +221,156 @@
      ADD / EDIT MODAL
 ========================================================= -->
 
-<div
-    class="modal fade"
-    id="websiteModal"
-    tabindex="-1"
-    aria-hidden="true"
->
+<div class="modal fade" id="websiteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalTitle">
+                    <i class="fas fa-plus-circle me-2"></i> Add Website
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
 
+            <div class="modal-body">
+                <form id="websiteForm">
+                    <input type="hidden" id="editId" value="">
 
-<div class="modal-dialog modal-lg">
+                    <div class="row g-3">
+                        <!-- Name -->
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold" for="name">Name *</label>
+                            <input type="text" class="form-control" id="name" placeholder="e.g., Academic Positions" required>
+                        </div>
 
-    <div class="modal-content">
+                        <!-- Base URL -->
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold" for="base_url">Base URL *</label>
+                            <input type="url" class="form-control" id="base_url" placeholder="https://example.com" required>
+                        </div>
 
-        <div class="modal-header bg-primary text-white">
+                        <!-- Pagination -->
+                        <div class="col-12">
+                            <label class="form-label fw-bold" for="pagination_url_pattern">Pagination URL Pattern *</label>
+                            <input type="text" class="form-control" id="pagination_url_pattern" placeholder="/jobs?page={page}" required>
+                            <small class="text-muted">Use <code>{page}</code> as the page placeholder.</small>
+                        </div>
 
-            <h5
-                class="modal-title"
-                id="modalTitle"
-            >
-                <i class="fas fa-plus-circle me-2"></i>
-                Add Website
-            </h5>
+                        <!-- Listing selector -->
+                        <div class="col-12">
+                            <label class="form-label fw-bold" for="listing_item_selector">Listing Item Selector *</label>
+                            <input type="text" class="form-control" id="listing_item_selector" placeholder=".job-list-item" required>
+                        </div>
 
-            <button
-                type="button"
-                class="btn-close btn-close-white"
-                data-bs-dismiss="modal"
-            ></button>
+                        <!-- Position link selector -->
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold" for="position_link_selector">Position Link Selector *</label>
+                            <input type="text" class="form-control" id="position_link_selector" placeholder="a.job-link" required>
+                        </div>
 
+                        <!-- Detail container -->
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold" for="detail_container_selector">Detail Container Selector *</label>
+                            <input type="text" class="form-control" id="detail_container_selector" placeholder="#editor" required>
+                        </div>
+
+                        <!-- Title selector -->
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="position_title_selector">
+                                Title Selector <span class="text-muted">(optional)</span>
+                            </label>
+                            <input type="text" class="form-control" id="position_title_selector" placeholder="h4">
+                        </div>
+
+                        <!-- Company selector -->
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="position_company_selector">
+                                Company Selector <span class="text-muted">(optional)</span>
+                            </label>
+                            <input type="text" class="form-control" id="position_company_selector" placeholder=".company">
+                        </div>
+
+                        <!-- Max pages -->
+                        <div class="col-6 col-md-3">
+                            <label class="form-label" for="max_pages">Max Pages</label>
+                            <input type="number" class="form-control" id="max_pages" value="10" min="0">
+                            <small class="text-muted">0 = unlimited</small>
+                        </div>
+
+                        <!-- Timeout -->
+                        <div class="col-6 col-md-3">
+                            <label class="form-label" for="request_timeout">Timeout (sec)</label>
+                            <input type="number" class="form-control" id="request_timeout" value="30" min="1">
+                        </div>
+
+                        <!-- Delay -->
+                        <div class="col-6 col-md-3">
+                            <label class="form-label" for="request_delay">Delay (sec)</label>
+                            <input type="number" class="form-control" id="request_delay" value="1.0" step="0.1" min="0">
+                        </div>
+
+                        <!-- Active -->
+                        <div class="col-6 col-md-3">
+                            <label class="form-label" for="is_active">Active</label>
+                            <select class="form-select" id="is_active">
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+
+                        <!-- User agent -->
+                        <div class="col-12">
+                            <label class="form-label" for="user_agent">
+                                User Agent <span class="text-muted">(optional)</span>
+                            </label>
+                            <input type="text" class="form-control" id="user_agent" value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-12">
+                            <label class="form-label" for="description">
+                                Description <span class="text-muted">(optional)</span>
+                            </label>
+                            <textarea class="form-control" id="description" rows="2"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" id="saveWebsiteBtn">
+                    <i class="fas fa-save me-1"></i> Save
+                </button>
+            </div>
         </div>
-
-
-        <div class="modal-body">
-
-            <form id="websiteForm">
-
-                <input
-                    type="hidden"
-                    id="editId"
-                    value=""
-                >
-
-
-                <div class="row g-3">
-
-                    <!-- Name -->
-                    <div class="col-12 col-md-6">
-
-                        <label
-                            class="form-label fw-bold"
-                            for="name"
-                        >
-                            Name *
-                        </label>
-
-                        <input
-                            type="text"
-                            class="form-control"
-                            id="name"
-                            placeholder="e.g., Academic Positions"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- Base URL -->
-                    <div class="col-12 col-md-6">
-
-                        <label
-                            class="form-label fw-bold"
-                            for="base_url"
-                        >
-                            Base URL *
-                        </label>
-
-                        <input
-                            type="url"
-                            class="form-control"
-                            id="base_url"
-                            placeholder="https://example.com"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- Pagination -->
-                    <div class="col-12">
-
-                        <label
-                            class="form-label fw-bold"
-                            for="pagination_url_pattern"
-                        >
-                            Pagination URL Pattern *
-                        </label>
-
-                        <input
-                            type="text"
-                            class="form-control"
-                            id="pagination_url_pattern"
-                            placeholder="/jobs?page={page}"
-                            required
-                        >
-
-                        <small class="text-muted">
-                            Use <code>{page}</code> as the page placeholder.
-                        </small>
-
-                    </div>
-
-
-                    <!-- Listing selector -->
-                    <div class="col-12">
-
-                        <label
-                            class="form-label fw-bold"
-                            for="listing_item_selector"
-                        >
-                            Listing Item Selector *
-                        </label>
-
-                        <input
-                            type="text"
-                            class="form-control"
-                            id="listing_item_selector"
-                            placeholder=".job-list-item"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- Position link selector -->
-                    <div class="col-12 col-md-6">
-
-                        <label
-                            class="form-label fw-bold"
-                            for="position_link_selector"
-                        >
-                            Position Link Selector *
-                        </label>
-
-                        <input
-                            type="text"
-                            class="form-control"
-                            id="position_link_selector"
-                            placeholder="a.job-link"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- Detail container -->
-                    <div class="col-12 col-md-6">
-
-                        <label
-                            class="form-label fw-bold"
-                            for="detail_container_selector"
-                        >
-                            Detail Container Selector *
-                        </label>
-
-                        <input
-                            type="text"
-                            class="form-control"
-                            id="detail_container_selector"
-                            placeholder="#editor"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- Title selector -->
-                    <div class="col-12 col-md-6">
-
-                        <label
-                            class="form-label"
-                            for="position_title_selector"
-                        >
-                            Title Selector
-                            <span class="text-muted">
-                                (optional)
-                            </span>
-                        </label>
-
-                        <input
-                            type="text"
-                            class="form-control"
-                            id="position_title_selector"
-                            placeholder="h4"
-                        >
-
-                    </div>
-
-
-                    <!-- Company selector -->
-                    <div class="col-12 col-md-6">
-
-                        <label
-                            class="form-label"
-                            for="position_company_selector"
-                        >
-                            Company Selector
-                            <span class="text-muted">
-                                (optional)
-                            </span>
-                        </label>
-
-                        <input
-                            type="text"
-                            class="form-control"
-                            id="position_company_selector"
-                            placeholder=".company"
-                        >
-
-                    </div>
-
-
-                    <!-- Max pages -->
-                    <div class="col-6 col-md-3">
-
-                        <label
-                            class="form-label"
-                            for="max_pages"
-                        >
-                            Max Pages
-                        </label>
-
-                        <input
-                            type="number"
-                            class="form-control"
-                            id="max_pages"
-                            value="10"
-                            min="0"
-                        >
-
-                        <small class="text-muted">
-                            0 = unlimited
-                        </small>
-
-                    </div>
-
-
-                    <!-- Timeout -->
-                    <div class="col-6 col-md-3">
-
-                        <label
-                            class="form-label"
-                            for="request_timeout"
-                        >
-                            Timeout (sec)
-                        </label>
-
-                        <input
-                            type="number"
-                            class="form-control"
-                            id="request_timeout"
-                            value="30"
-                            min="1"
-                        >
-
-                    </div>
-
-
-                    <!-- Delay -->
-                    <div class="col-6 col-md-3">
-
-                        <label
-                            class="form-label"
-                            for="request_delay"
-                        >
-                            Delay (sec)
-                        </label>
-
-                        <input
-                            type="number"
-                            class="form-control"
-                            id="request_delay"
-                            value="1.0"
-                            step="0.1"
-                            min="0"
-                        >
-
-                    </div>
-
-
-                    <!-- Active -->
-                    <div class="col-6 col-md-3">
-
-                        <label
-                            class="form-label"
-                            for="is_active"
-                        >
-                            Active
-                        </label>
-
-                        <select
-                            class="form-select"
-                            id="is_active"
-                        >
-                            <option value="true">
-                                Yes
-                            </option>
-
-                            <option value="false">
-                                No
-                            </option>
-                        </select>
-
-                    </div>
-
-
-                    <!-- User agent -->
-                    <div class="col-12">
-
-                        <label
-                            class="form-label"
-                            for="user_agent"
-                        >
-                            User Agent
-                            <span class="text-muted">
-                                (optional)
-                            </span>
-                        </label>
-
-                        <input
-                            type="text"
-                            class="form-control"
-                            id="user_agent"
-                            value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-                        >
-
-                    </div>
-
-
-                    <!-- Description -->
-                    <div class="col-12">
-
-                        <label
-                            class="form-label"
-                            for="description"
-                        >
-                            Description
-                            <span class="text-muted">
-                                (optional)
-                            </span>
-                        </label>
-
-                        <textarea
-                            class="form-control"
-                            id="description"
-                            rows="2"
-                        ></textarea>
-
-                    </div>
-
-                </div>
-
-            </form>
-
-        </div>
-
-
-        <div class="modal-footer">
-
-            <button
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-            >
-                Cancel
-            </button>
-
-            <button
-                class="btn btn-primary"
-                id="saveWebsiteBtn"
-            >
-                <i class="fas fa-save me-1"></i>
-                Save
-            </button>
-
-        </div>
-
     </div>
-
-</div>
-
-
 </div>
 
 <!-- =========================================================
      DELETE MODAL
 ========================================================= -->
 
-<div
-    class="modal fade"
-    id="deleteModal"
-    tabindex="-1"
-    aria-hidden="true"
->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="fas fa-trash me-2"></i> Delete Website</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
 
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="deleteName"></strong>?</p>
+                <input type="hidden" id="deleteId" value="">
+            </div>
 
-<div class="modal-dialog modal-sm">
-
-    <div class="modal-content">
-
-        <div class="modal-header bg-danger text-white">
-
-            <h5 class="modal-title">
-                <i class="fas fa-trash me-2"></i>
-                Delete Website
-            </h5>
-
-            <button
-                type="button"
-                class="btn-close btn-close-white"
-                data-bs-dismiss="modal"
-            ></button>
-
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash me-1"></i> Delete
+                </button>
+            </div>
         </div>
-
-
-        <div class="modal-body">
-
-            <p>
-                Are you sure you want to delete
-                <strong id="deleteName"></strong>?
-            </p>
-
-            <input
-                type="hidden"
-                id="deleteId"
-                value=""
-            >
-
-        </div>
-
-
-        <div class="modal-footer">
-
-            <button
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-            >
-                Cancel
-            </button>
-
-            <button
-                class="btn btn-danger"
-                id="confirmDeleteBtn"
-            >
-                <i class="fas fa-trash me-1"></i>
-                Delete
-            </button>
-
-        </div>
-
     </div>
-
-</div>
-
-
 </div>
 
 <!-- =========================================================
@@ -739,22 +390,18 @@
     // =========================================================
 
     const API_URL = '/api/v1/websites/';
-
     let editingId = null;
-
 
     // =========================================================
     // FETCH WEBSITES
     // =========================================================
 
     async function fetchWebsites() {
-
         const loading = document.getElementById('loading');
         const grid = document.getElementById('websiteGrid');
         const noWebsites = document.getElementById('noWebsites');
         const errorMessage = document.getElementById('errorMessage');
 
-        // Reset UI
         loading.style.display = 'block';
         grid.style.display = 'none';
         noWebsites.classList.add('d-none');
@@ -764,1011 +411,546 @@
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
-
-            <div class="mt-3 text-muted small">
-                Loading websites...
-            </div>
+            <div class="mt-3 text-muted small">Loading websites...</div>
         `;
 
-
         try {
-
-            console.log('Fetching:', API_URL);
-
             const res = await fetch(API_URL, {
                 method: 'GET',
-                headers: {
-                    'Accept': 'application/json'
-                }
+                headers: { 'Accept': 'application/json' }
             });
 
-
-            console.log('Response status:', res.status);
-
-
             if (!res.ok) {
-
-                throw new Error(
-                    `Failed to fetch websites (${res.status} ${res.statusText})`
-                );
-
+                throw new Error(`Failed to fetch websites (${res.status} ${res.statusText})`);
             }
-
 
             const data = await res.json();
-
-
-            // Debug
-            console.log('API response:', data);
-
-
-            /*
-             * Django REST Framework pagination normally returns:
-             *
-             * {
-             *     count: 1,
-             *     next: null,
-             *     previous: null,
-             *     results: [...]
-             * }
-             *
-             * Some APIs return the array directly.
-             *
-             * We support both.
-             */
-
-            let websites;
-
-            if (Array.isArray(data)) {
-
-                websites = data;
-
-            } else if (data && Array.isArray(data.results)) {
-
-                websites = data.results;
-
-            } else {
-
-                websites = [];
-
-            }
-
-
-            console.log('Websites extracted:', websites);
-
-
+            let websites = Array.isArray(data) ? data : (data.results || []);
             renderWebsites(websites);
-
-
         } catch (error) {
-
             console.error('fetchWebsites error:', error);
-
-
             loading.style.display = 'none';
-
             errorMessage.classList.remove('d-none');
-
-            document.getElementById('errorText').textContent =
-                error.message || 'Error loading websites.';
-
+            document.getElementById('errorText').textContent = error.message || 'Error loading websites.';
         }
-
     }
-
 
     // =========================================================
     // RENDER WEBSITES
     // =========================================================
 
     function renderWebsites(websites) {
-
         const grid = document.getElementById('websiteGrid');
         const loading = document.getElementById('loading');
         const noWebsites = document.getElementById('noWebsites');
 
-
         grid.innerHTML = '';
 
-
-        // No websites
         if (!websites || websites.length === 0) {
-
             loading.style.display = 'none';
-
             grid.style.display = 'none';
-
             noWebsites.classList.remove('d-none');
-
             return;
-
         }
 
-
-        // Hide loading
         loading.style.display = 'none';
-
         noWebsites.classList.add('d-none');
-
         grid.style.display = 'flex';
 
-
         websites.forEach(function(w) {
-
             const col = document.createElement('div');
-
             col.className = 'col-12 col-md-6 col-xl-6';
 
-
             const isActive = Boolean(w.is_active);
-
             const name = escapeHtml(w.name || 'Unnamed Website');
-
-            const description = escapeHtml(
-                w.description || ''
-            );
-
-            const baseUrl = escapeHtml(
-                w.base_url || ''
-            );
-
-            const listingSelector = escapeHtml(
-                w.listing_item_selector || ''
-            );
-
-            const linkSelector = escapeHtml(
-                w.position_link_selector || ''
-            );
-
-            const detailSelector = escapeHtml(
-                w.detail_container_selector || ''
-            );
-
-
-            // Scrape count
-            const totalScraped =
-                Number(w.total_scraped_count || 0);
-
-
-            const lastScraped =
-                w.last_scraped_at
-                    ? formatDate(w.last_scraped_at)
-                    : 'Never';
-
-
-            const maxPages =
-                Number(w.max_pages || 0);
-
-
-            const maxPagesText =
-                maxPages === 0
-                    ? 'Unlimited'
-                    : maxPages;
-
+            const description = escapeHtml(w.description || '');
+            const baseUrl = escapeHtml(w.base_url || '');
+            const listingSelector = escapeHtml(w.listing_item_selector || '');
+            const linkSelector = escapeHtml(w.position_link_selector || '');
+            const detailSelector = escapeHtml(w.detail_container_selector || '');
+            const totalScraped = Number(w.total_scraped_count || 0);
+            const lastScraped = w.last_scraped_at ? formatDate(w.last_scraped_at) : 'Never';
+            const maxPages = Number(w.max_pages || 0);
+            const maxPagesText = maxPages === 0 ? 'Unlimited' : maxPages;
 
             col.innerHTML = `
-
-                <div class="card card-website h-100">
-
+                <div class="card card-website h-100" id="website-card-${w.id}">
                     <div class="card-body">
-
-                        <!-- Header -->
-
                         <div class="d-flex justify-content-between align-items-start gap-2">
-
-                            <h5 class="card-title fw-bold mb-1">
-                                ${name}
-                            </h5>
-
-                            <span class="badge-status ${
-                                isActive
-                                    ? 'badge-active'
-                                    : 'badge-inactive'
-                            }">
-
-                                ${
-                                    isActive
-                                        ? '🟢 Active'
-                                        : '🔴 Inactive'
-                                }
-
+                            <h5 class="card-title fw-bold mb-1">${name}</h5>
+                            <span class="badge-status ${isActive ? 'badge-active' : 'badge-inactive'}">
+                                ${isActive ? '🟢 Active' : '🔴 Inactive'}
                             </span>
-
                         </div>
-
-
-                        <!-- Description -->
-
-                        ${
-                            description
-                                ? `
-                                    <p class="card-text small text-muted mt-2 mb-2">
-                                        ${description}
-                                    </p>
-                                  `
-                                : ''
-                        }
-
-
-                        <!-- URL -->
-
-                        <div
-                            class="small text-truncate website-url"
-                            title="${baseUrl}"
-                        >
-                            <i class="fas fa-link me-1"></i>
-                            ${baseUrl}
+                        ${description ? `<p class="card-text small text-muted mt-2 mb-2">${description}</p>` : ''}
+                        <div class="small text-truncate website-url" title="${baseUrl}">
+                            <i class="fas fa-link me-1"></i> ${baseUrl}
                         </div>
-
-
-                        <!-- Selectors -->
-
                         <div class="selector-preview mt-3">
-
-                            <div class="mb-1">
-                                <strong>Listing:</strong>
-                                ${listingSelector || '-'}
-                            </div>
-
-                            <div class="mb-1">
-                                <strong>Link:</strong>
-                                ${linkSelector || '-'}
-                            </div>
-
-                            <div>
-                                <strong>Detail:</strong>
-                                ${detailSelector || '-'}
-                            </div>
-
+                            <div class="mb-1"><strong>Listing:</strong> ${listingSelector || '-'}</div>
+                            <div class="mb-1"><strong>Link:</strong> ${linkSelector || '-'}</div>
+                            <div><strong>Detail:</strong> ${detailSelector || '-'}</div>
                         </div>
-
-
-                        <!-- Statistics -->
-
                         <div class="row g-2 mt-2">
-
                             <div class="col-4">
-
                                 <div class="scrape-stat">
-
-                                    <div class="number">
-                                        ${totalScraped}
-                                    </div>
-
-                                    <div class="label">
-                                        Scraped
-                                    </div>
-
+                                    <div class="number">${totalScraped}</div>
+                                    <div class="label">Scraped</div>
                                 </div>
-
                             </div>
-
-
                             <div class="col-4">
-
                                 <div class="scrape-stat">
-
-                                    <div class="number">
-                                        ${maxPagesText}
-                                    </div>
-
-                                    <div class="label">
-                                        Max Pages
-                                    </div>
-
+                                    <div class="number">${maxPagesText}</div>
+                                    <div class="label">Max Pages</div>
                                 </div>
-
                             </div>
-
-
                             <div class="col-4">
-
                                 <div class="scrape-stat">
-
-                                    <div
-                                        class="number"
-                                        style="font-size: 0.8rem;"
-                                    >
-                                        ${lastScraped}
-                                    </div>
-
-                                    <div class="label">
-                                        Last Scrape
-                                    </div>
-
+                                    <div class="number" style="font-size: 0.8rem;">${lastScraped}</div>
+                                    <div class="label">Last Scrape</div>
                                 </div>
-
                             </div>
-
                         </div>
-
-
-                        <!-- Extra info -->
-
                         <div class="mt-3 small text-muted">
-
                             <div class="d-flex justify-content-between">
-
-                                <span>
-                                    <i class="fas fa-file-alt me-1"></i>
-                                    Last scrape:
-                                </span>
-
-                                <strong>
-                                    ${Number(w.last_scrape_count || 0)}
-                                    items
-                                </strong>
-
+                                <span><i class="fas fa-file-alt me-1"></i> Last scrape:</span>
+                                <strong>${Number(w.last_scrape_count || 0)} items</strong>
                             </div>
-
                         </div>
 
+                        <!-- Progress Bar Container -->
+                        <div class="progress-container" id="progress-${w.id}" style="display:none;">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <div class="progress flex-grow-1">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:0%;"></div>
+                                </div>
+                                <small class="text-muted progress-text">0%</small>
+                            </div>
+                            <div class="scrape-status-text">Initializing...</div>
+                        </div>
                     </div>
 
-
-                    <!-- Footer -->
-
-                    <div class="card-footer bg-transparent border-top-0 d-flex justify-content-end gap-1 pb-3">
-
-                        <button
-                            class="btn btn-outline-primary btn-sm action-btn"
-                            onclick="editWebsite(${Number(w.id)})"
-                            title="Edit"
-                        >
-                            <i class="fas fa-edit"></i>
+                    <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between align-items-center flex-wrap gap-2 pb-3">
+                        <div>
+                            <button class="btn btn-outline-primary btn-sm action-btn" onclick="editWebsite(${Number(w.id)})" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm action-btn" onclick="confirmDelete(${Number(w.id)}, '${escapeJsString(w.name || '')}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <button class="btn btn-sm btn-primary scrape-btn" data-id="${w.id}" data-name="${escapeJsString(w.name)}">
+                            <i class="fas fa-play me-1"></i> Scrape
                         </button>
-
-
-                        <button
-                            class="btn btn-outline-danger btn-sm action-btn"
-                            onclick="confirmDelete(
-                                ${Number(w.id)},
-                                '${escapeJsString(w.name || '')}'
-                            )"
-                            title="Delete"
-                        >
-                            <i class="fas fa-trash"></i>
-                        </button>
-
                     </div>
-
                 </div>
-
             `;
-
-
             grid.appendChild(col);
-
         });
 
+        // Attach scrape event listeners
+        document.querySelectorAll('.scrape-btn').forEach(btn => {
+            btn.removeEventListener('click', handleScrapeClick);
+            btn.addEventListener('click', handleScrapeClick);
+        });
     }
 
+    // =========================================================
+    // SCRAPE FUNCTION (SSE)
+    // =========================================================
 
+    function handleScrapeClick(e) {
+        const btn = e.currentTarget;
+        const id = btn.dataset.id;
+        const name = btn.dataset.name;
+        startScrape(id, name, btn);
+    }
+
+    function startScrape(websiteId, websiteName, btn) {
+        const card = document.getElementById(`website-card-${websiteId}`);
+        const progressContainer = document.getElementById(`progress-${websiteId}`);
+        const progressBar = progressContainer.querySelector('.progress-bar');
+        const progressText = progressContainer.querySelector('.progress-text');
+        const statusText = progressContainer.querySelector('.scrape-status-text');
+        const spinner = progressContainer.querySelector('.spinner-border');
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Scraping...';
+        progressContainer.style.display = 'block';
+        progressBar.style.width = '0%';
+        progressText.textContent = '0%';
+        statusText.textContent = 'Connecting...';
+        if (spinner) {
+            spinner.style.display = 'inline-block';
+        }
+
+        if (window.eventSource) {
+            window.eventSource.close();
+        }
+
+        const url = `/api/v1/scrape/${websiteId}/stream/`;
+        console.log('🔗 Connecting to SSE:', url);
+        
+        const eventSource = new EventSource(url);
+        window.eventSource = eventSource;
+
+        let savedCount = 0;
+        let skippedCount = 0;
+        let isComplete = false;
+
+        eventSource.onopen = function() {
+            console.log('✅ SSE connection opened');
+            statusText.textContent = 'Connected...';
+            progressBar.style.width = '5%';
+            progressText.textContent = '5%';
+        };
+
+        eventSource.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                console.log('📨 Received event:', data.type, data);
+
+                switch(data.type) {
+                    case 'start':
+                        statusText.textContent = data.message;
+                        progressBar.style.width = '10%';
+                        progressText.textContent = '10%';
+                        break;
+
+                    case 'progress':
+                        statusText.textContent = data.message;
+                        progressBar.style.width = `${data.percentage}%`;
+                        progressText.textContent = `${data.percentage}%`;
+                        break;
+
+                    case 'position_saved':
+                        savedCount = data.saved;
+                        skippedCount = data.skipped;
+                        const total = savedCount + skippedCount;
+                        const percentage = Math.min(10 + (total * 0.5), 90);
+                        progressBar.style.width = `${percentage}%`;
+                        progressText.textContent = `${Math.round(percentage)}%`;
+                        statusText.textContent = `✅ ${data.title.substring(0, 50)}... (Saved: ${savedCount})`;
+                        break;
+
+                    case 'complete':
+                        isComplete = true;
+                        progressBar.style.width = '100%';
+                        progressText.textContent = '100%';
+                        progressBar.classList.remove('progress-bar-animated');
+                        progressBar.classList.add('bg-success');
+                        
+                        // ✅ Hide the spinner
+                        if (spinner) {
+                            spinner.style.display = 'none';
+                        }
+                        
+                        if (data.saved === 0 && data.skipped === 0) {
+                            statusText.textContent = `ℹ️ No new positions found (already have ${data.total} positions)`;
+                        } else {
+                            statusText.textContent = `✅ Done! Saved ${data.saved} new positions (${data.skipped} skipped, ${data.failed || 0} failed)`;
+                        }
+
+                        // Update stats on card
+                        const statsSpan = card.querySelector('.text-muted.d-flex.justify-content-between');
+                        if (statsSpan) {
+                            statsSpan.innerHTML = `
+                                <span><i class="fas fa-file-alt me-1"></i>${data.total}</span>
+                                <span>${new Date().toLocaleDateString()}</span>
+                                <span><i class="fas fa-clock me-1"></i>Just now</span>
+                            `;
+                        }
+
+                        // Reset button after delay
+                        setTimeout(() => {
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
+                            eventSource.close();
+                        }, 3000);
+                        break;
+
+                    case 'error':
+                        progressBar.style.width = '100%';
+                        progressText.textContent = 'Error';
+                        progressBar.classList.remove('progress-bar-animated');
+                        progressBar.classList.add('bg-danger');
+                        if (spinner) {
+                            spinner.style.display = 'none';
+                        }
+                        statusText.textContent = `❌ ${data.message}`;
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
+                        eventSource.close();
+                        break;
+                }
+            } catch (e) {
+                console.error('❌ Parse error:', e);
+            }
+        };
+
+        eventSource.onerror = function(event) {
+            console.error('❌ SSE error:', event);
+            console.log('📊 EventSource readyState:', eventSource.readyState);
+            
+            if (isComplete) {
+                console.log('ℹ️ SSE closed normally after completion');
+                return;
+            }
+            
+            if (eventSource.readyState === EventSource.CLOSED) {
+                console.log('ℹ️ SSE connection closed');
+                return;
+            }
+            
+            if (spinner) {
+                spinner.style.display = 'none';
+            }
+            statusText.textContent = '⚠️ Connection lost. Check server logs.';
+            progressBar.classList.add('bg-warning');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
+            eventSource.close();
+        };
+    }
     // =========================================================
     // PREPARE ADD
     // =========================================================
 
     function prepareAddWebsite() {
-
         editingId = null;
-
         document.getElementById('editId').value = '';
-
-        document.getElementById('modalTitle').innerHTML =
-            '<i class="fas fa-plus-circle me-2"></i>Add Website';
-
-        document.getElementById('saveWebsiteBtn').innerHTML =
-            '<i class="fas fa-save me-1"></i>Save';
-
+        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus-circle me-2"></i>Add Website';
+        document.getElementById('saveWebsiteBtn').innerHTML = '<i class="fas fa-save me-1"></i>Save';
         document.getElementById('websiteForm').reset();
 
-
-        // Restore defaults
         document.getElementById('max_pages').value = 10;
-
         document.getElementById('request_timeout').value = 30;
-
         document.getElementById('request_delay').value = 1.0;
-
         document.getElementById('is_active').value = 'true';
-
         document.getElementById('user_agent').value =
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
             'AppleWebKit/537.36 (KHTML, like Gecko) ' +
             'Chrome/120.0.0.0 Safari/537.36';
-
     }
-
 
     // =========================================================
     // EDIT WEBSITE
     // =========================================================
 
     async function editWebsite(id) {
-
         editingId = id;
-
-        document.getElementById('modalTitle').innerHTML =
-            '<i class="fas fa-edit me-2"></i>Edit Website';
-
-        document.getElementById('saveWebsiteBtn').innerHTML =
-            '<i class="fas fa-save me-1"></i>Update';
-
+        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit me-2"></i>Edit Website';
+        document.getElementById('saveWebsiteBtn').innerHTML = '<i class="fas fa-save me-1"></i>Update';
 
         try {
-
-            const res = await fetch(
-                `${API_URL}${id}/`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                }
-            );
-
+            const res = await fetch(`${API_URL}${id}/`, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
 
             if (!res.ok) {
-
-                throw new Error(
-                    `Failed to load website (${res.status})`
-                );
-
+                throw new Error(`Failed to load website (${res.status})`);
             }
-
 
             const data = await res.json();
 
+            document.getElementById('editId').value = data.id || '';
+            document.getElementById('name').value = data.name || '';
+            document.getElementById('base_url').value = data.base_url || '';
+            document.getElementById('pagination_url_pattern').value = data.pagination_url_pattern || '';
+            document.getElementById('listing_item_selector').value = data.listing_item_selector || '';
+            document.getElementById('position_link_selector').value = data.position_link_selector || '';
+            document.getElementById('detail_container_selector').value = data.detail_container_selector || '';
+            document.getElementById('position_title_selector').value = data.position_title_selector || '';
+            document.getElementById('position_company_selector').value = data.position_company_selector || '';
+            document.getElementById('max_pages').value = data.max_pages ?? 0;
+            document.getElementById('request_timeout').value = data.request_timeout ?? 30;
+            document.getElementById('request_delay').value = data.request_delay ?? 1.0;
+            document.getElementById('is_active').value = data.is_active ? 'true' : 'false';
+            document.getElementById('user_agent').value = data.user_agent || '';
+            document.getElementById('description').value = data.description || '';
 
-            console.log('Website details:', data);
-
-
-            document.getElementById('editId').value =
-                data.id || '';
-
-            document.getElementById('name').value =
-                data.name || '';
-
-            document.getElementById('base_url').value =
-                data.base_url || '';
-
-            document.getElementById('pagination_url_pattern').value =
-                data.pagination_url_pattern || '';
-
-            document.getElementById('listing_item_selector').value =
-                data.listing_item_selector || '';
-
-            document.getElementById('position_link_selector').value =
-                data.position_link_selector || '';
-
-            document.getElementById('detail_container_selector').value =
-                data.detail_container_selector || '';
-
-            document.getElementById('position_title_selector').value =
-                data.position_title_selector || '';
-
-            document.getElementById('position_company_selector').value =
-                data.position_company_selector || '';
-
-            document.getElementById('max_pages').value =
-                data.max_pages ?? 0;
-
-            document.getElementById('request_timeout').value =
-                data.request_timeout ?? 30;
-
-            document.getElementById('request_delay').value =
-                data.request_delay ?? 1.0;
-
-            document.getElementById('is_active').value =
-                data.is_active ? 'true' : 'false';
-
-            document.getElementById('user_agent').value =
-                data.user_agent || '';
-
-            document.getElementById('description').value =
-                data.description || '';
-
-
-            const modal =
-                bootstrap.Modal.getOrCreateInstance(
-                    document.getElementById('websiteModal')
-                );
-
+            const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('websiteModal'));
             modal.show();
-
-
         } catch (error) {
-
             console.error('editWebsite error:', error);
-
-            alert(
-                'Error loading website: ' +
-                error.message
-            );
-
+            alert('Error loading website: ' + error.message);
         }
-
     }
-
 
     // =========================================================
     // SAVE WEBSITE
     // =========================================================
 
-    document
-        .getElementById('saveWebsiteBtn')
-        .addEventListener('click', async function() {
+    document.getElementById('saveWebsiteBtn').addEventListener('click', async function() {
+        const form = document.getElementById('websiteForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
 
-            const form =
-                document.getElementById('websiteForm');
+        const id = document.getElementById('editId').value;
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `${API_URL}${id}/` : API_URL;
 
+        const payload = {
+            name: document.getElementById('name').value.trim(),
+            base_url: document.getElementById('base_url').value.trim(),
+            pagination_url_pattern: document.getElementById('pagination_url_pattern').value.trim(),
+            listing_item_selector: document.getElementById('listing_item_selector').value.trim(),
+            position_link_selector: document.getElementById('position_link_selector').value.trim(),
+            detail_container_selector: document.getElementById('detail_container_selector').value.trim(),
+            position_title_selector: document.getElementById('position_title_selector').value.trim(),
+            position_company_selector: document.getElementById('position_company_selector').value.trim(),
+            max_pages: parseInt(document.getElementById('max_pages').value) || 0,
+            request_timeout: parseInt(document.getElementById('request_timeout').value) || 30,
+            request_delay: parseFloat(document.getElementById('request_delay').value) || 1.0,
+            is_active: document.getElementById('is_active').value === 'true',
+            user_agent: document.getElementById('user_agent').value.trim(),
+            description: document.getElementById('description').value.trim(),
+        };
 
-            // HTML validation
-            if (!form.checkValidity()) {
+        const saveButton = document.getElementById('saveWebsiteBtn');
+        const originalButton = saveButton.innerHTML;
 
-                form.reportValidity();
+        saveButton.disabled = true;
+        saveButton.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>Saving...`;
 
-                return;
-
-            }
-
-
-            const id =
-                document.getElementById('editId').value;
-
-
-            const method =
-                id ? 'PUT' : 'POST';
-
-
-            const url =
-                id
-                    ? `${API_URL}${id}/`
-                    : API_URL;
-
-
-            const payload = {
-
-                name:
-                    document
-                        .getElementById('name')
-                        .value
-                        .trim(),
-
-                base_url:
-                    document
-                        .getElementById('base_url')
-                        .value
-                        .trim(),
-
-                pagination_url_pattern:
-                    document
-                        .getElementById('pagination_url_pattern')
-                        .value
-                        .trim(),
-
-                listing_item_selector:
-                    document
-                        .getElementById('listing_item_selector')
-                        .value
-                        .trim(),
-
-                position_link_selector:
-                    document
-                        .getElementById('position_link_selector')
-                        .value
-                        .trim(),
-
-                detail_container_selector:
-                    document
-                        .getElementById('detail_container_selector')
-                        .value
-                        .trim(),
-
-                position_title_selector:
-                    document
-                        .getElementById('position_title_selector')
-                        .value
-                        .trim(),
-
-                position_company_selector:
-                    document
-                        .getElementById('position_company_selector')
-                        .value
-                        .trim(),
-
-                max_pages:
-                    parseInt(
-                        document
-                            .getElementById('max_pages')
-                            .value
-                    ) || 0,
-
-                request_timeout:
-                    parseInt(
-                        document
-                            .getElementById('request_timeout')
-                            .value
-                    ) || 30,
-
-                request_delay:
-                    parseFloat(
-                        document
-                            .getElementById('request_delay')
-                            .value
-                    ) || 1.0,
-
-                is_active:
-                    document
-                        .getElementById('is_active')
-                        .value === 'true',
-
-                user_agent:
-                    document
-                        .getElementById('user_agent')
-                        .value
-                        .trim(),
-
-                description:
-                    document
-                        .getElementById('description')
-                        .value
-                        .trim()
-
-            };
-
-
-            console.log('Saving:', {
-                method,
-                url,
-                payload
+        try {
+            const res = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(payload)
             });
 
-
-            const saveButton =
-                document.getElementById('saveWebsiteBtn');
-
-
-            const originalButton =
-                saveButton.innerHTML;
-
-
-            saveButton.disabled = true;
-
-            saveButton.innerHTML = `
-                <span
-                    class="spinner-border spinner-border-sm me-1"
-                ></span>
-                Saving...
-            `;
-
-
-            try {
-
-                const res = await fetch(
-                    url,
-                    {
-                        method: method,
-
-                        headers: {
-                            'Content-Type':
-                                'application/json',
-
-                            'Accept':
-                                'application/json'
-                        },
-
-                        body:
-                            JSON.stringify(payload)
-                    }
-                );
-
-
-                const responseText =
-                    await res.text();
-
-
-                console.log(
-                    'Save response:',
-                    responseText
-                );
-
-
-                if (!res.ok) {
-
-                    let errorMessage =
-                        `Save failed (${res.status})`;
-
-                    try {
-
-                        const errorData =
-                            JSON.parse(responseText);
-
-                        errorMessage =
-                            JSON.stringify(
-                                errorData,
-                                null,
-                                2
-                            );
-
-                    } catch (e) {
-                        if (responseText) {
-                            errorMessage =
-                                responseText;
-                        }
-                    }
-
-                    throw new Error(errorMessage);
-
+            if (!res.ok) {
+                let errorMessage = `Save failed (${res.status})`;
+                try {
+                    const errorData = await res.json();
+                    errorMessage = JSON.stringify(errorData, null, 2);
+                } catch (e) {
+                    const text = await res.text();
+                    if (text) errorMessage = text;
                 }
-
-
-                // Close modal
-                const modal =
-                    bootstrap.Modal.getInstance(
-                        document.getElementById('websiteModal')
-                    );
-
-                if (modal) {
-                    modal.hide();
-                }
-
-
-                // Reset
-                prepareAddWebsite();
-
-
-                // Reload API data
-                await fetchWebsites();
-
-
-            } catch (error) {
-
-                console.error(
-                    'Save error:',
-                    error
-                );
-
-                alert(
-                    'Error saving website:\n\n' +
-                    error.message
-                );
-
-
-            } finally {
-
-                saveButton.disabled = false;
-
-                saveButton.innerHTML =
-                    originalButton;
-
+                throw new Error(errorMessage);
             }
 
-        });
+            const modal = bootstrap.Modal.getInstance(document.getElementById('websiteModal'));
+            if (modal) modal.hide();
 
+            prepareAddWebsite();
+            await fetchWebsites();
+        } catch (error) {
+            console.error('Save error:', error);
+            alert('Error saving website:\n\n' + error.message);
+        } finally {
+            saveButton.disabled = false;
+            saveButton.innerHTML = originalButton;
+        }
+    });
 
     // =========================================================
     // DELETE CONFIRMATION
     // =========================================================
 
     function confirmDelete(id, name) {
-
-        document.getElementById('deleteId').value =
-            id;
-
-        document.getElementById('deleteName').textContent =
-            name;
-
-
-        const modal =
-            bootstrap.Modal.getOrCreateInstance(
-                document.getElementById('deleteModal')
-            );
-
+        document.getElementById('deleteId').value = id;
+        document.getElementById('deleteName').textContent = name;
+        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('deleteModal'));
         modal.show();
-
     }
-
 
     // =========================================================
     // DELETE WEBSITE
     // =========================================================
 
-    document
-        .getElementById('confirmDeleteBtn')
-        .addEventListener('click', async function() {
+    document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+        const id = document.getElementById('deleteId').value;
+        if (!id) return;
 
-            const id =
-                document.getElementById('deleteId').value;
+        const button = document.getElementById('confirmDeleteBtn');
+        button.disabled = true;
+        button.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>Deleting...`;
 
+        try {
+            const res = await fetch(`${API_URL}${id}/`, {
+                method: 'DELETE',
+                headers: { 'Accept': 'application/json' }
+            });
 
-            if (!id) {
-                return;
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(text || `Delete failed (${res.status})`);
             }
 
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+            if (modal) modal.hide();
 
-            const button =
-                document.getElementById(
-                    'confirmDeleteBtn'
-                );
-
-
-            button.disabled = true;
-
-            button.innerHTML = `
-                <span
-                    class="spinner-border spinner-border-sm me-1"
-                ></span>
-                Deleting...
-            `;
-
-
-            try {
-
-                const res = await fetch(
-                    `${API_URL}${id}/`,
-                    {
-                        method: 'DELETE',
-
-                        headers: {
-                            'Accept':
-                                'application/json'
-                        }
-                    }
-                );
-
-
-                if (!res.ok) {
-
-                    const text =
-                        await res.text();
-
-                    throw new Error(
-                        text ||
-                        `Delete failed (${res.status})`
-                    );
-
-                }
-
-
-                const modal =
-                    bootstrap.Modal.getInstance(
-                        document.getElementById('deleteModal')
-                    );
-
-                if (modal) {
-                    modal.hide();
-                }
-
-
-                await fetchWebsites();
-
-
-            } catch (error) {
-
-                console.error(
-                    'Delete error:',
-                    error
-                );
-
-                alert(
-                    'Error deleting website:\n\n' +
-                    error.message
-                );
-
-
-            } finally {
-
-                button.disabled = false;
-
-                button.innerHTML =
-                    '<i class="fas fa-trash me-1"></i>Delete';
-
-            }
-
-        });
-
+            await fetchWebsites();
+        } catch (error) {
+            console.error('Delete error:', error);
+            alert('Error deleting website:\n\n' + error.message);
+        } finally {
+            button.disabled = false;
+            button.innerHTML = '<i class="fas fa-trash me-1"></i>Delete';
+        }
+    });
 
     // =========================================================
     // FORMAT DATE
     // =========================================================
 
     function formatDate(dateString) {
-
         try {
-
-            const date =
-                new Date(dateString);
-
-
-            if (isNaN(date.getTime())) {
-                return 'Unknown';
-            }
-
-
-            return date.toLocaleString(
-                undefined,
-                {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                }
-            );
-
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return 'Unknown';
+            return date.toLocaleString(undefined, {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
         } catch (error) {
-
             return 'Unknown';
-
         }
-
     }
-
 
     // =========================================================
     // ESCAPE HTML
     // =========================================================
 
     function escapeHtml(text) {
-
-        if (
-            text === null ||
-            text === undefined
-        ) {
-            return '';
-        }
-
-
-        const div =
-            document.createElement('div');
-
-
-        div.textContent =
-            String(text);
-
-
+        if (text === null || text === undefined) return '';
+        const div = document.createElement('div');
+        div.textContent = String(text);
         return div.innerHTML;
-
     }
-
 
     // =========================================================
     // ESCAPE JAVASCRIPT STRING
     // =========================================================
 
     function escapeJsString(text) {
-
-        if (
-            text === null ||
-            text === undefined
-        ) {
-            return '';
-        }
-
-
+        if (text === null || text === undefined) return '';
         return String(text)
             .replace(/\\/g, '\\\\')
             .replace(/'/g, "\\'")
             .replace(/"/g, '\\"')
             .replace(/\r/g, '\\r')
             .replace(/\n/g, '\\n');
-
     }
-
 
     // =========================================================
     // INITIAL LOAD
     // =========================================================
 
-    document.addEventListener(
-        'DOMContentLoaded',
-        function() {
-
-            fetchWebsites();
-
-        }
-    );
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchWebsites();
+    });
 
 </script>
 
