@@ -46,25 +46,64 @@ def scrape_website_stream(request, website_id):
             
             yield f"data: {json.dumps({'type': 'progress', 'message': 'Extracting links...', 'percentage': 10})}\n\n"
             
+            total_processed = 0
             for data in orchestrator.scraper.scrape(max_pages):
+                total_processed += 1
+                
                 if data['url'] in existing_urls:
                     skipped += 1
+                    # ✅ Send event for skipped URLs
+                    yield f"data: {json.dumps({
+                        'type': 'position_skipped',
+                        'title': data['title'],
+                        'url': data['url'],
+                        'saved': saved,
+                        'skipped': skipped,
+                        'failed': failed,
+                        'total_processed': total_processed
+                    })}\n\n"
                     continue
+                    
                 try:
                     orchestrator._save_position(data)
                     saved += 1
                     existing_urls.add(data['url'])
-                    yield f"data: {json.dumps({'type': 'position_saved', 'title': data['title'], 'saved': saved, 'skipped': skipped})}\n\n"
+                    yield f"data: {json.dumps({
+                        'type': 'position_saved',
+                        'title': data['title'],
+                        'url': data['url'],
+                        'saved': saved,
+                        'skipped': skipped,
+                        'failed': failed,
+                        'total_processed': total_processed
+                    })}\n\n"
                 except Exception as e:
                     failed += 1
                     logger.error(f"❌ Error saving position: {e}")
-                    yield f"data: {json.dumps({'type': 'error', 'message': str(e), 'title': data['title']})}\n\n"
+                    yield f"data: {json.dumps({
+                        'type': 'position_failed',
+                        'title': data['title'],
+                        'url': data['url'],
+                        'error': str(e),
+                        'saved': saved,
+                        'skipped': skipped,
+                        'failed': failed,
+                        'total_processed': total_processed
+                    })}\n\n"
             
             # Update stats
             website.update_scrape_stats(saved)
             
             # Send completion event
-            yield f"data: {json.dumps({'type': 'complete', 'saved': saved, 'skipped': skipped, 'failed': failed, 'total': website.total_scraped_count})}\n\n"
+            yield f"data: {json.dumps({
+                'type': 'complete',
+                'saved': saved,
+                'skipped': skipped,
+                'failed': failed,
+                'total_processed': total_processed,
+                'total': website.total_scraped_count,
+                'summary': f'✅ {saved} saved, ⏭️ {skipped} skipped, ❌ {failed} failed (out of {total_processed})'
+            })}\n\n"
             logger.info(f"✅ Scrape complete: saved={saved}, skipped={skipped}, failed={failed}")
             
         except Website.DoesNotExist:
@@ -78,5 +117,5 @@ def scrape_website_stream(request, website_id):
     
     response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
     response['Cache-Control'] = 'no-cache'
-    response['X-Accel-Buffering'] = 'no'  # Disable nginx buffering
+    response['X-Accel-Buffering'] = 'no'
     return response

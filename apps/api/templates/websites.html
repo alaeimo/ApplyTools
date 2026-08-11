@@ -878,11 +878,25 @@
                     case 'position_saved':
                         savedCount = data.saved;
                         skippedCount = data.skipped;
-                        const total = savedCount + skippedCount;
+                        const total = savedCount + skippedCount + data.failed;
                         const percentage = Math.min(10 + (total * 0.5), 90);
                         progressBar.style.width = `${percentage}%`;
                         progressText.textContent = `${Math.round(percentage)}%`;
-                        statusText.textContent = `✅ ${data.title.substring(0, 50)}... (Saved: ${savedCount})`;
+                        statusText.textContent = `✅ Saved: ${data.title.substring(0, 50)}... (Saved: ${data.saved}, Skipped: ${data.skipped})`;
+                        break;
+                        
+                    case 'position_skipped':
+                        skippedCount = data.skipped;
+                        const total2 = data.saved + data.skipped + data.failed;
+                        const percentage2 = Math.min(10 + (total2 * 0.5), 90);
+                        progressBar.style.width = `${percentage2}%`;
+                        progressText.textContent = `${Math.round(percentage2)}%`;
+                        statusText.textContent = `⏭️ Skipped (already exists): ${data.title.substring(0, 50)}... (Saved: ${data.saved}, Skipped: ${data.skipped})`;
+                        break;
+                        
+                    case 'position_failed':
+                        failedCount = data.failed;
+                        statusText.textContent = `❌ Failed: ${data.title.substring(0, 50)}... - ${data.error}`;
                         break;
 
                     case 'complete':
