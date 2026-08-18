@@ -11,6 +11,7 @@ from django.http import StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from apps.ai.services.matcher import match_and_save
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -48,10 +49,8 @@ class PositionViewSet(viewsets.ReadOnlyModelViewSet):
             # Show all shortlisted and further statuses
             shortlisted_statuses = ['SHORTLISTED', 'APPLIED', 'INTERVIEWING', 'OFFERED', 'ACCEPTED', 'REJECTED', 'DEADLINE_MISSED']
             positions = positions.filter(application_status__in=shortlisted_statuses)
-            print("*"*100 + f"\n{positions.count()}\n" + "*"*100)
             if app_status:
                 positions = positions.filter(application_status=app_status)
-                print("*"*100 + f"\n{positions.count()}\n" + "*"*100)
 
         elif view == 'not_interested':
             positions = positions.filter(application_status='NOT_INTERESTED')
@@ -79,6 +78,13 @@ class PositionViewSet(viewsets.ReadOnlyModelViewSet):
             'not_interested': Position.objects.filter(application_status='NOT_INTERESTED').count(),
         }
         return Response(counts)
+    
+    @action(detail=True, methods=['post'], url_path='pending-review')
+    def pending_review(self, request, pk=None):
+        position = self.get_object()
+        position.application_status = 'PENDING_REVIEW'
+        position.save(update_fields=['application_status', 'updated_at'])
+        return Response({'status': 'pending_review'})
         
     @action(detail=True, methods=['post'], url_path='shortlist')
     def shortlist(self, request, pk=None):
@@ -111,6 +117,30 @@ class PositionViewSet(viewsets.ReadOnlyModelViewSet):
         position.mark_not_interested()
         return Response({'status': 'not_interested'})
 
+
+    @action(detail=False, methods=['post'], url_path='check-deadlines')
+    def check_deadlines(self, request):
+        """Bulk update positions whose deadlines have passed (using ISO field)."""
+        today_str = timezone.now().date().isoformat()
+        
+        active_statuses = ['PENDING_REVIEW', 'SHORTLISTED']
+        
+        expired = Position.objects.select_related('match').filter(
+            match__isnull=False,
+            application_status__in=active_statuses
+        ).filter(
+            Q(match__application_deadline_iso__isnull=False) &
+            ~Q(match__application_deadline_iso='') &
+            Q(match__application_deadline_iso__lt=today_str + 'T')
+        )
+        
+        count = expired.count()
+        expired.update(application_status='DEADLINE_MISSED', updated_at=timezone.now())
+        
+        return Response({
+            'updated': count,
+            'message': f'Updated {count} positions to DEADLINE_MISSED'
+        })
     
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -133,7 +163,7 @@ def match_positions_stream(request):
     
     def event_stream():
         try:
-            positions = Position.objects.filter(status__in=['SCRAPED', 'FAILED']).order_by('scraped_at')
+            positions = Position.objects.filter(status='SCRAPED', match__isnull=True).order_by('scraped_at')
             total = positions.count()
             
             if total == 0:

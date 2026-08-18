@@ -386,6 +386,9 @@
                     <button class="btn btn-outline-primary" data-view="not_interested">
                         🚫 Not Interested <span class="badge bg-secondary" id="notInterestedCount">0</span>
                     </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="checkDeadlines()">
+                        ⏰ Check Deadlines
+                    </button>
                 </div>
 
                 <!-- Second-level status filter (dynamic) -->
@@ -496,7 +499,15 @@
             return evidence[type].map(t => `<span class="evidence-tag ${type}">${escapeHtml(t)}</span>`).join(' ');
         }
 
-
+        async function checkDeadlines() {
+            const response = await fetch('/api/v1/positions/check-deadlines/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCSRFToken() }
+            });
+            const data = await response.json();
+            alert(data.message);  
+            fetchPositions(currentPage);  
+        }
         // ─── Fetch counts for badges ────────────────────────────────
         async function fetchCounts() {
             try {
@@ -626,23 +637,36 @@
             let actionButtons = '';
             if (appStatus === 'PENDING_REVIEW') {
                 actionButtons = `
-                    <button class="btn btn-outline-warning p-0 px-1" onclick="updateStatus(${pos.id}, 'shortlist')" title="Shortlist"><i class="fas fa-star"></i></button>
-                    <button class="btn btn-outline-secondary p-0 px-1" onclick="updateStatus(${pos.id}, 'not-interested')" title="Not Interested"><i class="fas fa-times"></i></button>
+                    <button class="btn btn-outline-warning p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'shortlist')" title="Shortlist"><i class="fas fa-star"></i></button>
+                    <button class="btn btn-outline-secondary p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'not-interested')" title="Not Interested"><i class="fas fa-times"></i></button>
                 `;
             } else if (appStatus === 'SHORTLISTED') {
                 actionButtons = `
-                    <button class="btn btn-outline-success p-0 px-1" onclick="updateStatus(${pos.id}, 'apply')" title="Apply"><i class="fas fa-paper-plane"></i></button>
-                    <button class="btn btn-outline-danger p-0 px-1" onclick="updateStatus(${pos.id}, 'reject')" title="Reject"><i class="fas fa-thumbs-down"></i></button>
+                    <button class="btn btn-outline-secondary p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'pending-review')" title="Back to Pending"><i class="fas fa-undo"></i></button>
+                    <button class="btn btn-outline-success p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'apply')" title="Apply"><i class="fas fa-paper-plane"></i></button>
+                    <button class="btn btn-outline-danger p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'reject')" title="Reject"><i class="fas fa-thumbs-down"></i></button>
                 `;
             } else if (appStatus === 'APPLIED' || appStatus === 'INTERVIEWING') {
                 actionButtons = `
-                    <button class="btn btn-outline-primary p-0 px-1" onclick="updateStatus(${pos.id}, 'accept')" title="Accept"><i class="fas fa-check"></i></button>
-                    <button class="btn btn-outline-danger p-0 px-1" onclick="updateStatus(${pos.id}, 'reject')" title="Reject"><i class="fas fa-times"></i></button>
+                    <button class="btn btn-outline-secondary p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'shortlist')" title="Back to Shortlisted"><i class="fas fa-undo"></i></button>
+                    <button class="btn btn-outline-primary p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'accept')" title="Accept"><i class="fas fa-check"></i></button>
+                    <button class="btn btn-outline-danger p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'reject')" title="Reject"><i class="fas fa-times"></i></button>
                 `;
             } else if (appStatus === 'OFFERED') {
                 actionButtons = `
-                    <button class="btn btn-outline-success p-0 px-1" onclick="updateStatus(${pos.id}, 'accept')" title="Accept Offer"><i class="fas fa-handshake"></i></button>
-                    <button class="btn btn-outline-danger p-0 px-1" onclick="updateStatus(${pos.id}, 'reject')" title="Decline"><i class="fas fa-thumbs-down"></i></button>
+                    <button class="btn btn-outline-secondary p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'apply')" title="Back to Applied"><i class="fas fa-undo"></i></button>
+                    <button class="btn btn-outline-success p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'accept')" title="Accept Offer"><i class="fas fa-handshake"></i></button>
+                    <button class="btn btn-outline-danger p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'reject')" title="Decline"><i class="fas fa-thumbs-down"></i></button>
+                `;
+            } else if (appStatus === 'REJECTED' || appStatus === 'DEADLINE_MISSED') {
+                actionButtons = `
+                    <button class="btn btn-outline-secondary p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'shortlist')" title="Move to Shortlisted"><i class="fas fa-undo"></i></button>
+                    <span class="badge bg-secondary">${appStatus.replace('_', ' ')}</span>
+                `;
+            } else if (appStatus === 'ACCEPTED') {
+                actionButtons = `
+                    <button class="btn btn-outline-secondary p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'apply')" title="Back to Applied"><i class="fas fa-undo"></i></button>
+                    <span class="badge bg-success">✅ Accepted</span>
                 `;
             } else {
                 actionButtons = `<span class="badge bg-secondary">${appStatus.replace('_', ' ')}</span>`;
@@ -992,17 +1016,6 @@
                 console.error(error);
             }
         }
-
-        // // ─── Event Listeners ─────────────────────────────────────────
-        // document.getElementById('statusFilter').addEventListener('click', (e) => {
-        //     const btn = e.target.closest('button');
-        //     if (!btn) return;
-        //     document.querySelectorAll('#statusFilter .btn').forEach(b => b.classList.remove('active'));
-        //     btn.classList.add('active');
-        //     currentStatus = btn.dataset.status;
-        //     currentPage = 1;
-        //     fetchPositions(currentPage);
-        // });
 
         // ─── Initialize events ──────────────────────────────────────
         document.getElementById('viewSelector').addEventListener('click', handleViewSelectorClick);
