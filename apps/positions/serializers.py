@@ -120,11 +120,10 @@ class PositionMatchSerializer(serializers.ModelSerializer):
     def get_is_medium_match(self, obj):
         return obj.is_medium_match()
 
-
 class PositionSerializer(serializers.ModelSerializer):
-    """Serializer for Position with nested match data."""
     match = PositionMatchSerializer(read_only=True)
     status_label = serializers.SerializerMethodField()
+    application_status_label = serializers.SerializerMethodField()
 
     class Meta:
         model = Position
@@ -137,7 +136,16 @@ class PositionSerializer(serializers.ModelSerializer):
             'scraped_at',
             'url',
             'match',
+            'application_status',
+            'application_status_label',
+            'shortlisted_at',
+            'applied_at',
+            'application_result',
+            'rejection_reason',
         ]
 
     def get_status_label(self, obj):
         return dict(Position.STATUS_CHOICES).get(obj.status, obj.status)
+
+    def get_application_status_label(self, obj):
+        return dict(Position.APPLICATION_STATUS_CHOICES).get(obj.application_status, obj.application_status)

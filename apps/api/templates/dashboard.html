@@ -374,16 +374,24 @@
 
         <!-- ─── Filter Bar ──────────────────────────────────────────── -->
         <div class="filter-bar d-flex flex-wrap align-items-center justify-content-between gap-2">
-            <div class="d-flex align-items-center gap-2">
-                <i class="fas fa-sliders-h text-muted"></i>
-                <span class="fw-semibold small me-1">Status:</span>
-                <div class="btn-group btn-group-sm" role="group" id="statusFilter">
-                    <button class="btn btn-outline-secondary active" data-status="">All</button>
-                    <button class="btn btn-outline-success" data-status="MATCHED">Matched</button>
-                    <button class="btn btn-outline-warning" data-status="SCRAPED">Scraped</button>
-                    <button class="btn btn-outline-danger" data-status="FAILED">Failed</button>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <!-- View Selector -->
+                <div class="btn-group btn-group-sm" role="group" id="viewSelector">
+                    <button class="btn btn-outline-primary active" data-view="pending">
+                        📋 Pending <span class="badge bg-secondary" id="pendingCount">0</span>
+                    </button>
+                    <button class="btn btn-outline-primary" data-view="shortlisted">
+                        ⭐ Shortlisted <span class="badge bg-secondary" id="shortlistedCount">0</span>
+                    </button>
+                    <button class="btn btn-outline-primary" data-view="not_interested">
+                        🚫 Not Interested <span class="badge bg-secondary" id="notInterestedCount">0</span>
+                    </button>
                 </div>
+
+                <!-- Second-level status filter (dynamic) -->
+                <div id="statusFilterContainer" class="d-flex align-items-center gap-2"></div>
             </div>
+
             <div class="d-flex align-items-center gap-2">
                 <i class="fas fa-sort-amount-down text-muted small"></i>
                 <span class="text-muted small">Sorted by score</span>
@@ -418,11 +426,19 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
 
+        function getCSRFToken() {
+            const cookieValue = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('csrftoken='));
+            return cookieValue ? cookieValue.split('=')[1] : '';
+        }
+
         // ─── Configuration ───────────────────────────────────────────
         const API_BASE = '/api/v1/positions/dashboard/';
         const PAGE_SIZE = 12;
 
         // ─── State ───────────────────────────────────────────────────
+        let currentView = 'pending';
         let currentPage = 1;
         let currentStatus = '';
         let totalCount = 0;
@@ -480,12 +496,209 @@
             return evidence[type].map(t => `<span class="evidence-tag ${type}">${escapeHtml(t)}</span>`).join(' ');
         }
 
-        // ─── Render Position Row ─────────────────────────────────────
+
+        // ─── Fetch counts for badges ────────────────────────────────
+        async function fetchCounts() {
+            try {
+                const res = await fetch('/api/v1/positions/counts/');
+                if (!res.ok) throw new Error('Counts fetch failed');
+                const data = await res.json();
+                document.getElementById('pendingCount').textContent = data.pending;
+                document.getElementById('shortlistedCount').textContent = data.shortlisted;
+                document.getElementById('notInterestedCount').textContent = data.not_interested;
+            } catch (e) {
+                console.error('Counts error:', e);
+            }
+        }
+                // ─── Build second-level filter buttons ──────────────────────
+        function buildStatusFilterButtons(view) {
+            const container = document.getElementById('statusFilterContainer');
+            let buttons = '';
+            if (view === 'pending') {
+                // Original status filter (SCRAPED, MATCHED, FAILED)
+                buttons = `
+                    <span class="fw-semibold small me-1">Status:</span>
+                    <div class="btn-group btn-group-sm" role="group" id="statusFilter">
+                        <button class="btn btn-outline-secondary active" data-status="">All</button>
+                        <button class="btn btn-outline-success" data-status="MATCHED">Matched</button>
+                        <button class="btn btn-outline-warning" data-status="SCRAPED">Scraped</button>
+                        <button class="btn btn-outline-danger" data-status="FAILED">Failed</button>
+                    </div>
+                `;
+            } else if (view === 'shortlisted') {
+                // Application status filters
+                const appStatuses = [
+                    { value: '', label: 'All' },
+                    { value: 'SHORTLISTED', label: '⭐ Shortlisted' },
+                    { value: 'APPLIED', label: '📤 Applied' },
+                    { value: 'INTERVIEWING', label: '💬 Interviewing' },
+                    { value: 'OFFERED', label: '💰 Offered' },
+                    { value: 'ACCEPTED', label: '✅ Accepted' },
+                    { value: 'REJECTED', label: '❌ Rejected' },
+                    { value: 'DEADLINE_MISSED', label: '⏰ Deadline Missed' },
+                ];
+                buttons = `
+                    <span class="fw-semibold small me-1">Application:</span>
+                    <div class="btn-group btn-group-sm" role="group" id="appStatusFilter">
+                        ${appStatuses.map(s => `
+                            <button class="btn btn-outline-primary ${s.value === '' ? 'active' : ''}" data-appstatus="${s.value}">
+                                ${s.label}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+            } else { // not_interested
+                buttons = `<span class="text-muted small">Showing Not Interested positions</span>`;
+            }
+            container.innerHTML = buttons;
+
+            // Re-bind events for the newly created buttons
+            if (view === 'pending') {
+                document.getElementById('statusFilter')?.addEventListener('click', handleStatusFilterClick);
+            } else if (view === 'shortlisted') {
+                document.getElementById('appStatusFilter')?.addEventListener('click', handleAppStatusFilterClick);
+            }
+        }
+
+        // ─── Event handlers ──────────────────────────────────────────
+        function handleViewSelectorClick(e) {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            document.querySelectorAll('#viewSelector .btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentView = btn.dataset.view;
+            currentPage = 1;
+            // Reset second-level filter
+            currentStatus = '';
+            // Rebuild the second-level filter buttons
+            buildStatusFilterButtons(currentView);
+            fetchPositions(currentPage);
+        }
+
+        function handleStatusFilterClick(e) {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            document.querySelectorAll('#statusFilter .btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentStatus = btn.dataset.status;
+            currentPage = 1;
+            fetchPositions(currentPage);
+        }
+
+        function handleAppStatusFilterClick(e) {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            document.querySelectorAll('#appStatusFilter .btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentStatus = btn.dataset.appstatus;  // used as app_status in API
+            currentPage = 1;
+            fetchPositions(currentPage);
+        }
+        // ─── Update Status ──────────────────────────────────────────────
+        async function updateStatus(positionId, action, reason = null) {
+            const url = `/api/v1/positions/${positionId}/${action}/`;
+            const payload = reason ? { reason } : {};
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken(), 
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                fetchPositions(currentPage);
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert('Failed to update status. Please try again.');
+            }
+        }
+
         function renderRow(pos) {
             const match = pos.match;
-            if (!match) return null;
+            const score = match?.overall_score ?? 0;
+            const hasMatch = !!match;
 
-            const score = match.overall_score ?? 0;
+            // ── Generate action buttons based on application_status ──
+            const appStatus = pos.application_status || 'PENDING_REVIEW';
+            let actionButtons = '';
+            if (appStatus === 'PENDING_REVIEW') {
+                actionButtons = `
+                    <button class="btn btn-outline-warning p-0 px-1" onclick="updateStatus(${pos.id}, 'shortlist')" title="Shortlist"><i class="fas fa-star"></i></button>
+                    <button class="btn btn-outline-secondary p-0 px-1" onclick="updateStatus(${pos.id}, 'not-interested')" title="Not Interested"><i class="fas fa-times"></i></button>
+                `;
+            } else if (appStatus === 'SHORTLISTED') {
+                actionButtons = `
+                    <button class="btn btn-outline-success p-0 px-1" onclick="updateStatus(${pos.id}, 'apply')" title="Apply"><i class="fas fa-paper-plane"></i></button>
+                    <button class="btn btn-outline-danger p-0 px-1" onclick="updateStatus(${pos.id}, 'reject')" title="Reject"><i class="fas fa-thumbs-down"></i></button>
+                `;
+            } else if (appStatus === 'APPLIED' || appStatus === 'INTERVIEWING') {
+                actionButtons = `
+                    <button class="btn btn-outline-primary p-0 px-1" onclick="updateStatus(${pos.id}, 'accept')" title="Accept"><i class="fas fa-check"></i></button>
+                    <button class="btn btn-outline-danger p-0 px-1" onclick="updateStatus(${pos.id}, 'reject')" title="Reject"><i class="fas fa-times"></i></button>
+                `;
+            } else if (appStatus === 'OFFERED') {
+                actionButtons = `
+                    <button class="btn btn-outline-success p-0 px-1" onclick="updateStatus(${pos.id}, 'accept')" title="Accept Offer"><i class="fas fa-handshake"></i></button>
+                    <button class="btn btn-outline-danger p-0 px-1" onclick="updateStatus(${pos.id}, 'reject')" title="Decline"><i class="fas fa-thumbs-down"></i></button>
+                `;
+            } else {
+                actionButtons = `<span class="badge bg-secondary">${appStatus.replace('_', ' ')}</span>`;
+            }
+
+            // ── If no match, show a simplified card ──
+            if (!hasMatch) {
+                const row = document.createElement('div');
+                row.className = 'position-row';
+                row.innerHTML = `
+                    <div class="row-header" onclick="toggleRow(this.closest('.position-row'))">
+                        <div class="score-col">
+                            <div class="score-circle weak" style="background: #6c757d;">
+                                —
+                                <span class="score-label">No Match</span>
+                            </div>
+                        </div>
+                        <div class="main-col">
+                            <div class="title-row">
+                                <h5><a href="${escapeHtml(pos.url)}" target="_blank">${escapeHtml(pos.title)}</a></h5>
+                                <span class="badge bg-secondary">${pos.status_label || pos.status}</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="institution"><i class="fas fa-university me-1"></i>${escapeHtml(pos.company || 'Unknown')}</span>
+                                <span class="badge-deadline safe">⏳ Awaiting matching</span>
+                            </div>
+                            <div class="d-flex gap-1 mt-1 flex-wrap" style="justify-content: flex-end;">
+                                ${actionButtons}
+                            </div>
+                        </div>
+                        <div class="right-col" style="flex-direction: column; align-items: flex-end;">
+                            <span class="badge-match-cat" style="background:#e9ecef; color:#6c757d;">Not Matched</span>
+                            <span class="expand-icon mt-1"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                    </div>
+                    <div class="row-detail">
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="label">Status</div>
+                                <div class="value">${pos.status_label || pos.status}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Scraped At</div>
+                                <div class="value">${formatDate(pos.scraped_at)}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Cleaned Text Preview</div>
+                                <div class="value small">${escapeHtml((pos.cleaned_text || '').substring(0, 200))}${(pos.cleaned_text || '').length > 200 ? '...' : ''}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return row;
+            }
+
+            // ── Full card for matched positions ──
             const scoreClass = getScoreClass(score);
             const days = match.days_until_deadline ?? null;
             const deadlineInfo = getDeadlineBadge(days);
@@ -533,19 +746,14 @@
 
             const row = document.createElement('div');
             row.className = 'position-row';
-
             row.innerHTML = `
-                <!-- ─── Row Header ──────────────────────────────────── -->
                 <div class="row-header" onclick="toggleRow(this.closest('.position-row'))">
-                    <!-- Score -->
                     <div class="score-col">
                         <div class="score-circle ${scoreClass}">
                             ${score.toFixed(0)}
                             <span class="score-label">${match.match_category_label || 'Match'}</span>
                         </div>
                     </div>
-
-                    <!-- Main Content -->
                     <div class="main-col">
                         <div class="title-row">
                             <h5><a href="${escapeHtml(pos.url)}" target="_blank">${escapeHtml(pos.title)}</a></h5>
@@ -558,64 +766,51 @@
                             <span class="badge-deadline ${deadlineInfo.cls}">${deadlineInfo.label}</span>
                             ${match.start_date ? `<span><i class="far fa-calendar-plus me-1"></i>${formatDate(match.start_date)}</span>` : ''}
                         </div>
+                       <div class="d-flex gap-1 mt-1 flex-wrap" style="justify-content: flex-end;">
+                            ${actionButtons}
+                        </div>
                     </div>
-
-                    <!-- Right -->
-                    <div class="right-col">
+                    <div class="right-col" style="flex-direction: column; align-items: flex-end;">
                         <span class="badge-match-cat" style="background:${score>=80?'#d4edda':score>=60?'#cce5ff':score>=40?'#fff3cd':'#f8d7da'}; color:${score>=80?'#155724':score>=60?'#004085':score>=40?'#856404':'#721c24'}">
                             ${score >= 80 ? '🌟 Strong' : score >= 60 ? '✅ Good' : score >= 40 ? '📌 Possible' : '⚠️ Weak'}
                         </span>
-                        <span class="expand-icon"><i class="fas fa-chevron-down"></i></span>
+                        <span class="expand-icon mt-1"><i class="fas fa-chevron-down"></i></span>
                     </div>
                 </div>
-
-                <!-- ─── Row Detail (expanded) ────────────────────────── -->
                 <div class="row-detail">
                     <div class="detail-grid">
-
                         <!-- Left column -->
                         <div>
-
-                            <!-- Summary -->
                             ${match.summary ? `
                             <div class="detail-item">
                                 <div class="label"><i class="far fa-file-alt me-1"></i>Summary</div>
                                 <div class="value small">${escapeHtml(match.summary)}</div>
                             </div>
                             ` : ''}
-
                             ${match.main_reason ? `
                             <div class="detail-item">
                                 <div class="label"><i class="fas fa-bullseye me-1"></i>Main Reason</div>
                                 <div class="value small text-muted">${escapeHtml(match.main_reason)}</div>
                             </div>
                             ` : ''}
-
-                            <!-- Funding -->
                             ${match.funding_and_duration ? `
                             <div class="detail-item">
                                 <div class="label"><i class="fas fa-coins me-1"></i>Funding &amp; Duration</div>
                                 <div class="value small">${escapeHtml(match.funding_and_duration)}</div>
                             </div>
                             ` : ''}
-
-                            <!-- Research Area -->
                             ${match.research_area && match.research_area.length > 0 ? `
                             <div class="detail-item">
                                 <div class="label"><i class="fas fa-microscope me-1"></i>Research Areas</div>
                                 <div class="value">${match.research_area.map(a => `<span class="tag">${escapeHtml(a)}</span>`).join(' ')}</div>
                             </div>
                             ` : ''}
-
-                            <!-- Skills -->
                             ${allSkills.length > 0 ? `
                             <div class="detail-item">
                                 <div class="label"><i class="fas fa-tools me-1"></i>Required Skills</div>
                                 <div class="value">${allSkills.map(s => `<span class="tag ${s.type}">${escapeHtml(s.text)}</span>`).join(' ')}</div>
                             </div>
                             ` : ''}
-
-                            <!-- Evidence -->
                             ${directMatches.length > 0 || transferable.length > 0 || missing.length > 0 || unclear.length > 0 ? `
                             <div class="detail-item">
                                 <div class="label"><i class="fas fa-clipboard-check me-1"></i>Evidence</div>
@@ -627,13 +822,9 @@
                                 </div>
                             </div>
                             ` : ''}
-
                         </div>
-
                         <!-- Right column -->
                         <div>
-
-                            <!-- Weighted Dimensions -->
                             ${Object.keys(wd).length > 0 ? `
                             <div class="detail-item">
                                 <div class="label"><i class="fas fa-weight-hanging me-1"></i>Weighted Dimensions</div>
@@ -646,8 +837,6 @@
                                 </div>
                             </div>
                             ` : ''}
-
-                            <!-- Score Bars -->
                             <div class="detail-item">
                                 <div class="label"><i class="fas fa-chart-bar me-1"></i>Detailed Scores</div>
                                 <div class="value">
@@ -666,8 +855,6 @@
                                     }).join('')}
                                 </div>
                             </div>
-
-                            <!-- Confidence & Metadata -->
                             <div class="detail-item" style="margin-top:0.25rem;">
                                 <div class="value" style="font-size:0.7rem; color:#6c757d;">
                                     ${match.confidence_label ? `<span class="me-2">Confidence: ${match.confidence_label}</span>` : ''}
@@ -675,15 +862,13 @@
                                     ${match.application_url ? `<span class="ms-2"><a href="${escapeHtml(match.application_url)}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-paper-plane me-1"></i>Apply</a></span>` : ''}
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
             `;
-
             return row;
         }
-
+        
         // ─── Toggle Row ──────────────────────────────────────────────
         function toggleRow(row) {
             row.classList.toggle('expanded');
@@ -705,7 +890,7 @@
             });
         }
 
-        // ─── Pagination ──────────────────────────────────────────────
+        // // ─── Pagination ──────────────────────────────────────────────
         function renderPagination(count, currentPage) {
             const totalPages = Math.ceil(count / PAGE_SIZE);
             if (totalPages <= 1) {
@@ -715,20 +900,52 @@
             paginationNav.classList.remove('d-none');
             paginationList.innerHTML = '';
 
-            for (let i = 1; i <= totalPages; i++) {
+            // Helper to create a page link
+            function createPageLink(page, label, isActive = false) {
                 const li = document.createElement('li');
-                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-                li.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
-                li.querySelector('a').addEventListener('click', (e) => {
+                li.className = `page-item ${isActive ? 'active' : ''}`;
+                const a = document.createElement('a');
+                a.className = 'page-link';
+                a.href = '#';
+                a.textContent = label;
+                a.dataset.page = page;
+                a.addEventListener('click', (e) => {
                     e.preventDefault();
-                    currentPage = i;
+                    currentPage = page;
                     fetchPositions(currentPage);
                 });
-                paginationList.appendChild(li);
+                li.appendChild(a);
+                return li;
+            }
+
+            // First page
+            if (currentPage > 1) {
+                paginationList.appendChild(createPageLink(1, 'First'));
+            }
+
+            // Previous page
+            if (currentPage > 1) {
+                paginationList.appendChild(createPageLink(currentPage - 1, '«'));
+            }
+
+            // Page numbers (show current - 2 to current + 2)
+            const start = Math.max(1, currentPage - 2);
+            const end = Math.min(totalPages, currentPage + 2);
+            for (let i = start; i <= end; i++) {
+                paginationList.appendChild(createPageLink(i, i, i === currentPage));
+            }
+
+            // Next page
+            if (currentPage < totalPages) {
+                paginationList.appendChild(createPageLink(currentPage + 1, '»'));
+            }
+
+            // Last page
+            if (currentPage < totalPages) {
+                paginationList.appendChild(createPageLink(totalPages, 'Last'));
             }
         }
-
-        // ─── Fetch ────────────────────────────────────────────────────
+        // ─── Update fetchPositions ────────────────────────────────────
         async function fetchPositions(page = 1) {
             spinner.classList.remove('d-none');
             container.innerHTML = '';
@@ -736,8 +953,17 @@
             paginationNav.classList.add('d-none');
 
             try {
-                const params = new URLSearchParams({ page, status: currentStatus });
-                const response = await fetch(`${API_BASE}?${params.toString()}`);
+                const params = new URLSearchParams({
+                    page: page,
+                    view: currentView,
+                    status: currentStatus,   // for 'pending' view this is the old status filter
+                });
+                // For 'shortlisted' view, add app_status param
+                if (currentView === 'shortlisted') {
+                    params.append('app_status', currentStatus);
+                }
+                const url = `${API_BASE}?${params.toString()}`;
+                const response = await fetch(url);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
                 const data = await response.json();
@@ -767,18 +993,22 @@
             }
         }
 
-        // ─── Event Listeners ─────────────────────────────────────────
-        document.getElementById('statusFilter').addEventListener('click', (e) => {
-            const btn = e.target.closest('button');
-            if (!btn) return;
-            document.querySelectorAll('#statusFilter .btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentStatus = btn.dataset.status;
-            currentPage = 1;
-            fetchPositions(currentPage);
-        });
+        // // ─── Event Listeners ─────────────────────────────────────────
+        // document.getElementById('statusFilter').addEventListener('click', (e) => {
+        //     const btn = e.target.closest('button');
+        //     if (!btn) return;
+        //     document.querySelectorAll('#statusFilter .btn').forEach(b => b.classList.remove('active'));
+        //     btn.classList.add('active');
+        //     currentStatus = btn.dataset.status;
+        //     currentPage = 1;
+        //     fetchPositions(currentPage);
+        // });
 
-        // ─── Initial Load ────────────────────────────────────────────
+        // ─── Initialize events ──────────────────────────────────────
+        document.getElementById('viewSelector').addEventListener('click', handleViewSelectorClick);
+        // Initial call: build filter buttons for default view and fetch counts
+        fetchCounts();
+        buildStatusFilterButtons('pending');
         fetchPositions(1);
     </script>
 </body>

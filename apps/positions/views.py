@@ -4,7 +4,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
-from django.db.models import Q
+from django.db.models import Q, Case, When, F, FloatField
 from apps.positions.models import Position
 from .serializers import PositionSerializer
 from django.http import StreamingHttpResponse
@@ -25,30 +25,93 @@ class PositionViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='dashboard')
     def dashboard(self, request):
-        """
-        Return positions with matches sorted by overall_score descending.
-        Only positions with a match are included.
-        """
-        # Filter positions that have a match
-        positions = Position.objects.filter(
-            match__isnull=False
-        ).select_related('match').order_by('-match__overall_score')
+        view = request.query_params.get('view', 'pending')
+        app_status = request.query_params.get('app_status')  
 
-        # Optional: apply additional filters (e.g. status)
-        status = request.query_params.get('status')
-        if status:
-            positions = positions.filter(status=status)
+        # Base queryset
+        positions = Position.objects.select_related('match')
 
-        # Apply pagination
+        # Apply view filter
+        if view == 'pending':
+            positions = positions.filter(application_status='PENDING_REVIEW')
+            # Optional: apply original status filter (SCRAPED, MATCHED, etc.)
+            status = request.query_params.get('status')
+            if status:
+                positions = positions.filter(status=status)
+    
+            # Sorting
+            positions = positions.order_by(
+                Case(When(match__isnull=False, then=F('match__overall_score')), default=0, output_field=FloatField()).desc(),
+                '-scraped_at'
+            )
+        elif view == 'shortlisted':
+            # Show all shortlisted and further statuses
+            shortlisted_statuses = ['SHORTLISTED', 'APPLIED', 'INTERVIEWING', 'OFFERED', 'ACCEPTED', 'REJECTED', 'DEADLINE_MISSED']
+            positions = positions.filter(application_status__in=shortlisted_statuses)
+            print("*"*100 + f"\n{positions.count()}\n" + "*"*100)
+            if app_status:
+                positions = positions.filter(application_status=app_status)
+                print("*"*100 + f"\n{positions.count()}\n" + "*"*100)
+
+        elif view == 'not_interested':
+            positions = positions.filter(application_status='NOT_INTERESTED')
+        else:
+            positions = positions.all()  # fallback
+
+   
+
+        # Paginate
         page = self.paginate_queryset(positions)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-
-        # Fallback (should not happen if pagination is enabled)
         serializer = self.get_serializer(positions, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['get'], url_path='counts')
+    def counts(self, request):
+        """Return counts for the three main views."""
+        counts = {
+            'pending': Position.objects.filter(application_status='PENDING_REVIEW').count(),
+            'shortlisted': Position.objects.filter(
+                application_status__in=['SHORTLISTED', 'APPLIED', 'INTERVIEWING', 'OFFERED', 'ACCEPTED', 'REJECTED', 'DEADLINE_MISSED']
+            ).count(),
+            'not_interested': Position.objects.filter(application_status='NOT_INTERESTED').count(),
+        }
+        return Response(counts)
+        
+    @action(detail=True, methods=['post'], url_path='shortlist')
+    def shortlist(self, request, pk=None):
+        position = self.get_object()
+        position.mark_shortlisted()
+        return Response({'status': 'shortlisted', 'shortlisted_at': position.shortlisted_at})
+
+    @action(detail=True, methods=['post'], url_path='apply')
+    def apply(self, request, pk=None):
+        position = self.get_object()
+        position.mark_applied()
+        return Response({'status': 'applied', 'applied_at': position.applied_at})
+
+    @action(detail=True, methods=['post'], url_path='reject')
+    def reject(self, request, pk=None):
+        position = self.get_object()
+        reason = request.data.get('reason')
+        position.mark_rejected(reason)
+        return Response({'status': 'rejected', 'rejection_reason': position.rejection_reason})
+
+    @action(detail=True, methods=['post'], url_path='accept')
+    def accept(self, request, pk=None):
+        position = self.get_object()
+        position.mark_accepted()
+        return Response({'status': 'accepted'})
+
+    @action(detail=True, methods=['post'], url_path='not-interested')
+    def not_interested(self, request, pk=None):
+        position = self.get_object()
+        position.mark_not_interested()
+        return Response({'status': 'not_interested'})
+
+    
 @csrf_exempt
 @require_http_methods(["POST"])
 def match_positions_stream(request):
@@ -70,7 +133,7 @@ def match_positions_stream(request):
     
     def event_stream():
         try:
-            positions = Position.objects.filter(status='SCRAPED', match__isnull=True).order_by('scraped_at')
+            positions = Position.objects.filter(status__in=['SCRAPED', 'FAILED']).order_by('scraped_at')
             total = positions.count()
             
             if total == 0:

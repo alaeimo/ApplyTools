@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from apps.websites.models import Website
 from datetime import datetime
+from django.utils import timezone
 
 class Position(models.Model):
     """
@@ -10,10 +11,31 @@ class Position(models.Model):
     STATUS_CHOICES = [
         ('PENDING', 'Pending'),   # Not yet scraped
         ('SCRAPED', 'Scraped'),   # Scraped, awaiting matching
-        ('PROCESSED', 'Processed'), # Matched and saved
+        ('MATCHED', 'Matched'), # Matched and saved
         ('FAILED', 'Failed'),     # Error
     ]
-        
+
+    APPLICATION_STATUS_CHOICES = [
+        ('PENDING_REVIEW', 'Pending Review'),
+        ('SHORTLISTED', 'Shortlisted'),
+        ('APPLIED', 'Applied'),
+        ('INTERVIEWING', 'Interviewing'),
+        ('OFFERED', 'Offer Received'),
+        ('ACCEPTED', 'Accepted'),
+        ('REJECTED', 'Rejected'),
+        ('DEADLINE_MISSED', 'Deadline Missed'),
+        ('NOT_INTERESTED', 'Not Interested'),
+    ]
+
+    REJECTION_REASON_CHOICES = [
+        ('NOT_QUALIFIED', 'Not Qualified'),
+        ('SALARY_MISMATCH', 'Salary Mismatch'),
+        ('LOCATION_MISMATCH', 'Location Mismatch'),
+        ('DEADLINE_PASSED', 'Deadline Passed'),
+        ('FOUND_BETTER', 'Found Better'),
+        ('OTHER', 'Other'),
+    ]
+
     website = models.ForeignKey(Website, on_delete=models.CASCADE, related_name='positions')
     url = models.URLField(unique=True)
     title = models.CharField(max_length=500)
@@ -22,18 +44,47 @@ class Position(models.Model):
     cleaned_text = models.TextField(blank=True, help_text="Cleaned text for AI processing")
     scraped_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+    application_status = models.CharField(max_length=20, choices=APPLICATION_STATUS_CHOICES, default='PENDING_REVIEW', help_text="Application workflow status")
+    shortlisted_at = models.DateTimeField(null=True, blank=True)
+    applied_at = models.DateTimeField(null=True, blank=True)
+    application_result = models.CharField(max_length=20, choices=[('ACCEPTED', 'Accepted'), ('REJECTED', 'Rejected'), ('OFFERED', 'Offered'), ('WITHDRAWN', 'Withdrawn')], null=True, blank=True, help_text="Final outcome")
+    rejection_reason = models.CharField(max_length=20, choices=REJECTION_REASON_CHOICES, null=True, blank=True, help_text="Why rejected")
+
     class Meta:
         ordering = ['-scraped_at']
-        indexes = [
-            models.Index(fields=['status', 'scraped_at']),
-            models.Index(fields=['website', 'url']),
-        ]
+        indexes = [models.Index(fields=['status', 'scraped_at']), models.Index(fields=['website', 'url']), models.Index(fields=['application_status'])]
         verbose_name = "Position"
         verbose_name_plural = "Positions"
     
     def __str__(self):
         return f"{self.title} - {self.website.name}"
+    
+    def mark_shortlisted(self):
+        self.application_status = 'SHORTLISTED'
+        self.shortlisted_at = timezone.now()
+        self.save(update_fields=['application_status', 'shortlisted_at', 'updated_at'])
+
+    def mark_applied(self):
+        self.application_status = 'APPLIED'
+        self.applied_at = timezone.now()
+        self.save(update_fields=['application_status', 'applied_at', 'updated_at'])
+
+    def mark_rejected(self, reason=None):
+        self.application_status = 'REJECTED'
+        self.application_result = 'REJECTED'
+        if reason:
+            self.rejection_reason = reason
+        self.save(update_fields=['application_status', 'application_result', 'rejection_reason', 'updated_at'])
+
+    def mark_accepted(self):
+        self.application_status = 'ACCEPTED'
+        self.application_result = 'ACCEPTED'
+        self.save(update_fields=['application_status', 'application_result', 'updated_at'])
+
+    def mark_not_interested(self):
+        self.application_status = 'NOT_INTERESTED'
+        self.save(update_fields=['application_status', 'updated_at'])
+
 
 class PositionMatch(models.Model):
     CONFIDENCE_CHOICES = [('low', 'Low'), ('medium', 'Medium'), ('high', 'High')]
