@@ -254,60 +254,176 @@
                 <form id="websiteForm">
                     <input type="hidden" id="editId" value="">
 
+                    <!-- ─── Scraping Method ─────────────────────────── -->
                     <div class="row g-3">
-                        <!-- Name -->
-                        <div class="col-12 col-md-6">
+                        <div class="col-12">
+                            <label class="form-label fw-bold" for="scraping_method">Scraping Method</label>
+                            <select class="form-select" id="scraping_method">
+                                <option value="html">HTML Scraping</option>
+                                <option value="api">API Scraping</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="my-3">
+
+                    <!-- Name -->
+                    <div class="row g-3">
+                        <div class="col-12">
                             <label class="form-label fw-bold" for="name">Name *</label>
                             <input type="text" class="form-control" id="name" placeholder="e.g., Academic Positions" required>
                         </div>
+                    </div>
+                    <hr class="my-3">
+                    <!-- ─── HTML Fields ─────────────────────────────── -->
+                    <div id="htmlFields">
+                        <div class="row g-3">
 
-                        <!-- Base URL -->
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-bold" for="base_url">Base URL *</label>
-                            <input type="url" class="form-control" id="base_url" placeholder="https://example.com" required>
+                            <!-- Base URL -->
+                            <div class="col-12">
+                                <label class="form-label fw-bold" for="base_url">Base URL </label>
+                                <input type="url" class="form-control" id="base_url" placeholder="https://example.com" >
+                            </div>
+
+                            <!-- Pagination -->
+                            <div class="col-12">
+                                <label class="form-label fw-bold" for="pagination_url_pattern">Pagination URL Pattern </label>
+                                <input type="text" class="form-control" id="pagination_url_pattern" placeholder="/jobs?page={page}" >
+                                <small class="text-muted">Use <code>{page}</code> as the page placeholder.</small>
+                            </div>
+
+                            <!-- Listing selector -->
+                            <div class="col-12">
+                                <label class="form-label fw-bold" for="listing_item_selector">Listing Item Selector *</label>
+                                <input type="text" class="form-control" id="listing_item_selector" placeholder=".job-list-item" >
+                            </div>
+
+                            <!-- Position link selector -->
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold" for="position_link_selector">Position Link Selector *</label>
+                                <input type="text" class="form-control" id="position_link_selector" placeholder="a.job-link" >
+                            </div>
+
+                            <!-- Title selector -->
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="position_title_selector">
+                                    Title Selector <span class="text-muted">(optional)</span>
+                                </label>
+                                <input type="text" class="form-control" id="position_title_selector" placeholder="h4">
+                            </div>
+
+                            <!-- Company selector -->
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="position_company_selector">
+                                    Company Selector <span class="text-muted">(optional)</span>
+                                </label>
+                                <input type="text" class="form-control" id="position_company_selector" placeholder=".company">
+                            </div>
+                         </div>
+                    </div>
+
+                    <!-- ─── API Fields ──────────────────────────────── -->
+                    <div id="apiFields" style="display: none;">
+                        <div class="row g-3">
+                            <!-- API Endpoint -->
+                            <div class="col-12">
+                                <label class="form-label fw-bold" for="api_endpoint">API Endpoint URL *</label>
+                                <input type="url" class="form-control" id="api_endpoint" placeholder="https://api.example.com/v1/jobs/">
+                            </div>
+
+                            <!-- API Pagination Params -->
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold" for="api_pagination_param">Pagination Parameter</label>
+                                <input type="text" class="form-control" id="api_pagination_param" placeholder="page" value="page">
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold" for="api_limit_param">Limit Parameter</label>
+                                <input type="text" class="form-control" id="api_limit_param" placeholder="limit" value="limit">
+                            </div>
+
+                            <!-- JSON Key Paths -->
+                            <div class="col-12">
+                                <label class="form-label fw-bold" for="api_results_key">Results Key Path</label>
+                                <input type="text" class="form-control" id="api_results_key" placeholder="results.items" value="results">
+                                <small class="text-muted">Dot notation for nested keys, e.g., <code>data.results</code> or <code>results.items</code></small>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="api_next_key">Next Page Key</label>
+                                <input type="text" class="form-control" id="api_next_key" placeholder="next">
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="api_count_key">Total Count Key</label>
+                                <input type="text" class="form-control" id="api_count_key" placeholder="count">
+                            </div>
+
+                            <!-- Item Field Mappings -->
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="api_item_url_key">Item URL Key</label>
+                                <input type="text" class="form-control" id="api_item_url_key" placeholder="absolute_url">
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="api_item_title_key">Item Title Key</label>
+                                <input type="text" class="form-control" id="api_item_title_key" placeholder="title">
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="api_item_company_key">Item Company Key</label>
+                                <input type="text" class="form-control" id="api_item_company_key" placeholder="organisation_name">
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="api_item_description_key">Item Description Key</label>
+                                <input type="text" class="form-control" id="api_item_description_key" placeholder="description">
+                            </div>
+                                <!-- Auth Token -->
+                            <div class="col-12">
+                                <label class="form-label" for="api_auth_token">Auth Token <span class="text-muted">(optional)</span></label>
+                                <input type="text" class="form-control" id="api_auth_token" placeholder="Bearer token or API key">
+                            </div>
+
+                            <!-- Extra Params (JSON) -->
+                            <div class="col-12">
+                                <label class="form-label" for="api_extra_params">Extra Parameters (JSON)</label>
+                                <input type="text" class="form-control" id="api_extra_params" placeholder='{"boost_spotlights": true, "is_active": true}'>
+                                <small class="text-muted">Static query parameters as a JSON object.</small>
+                            </div>
                         </div>
+                    </div>
 
-                        <!-- Pagination -->
+                    <hr class="my-3">
+                    <!-- ─── Detail Dource ─────────────────────────── -->
+                    <div class="row g-3"> 
                         <div class="col-12">
-                            <label class="form-label fw-bold" for="pagination_url_pattern">Pagination URL Pattern *</label>
-                            <input type="text" class="form-control" id="pagination_url_pattern" placeholder="/jobs?page={page}" required>
-                            <small class="text-muted">Use <code>{page}</code> as the page placeholder.</small>
+                            <label class="form-label fw-bold" for="detail_source">Detail Source</label>
+                            <select class="form-select" id="detail_source">
+                                <option value="html">HTML Scraping</option>
+                                <option value="api">API Scraping</option>
+                            </select>
                         </div>
-
-                        <!-- Listing selector -->
-                        <div class="col-12">
-                            <label class="form-label fw-bold" for="listing_item_selector">Listing Item Selector *</label>
-                            <input type="text" class="form-control" id="listing_item_selector" placeholder=".job-list-item" required>
-                        </div>
-
-                        <!-- Position link selector -->
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-bold" for="position_link_selector">Position Link Selector *</label>
-                            <input type="text" class="form-control" id="position_link_selector" placeholder="a.job-link" required>
-                        </div>
-
                         <!-- Detail container -->
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-bold" for="detail_container_selector">Detail Container Selector *</label>
-                            <input type="text" class="form-control" id="detail_container_selector" placeholder="#editor" required>
+                        <div class="col-12">
+                            <label class="form-label fw-bold" for="detail_container_selector">Detail Container Selector </label>
+                            <input type="text" class="form-control" id="detail_container_selector" placeholder="#editor" >
                         </div>
-
-                        <!-- Title selector -->
+                        <!-- Detail API Endpoint -->
                         <div class="col-12 col-md-6">
-                            <label class="form-label" for="position_title_selector">
-                                Title Selector <span class="text-muted">(optional)</span>
-                            </label>
-                            <input type="text" class="form-control" id="position_title_selector" placeholder="h4">
+                            <label class="form-label fw-bold" for="detail_api_endpoint">Detail API Endpoint </label>
+                            <input type="text" class="form-control" id="detail_api_endpoint" placeholder="" >
                         </div>
-
-                        <!-- Company selector -->
+                         <!-- Detail container -->
                         <div class="col-12 col-md-6">
-                            <label class="form-label" for="position_company_selector">
-                                Company Selector <span class="text-muted">(optional)</span>
-                            </label>
-                            <input type="text" class="form-control" id="position_company_selector" placeholder=".company">
+                            <label class="form-label fw-bold" for="api_detail_key">API Detail Key </label>
+                            <input type="text" class="form-control" id="api_detail_key" placeholder="detail" >
                         </div>
+                    </div>
 
+                    <hr class="my-3">
+                    <!-- ─── Common Fields ───────────────────────────── -->
+                    <div class="row g-3">
                         <!-- Max pages -->
                         <div class="col-6 col-md-3">
                             <label class="form-label" for="max_pages">Max Pages</label>
@@ -455,6 +571,51 @@
     }
 
     const CSRF_TOKEN = getCSRFToken();
+
+    // ─── Toggle HTML / API Fields ──────────────────────────────
+    document.getElementById('scraping_method').addEventListener('change', function() {
+        const isApi = this.value === 'api';
+        document.getElementById('htmlFields').style.display = isApi ? 'none' : 'block';
+        document.getElementById('apiFields').style.display = isApi ? 'block' : 'none';
+        
+        // Toggle required attributes for API vs HTML fields
+        const htmlRequired = ['listing_item_selector', 'position_link_selector', 'detail_container_selector'];
+        const apiRequired = ['api_endpoint'];
+        
+        htmlRequired.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.required = !isApi;
+                el.closest('.col-12, .col-12, .col-md-6').querySelector('label').innerHTML = el.required ? 
+                    el.id.replace(/_/g, ' ').toUpperCase() + ' *' : 
+                    el.id.replace(/_/g, ' ').toUpperCase();
+            }
+        });
+        
+        apiRequired.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.required = isApi;
+                el.closest('.col-12').querySelector('label').innerHTML = el.required ? 
+                    el.id.replace(/_/g, ' ').toUpperCase() + ' *' : 
+                    el.id.replace(/_/g, ' ').toUpperCase();
+            }
+        });
+    });
+
+    document.getElementById('detail_source').addEventListener('change', function() {
+        const isApi = this.value === 'api';
+        // Hide/show the HTML detail container field
+        const htmlField = document.getElementById('detail_container_selector').closest('.col-12');
+        if (htmlField) htmlField.style.display = isApi ? 'none' : 'block';
+        // Hide/show the API detail key field
+        const apiDetailsKeyField = document.getElementById('api_detail_key').closest('.col-12, .col-md-6');
+        if (apiDetailsKeyField) apiDetailsKeyField.style.display = isApi ? 'block' : 'none';
+        const apiEndpointField = document.getElementById('detail_api_endpoint').closest('.col-12, .col-md-6');
+        if (apiEndpointField) apiEndpointField.style.display = isApi ? 'block' : 'none';
+    });
+    // document.getElementById('detail_source').dispatchEvent(new Event('change'));
+
     // =========================================================
     // FETCH WEBSITES
     // =========================================================
@@ -998,6 +1159,9 @@
         document.getElementById('request_timeout').value = 30;
         document.getElementById('request_delay').value = 1.0;
         document.getElementById('is_active').value = 'true';
+        document.getElementById('scraping_method').value = 'html';
+        document.getElementById('htmlFields').style.display = 'block';
+        document.getElementById('apiFields').style.display = 'none';
         document.getElementById('user_agent').value =
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
             'AppleWebKit/537.36 (KHTML, like Gecko) ' +
@@ -1040,7 +1204,35 @@
             document.getElementById('is_active').value = data.is_active ? 'true' : 'false';
             document.getElementById('user_agent').value = data.user_agent || '';
             document.getElementById('description').value = data.description || '';
-
+            
+            // API fields
+            document.getElementById('scraping_method').value = data.scraping_method || 'html';
+            document.getElementById('api_endpoint').value = data.api_endpoint || '';
+            document.getElementById('api_pagination_param').value = data.api_pagination_param || 'page';
+            document.getElementById('api_limit_param').value = data.api_limit_param || 'limit';
+            document.getElementById('api_results_key').value = data.api_results_key || 'results';
+            document.getElementById('api_next_key').value = data.api_next_key || '';
+            document.getElementById('api_count_key').value = data.api_count_key || '';
+            document.getElementById('api_item_url_key').value = data.api_item_url_key || '';
+            document.getElementById('api_item_title_key').value = data.api_item_title_key || '';
+            document.getElementById('api_item_company_key').value = data.api_item_company_key || '';
+            document.getElementById('api_item_description_key').value = data.api_item_description_key || '';
+            document.getElementById('api_auth_token').value = data.api_auth_token || '';
+            document.getElementById('api_extra_params').value = data.api_extra_params ? JSON.stringify(data.api_extra_params) : '';
+            document.getElementById('detail_source').value = data.detail_source || 'html';
+            document.getElementById('api_detail_key').value = data.api_detail_key || '';
+            document.getElementById('detail_api_endpoint').value = data.detail_api_endpoint || '';
+            // Toggle fields based on method
+            const isApi = document.getElementById('scraping_method').value === 'api';
+            document.getElementById('htmlFields').style.display = isApi ? 'none' : 'block';
+            document.getElementById('apiFields').style.display = isApi ? 'block' : 'none';
+            const detail_source_is_api = document.getElementById('detail_source').value === 'api';
+            const detail_container_selector = document.getElementById('detail_container_selector').closest('.col-12, .col-md-6');
+            if (detail_container_selector) detail_container_selector.style.display = detail_source_is_api ? 'none' : 'block';
+            const api_detail_key = document.getElementById('api_detail_key').closest('.col-12, .col-md-6');
+            if (api_detail_key) api_detail_key.style.display = detail_source_is_api ? 'block' : 'none';
+            const detail_api_endpoint = document.getElementById('detail_api_endpoint').closest('.col-12, .col-md-6');
+            if (detail_api_endpoint) detail_api_endpoint.style.display = detail_source_is_api ? 'block' : 'none'; 
             const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('websiteModal'));
             modal.show();
         } catch (error) {
@@ -1064,6 +1256,8 @@
         const method = id ? 'PUT' : 'POST';
         const url = id ? `${API_URL}${id}/` : API_URL;
 
+        const isApi = document.getElementById('scraping_method').value === 'api';
+
         const payload = {
             name: document.getElementById('name').value.trim(),
             base_url: document.getElementById('base_url').value.trim(),
@@ -1079,6 +1273,22 @@
             is_active: document.getElementById('is_active').value === 'true',
             user_agent: document.getElementById('user_agent').value.trim(),
             description: document.getElementById('description').value.trim(),
+            scraping_method: document.getElementById('scraping_method').value,
+            api_endpoint: document.getElementById('api_endpoint').value.trim(),
+            api_pagination_param: document.getElementById('api_pagination_param').value.trim(),
+            api_limit_param: document.getElementById('api_limit_param').value.trim(),
+            api_results_key: document.getElementById('api_results_key').value.trim(),
+            api_next_key: document.getElementById('api_next_key').value.trim(),
+            api_count_key: document.getElementById('api_count_key').value.trim(),
+            api_item_url_key: document.getElementById('api_item_url_key').value.trim(),
+            api_item_title_key: document.getElementById('api_item_title_key').value.trim(),
+            api_item_company_key: document.getElementById('api_item_company_key').value.trim(),
+            api_item_description_key: document.getElementById('api_item_description_key').value.trim(),
+            api_auth_token: document.getElementById('api_auth_token').value.trim(),
+            api_extra_params: JSON.parse(document.getElementById('api_extra_params').value || '{}'),
+            detail_source: document.getElementById('detail_source').value,
+            api_detail_key: document.getElementById('api_detail_key').value.trim(),
+            detail_api_endpoint: document.getElementById('detail_api_endpoint').value.trim(),
         };
 
         const saveButton = document.getElementById('saveWebsiteBtn');

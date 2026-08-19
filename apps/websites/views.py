@@ -44,7 +44,7 @@ def scrape_website_stream(request, website_id):
             failed = 0
             existing_urls = set(website.positions.values_list('url', flat=True))
             
-            yield f"data: {json.dumps({'type': 'progress', 'message': 'Extracting links...', 'percentage': 10})}\n\n"
+            yield f"data: {json.dumps({'type': 'progress', 'message': 'Extracting links...', 'percentage': 0})}\n\n"
             
             total_processed = 0
             for data in orchestrator.scraper.scrape(max_pages):
