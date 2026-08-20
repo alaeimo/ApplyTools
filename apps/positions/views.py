@@ -51,7 +51,7 @@ class PositionViewSet(viewsets.ReadOnlyModelViewSet):
             positions = positions.filter(application_status__in=shortlisted_statuses)
             if app_status:
                 positions = positions.filter(application_status=app_status)
-
+            positions = positions.order_by('match__application_deadline_iso', 'match__application_deadline', '-scraped_at')
         elif view == 'not_interested':
             positions = positions.filter(application_status='NOT_INTERESTED')
         else:
