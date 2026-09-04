@@ -261,6 +261,14 @@ class PositionMatch(models.Model):
     def is_low_match(self) -> bool:
         return self.match_category in ['weak_match', 'error'] or self.overall_score < 50
 
+    @property
+    def project_narrative_description(self) -> str:
+        """
+        Retrieve the project narrative description from the full JSON response.
+        This avoids adding a new database column.
+        """
+        return self.full_json_response.get('project_narrative_description', '')
+    
     @classmethod
     def create_from_json(cls, position: Position, result: dict) -> 'PositionMatch':
         m = result.get('_metadata', {})

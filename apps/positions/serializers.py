@@ -16,7 +16,8 @@ class PositionMatchSerializer(serializers.ModelSerializer):
     is_deadline_passed = serializers.SerializerMethodField()
     is_high_match = serializers.SerializerMethodField()
     is_medium_match = serializers.SerializerMethodField()
-
+    project_narrative_description = serializers.SerializerMethodField()
+    
     class Meta:
         model = PositionMatch
         fields = [
@@ -29,6 +30,7 @@ class PositionMatchSerializer(serializers.ModelSerializer):
             'confidence_label',
             'application_recommendation',
             'application_recommendation_label',
+            'project_narrative_description',
             'summary',
             'main_reason',
             
@@ -119,7 +121,10 @@ class PositionMatchSerializer(serializers.ModelSerializer):
 
     def get_is_medium_match(self, obj):
         return obj.is_medium_match()
-
+    
+    def get_project_narrative_description(self, obj):
+        return obj.project_narrative_description
+    
 class PositionSerializer(serializers.ModelSerializer):
     match = PositionMatchSerializer(read_only=True)
     status_label = serializers.SerializerMethodField()

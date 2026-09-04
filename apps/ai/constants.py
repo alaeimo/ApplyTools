@@ -8,6 +8,7 @@ This is used for:
 
 # The JSON structure that the AI should return
 MATCH_JSON_STRUCTURE = {
+    "project_narrative_description": "",
     "position_summary": {
         "title": "",
         "institution": "",
@@ -94,6 +95,7 @@ MATCH_JSON_STRUCTURE = {
 
 # Convert to formatted JSON string for prompt
 MATCH_JSON_STRUCTURE_STR = """{
+    "project_narrative_description": "",
     "position_summary": {
         "title": "",
         "institution": "",
@@ -176,6 +178,7 @@ MATCH_JSON_STRUCTURE_STR = """{
 MATCH_JSON_SCHEMA = {
     "type": "object",
     "properties": {
+        "project_narrative_description": {"type": "string"},
         "position_summary": {
             "type": "object",
             "properties": {
@@ -296,6 +299,7 @@ MATCH_JSON_SCHEMA = {
         }
     },
     "required": [
+        "project_narrative_description",
         "position_summary",
         "candidate_profile_summary",
         "matching_score",
@@ -305,6 +309,7 @@ MATCH_JSON_SCHEMA = {
 
 # Default empty response (for database defaults)
 DEFAULT_MATCH_RESPONSE = {
+    "project_narrative_description": "",
     "position_summary": {
         "title": "",
         "institution": "",

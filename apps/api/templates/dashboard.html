@@ -10,11 +10,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
     <style>
-        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-        body { background: #f0f2f5; }
+        * { font-family: 'Vazir', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        body { 
+            background: #f0f2f5;
+            font-size: 15px;
+            line-height: 1.6;
+        }
 
-        /* ─── Header ────────────────────────────────────────────────── */
         .dashboard-header {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             color: white;
@@ -33,7 +37,6 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* ─── Filter Bar ───────────────────────────────────────────── */
         .filter-bar {
             background: white;
             padding: 0.75rem 1.5rem;
@@ -53,23 +56,21 @@
             border-color: #0d6efd;
         }
 
-        /* ─── Position Row ──────────────────────────────────────────── */
         .position-row {
             background: white;
-            border-radius: 14px;
-            margin-bottom: 1rem;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            border-radius: 16px;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
             transition: all 0.25s ease;
-            border: 1px solid #eef1f4;
+            border: 1px solid #edf2f7;
             overflow: hidden;
         }
         .position-row:hover {
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.10);
             border-color: #d0d7de;
             transform: translateY(-2px);
         }
 
-        /* ─── Row Header (collapsed view) ──────────────────────────── */
         .row-header {
             display: flex;
             align-items: stretch;
@@ -77,40 +78,44 @@
             cursor: pointer;
             transition: background 0.15s;
         }
-        .row-header:hover { background: #f8fafc; }
+        .row-header:hover {
+            background: #f9fbfd;
+        }
 
-        /* Score column */
         .score-col {
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 90px;
+            min-width: 100px;
             padding: 1rem 1.25rem;
             background: #f8fafc;
-            border-right: 1px solid #eef1f4;
+            border-right: 1px solid #edf2f7;
             flex-shrink: 0;
         }
         .score-circle {
-            width: 60px;
-            height: 60px;
+            width: 68px;
+            height: 68px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: white;
             position: relative;
             transition: transform 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.10);
         }
-        .score-circle:hover { transform: scale(1.05); }
+        .score-circle:hover {
+            transform: scale(1.05);
+        }
         .score-circle.excellent { background: linear-gradient(135deg, #00b894, #00a381); }
-        .score-circle.good { background: linear-gradient(135deg, #0984e3, #6c5ce7); }
+        .score-circle.good     { background: linear-gradient(135deg, #0984e3, #6c5ce7); }
         .score-circle.possible { background: linear-gradient(135deg, #fdcb6e, #f39c12); }
-        .score-circle.weak { background: linear-gradient(135deg, #e17055, #d63031); }
+        .score-circle.weak     { background: linear-gradient(135deg, #e17055, #d63031); }
         .score-circle .score-label {
             position: absolute;
-            bottom: -18px;
+            bottom: -22px;
             font-size: 0.6rem;
             font-weight: 600;
             color: #6c757d;
@@ -119,7 +124,6 @@
             white-space: nowrap;
         }
 
-        /* Main content column */
         .main-col {
             flex: 1;
             padding: 0.85rem 1.25rem;
@@ -128,61 +132,64 @@
             justify-content: center;
             min-width: 0;
         }
-        .main-col .title-row {
+        .title-row {
             display: flex;
             align-items: center;
             gap: 0.75rem;
             flex-wrap: wrap;
         }
-        .main-col .title-row h5 {
-            font-size: 1rem;
+        .title-row h5 {
+            font-size: 1.05rem;
             font-weight: 600;
             margin: 0;
             color: #1a1a2e;
             line-height: 1.3;
         }
-        .main-col .title-row h5 a {
+        .title-row h5 a {
             color: #1a1a2e;
             text-decoration: none;
         }
-        .main-col .title-row h5 a:hover { color: #0d6efd; }
-        .main-col .meta-row {
+        .title-row h5 a:hover { color: #0d6efd; }
+
+        .meta-row {
             display: flex;
             align-items: center;
-            gap: 1.25rem;
+            gap: 0.75rem 1.25rem;
             flex-wrap: wrap;
-            margin-top: 0.25rem;
+            margin-top: 0.3rem;
             font-size: 0.8rem;
             color: #6c757d;
         }
-        .main-col .meta-row .institution { font-weight: 500; color: #2d3436; }
-        .main-col .meta-row .badge-deadline {
+        .meta-row .institution {
+            font-weight: 500;
+            color: #2d3436;
+        }
+        .meta-row .badge-deadline {
             font-size: 0.7rem;
             font-weight: 600;
-            padding: 0.2rem 0.6rem;
+            padding: 0.2rem 0.7rem;
             border-radius: 50px;
         }
-        .badge-deadline.urgent { background: #ffeaa7; color: #6c5200; }
+        .badge-deadline.urgent   { background: #ffeaa7; color: #6c5200; }
         .badge-deadline.critical { background: #fab1a0; color: #7a2e1a; }
-        .badge-deadline.safe { background: #b2dfdb; color: #004d40; }
-        .badge-deadline.passed { background: #dfe6e9; color: #636e72; }
+        .badge-deadline.safe     { background: #b2dfdb; color: #004d40; }
+        .badge-deadline.passed   { background: #dfe6e9; color: #636e72; }
 
-        /* Right column (badges & expand toggle) */
         .right-col {
             display: flex;
-            align-items: center;
-            gap: 0.75rem;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
             padding: 0.85rem 1.25rem;
             flex-shrink: 0;
-            border-left: 1px solid #eef1f4;
+            border-left: 1px solid #edf2f7;
             background: #fafbfc;
-            min-width: 140px;
-            justify-content: flex-end;
+            min-width: 130px;
         }
         .right-col .badge-match-cat {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             font-weight: 600;
-            padding: 0.3rem 0.7rem;
+            padding: 0.3rem 0.8rem;
             border-radius: 50px;
             text-transform: uppercase;
             letter-spacing: 0.3px;
@@ -191,13 +198,14 @@
             color: #adb5bd;
             transition: transform 0.25s ease;
             font-size: 0.9rem;
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
             background: #f1f3f5;
+            margin-top: 0.4rem;
         }
         .position-row.expanded .expand-icon { transform: rotate(180deg); }
         .right-col .expand-icon:hover {
@@ -205,36 +213,42 @@
             color: #495057;
         }
 
-        /* ─── Row Detail (expanded) ────────────────────────────────── */
         .row-detail {
             display: none;
-            padding: 1.25rem 1.5rem 1.5rem;
-            border-top: 1px solid #eef1f4;
+            direction: rtl;
+            padding: 1.5rem 1.75rem 2rem;
+            border-top: 1px solid #edf2f7;
             background: #fafbfc;
         }
         .position-row.expanded .row-detail { display: block; }
 
-        /* Detail grid */
         .detail-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1rem 2rem;
+            gap: 1.5rem 2.5rem;
         }
-        @media (max-width: 768px) { .detail-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .detail-grid { grid-template-columns: 1fr; }
+        }
 
-        .detail-item { margin-bottom: 0.5rem; }
+        .detail-item {
+            margin-bottom: 0.75rem;
+        }
         .detail-item .label {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.4px;
             color: #6c757d;
-            margin-bottom: 0.1rem;
+            margin-bottom: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
         .detail-item .value {
             font-size: 0.85rem;
             color: #1a1a2e;
-            line-height: 1.4;
+            line-height: 1.5;
         }
         .detail-item .value .tag {
             display: inline-block;
@@ -246,21 +260,20 @@
             color: #2d3436;
         }
         .detail-item .value .tag.mandatory { background: #ffe0e0; color: #a02c2c; }
-        .detail-item .value .tag.core { background: #ffecd2; color: #7a5a1a; }
-        .detail-item .value .tag.preferred { background: #d4edda; color: #155724; }
+        .detail-item .value .tag.core     { background: #ffecd2; color: #7a5a1a; }
+        .detail-item .value .tag.preferred{ background: #d4edda; color: #155724; }
 
-        /* Score bars */
         .score-bar-wrap {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.5rem;
             margin-bottom: 0.25rem;
         }
         .score-bar-wrap .bar-label {
             font-size: 0.7rem;
             font-weight: 500;
             color: #495057;
-            min-width: 110px;
+            min-width: 90px;
         }
         .score-bar-wrap .bar-track {
             flex: 1;
@@ -268,7 +281,7 @@
             background: #e9ecef;
             border-radius: 10px;
             overflow: hidden;
-            max-width: 180px;
+            max-width: 160px;
         }
         .score-bar-wrap .bar-track .bar-fill {
             height: 100%;
@@ -278,25 +291,23 @@
         .score-bar-wrap .bar-value {
             font-size: 0.7rem;
             font-weight: 600;
-            min-width: 32px;
+            min-width: 30px;
             text-align: right;
             color: #1a1a2e;
         }
 
-        /* Evidence tags */
         .evidence-tag {
             display: inline-block;
-            font-size: 0.7rem;
-            padding: 0.15rem 0.6rem;
+            font-size: 0.65rem;
+            padding: 0.1rem 0.6rem;
             border-radius: 50px;
             margin: 0.1rem 0.2rem;
         }
-        .evidence-tag.direct { background: #d4edda; color: #155724; }
-        .evidence-tag.transferable { background: #fff3cd; color: #856404; }
-        .evidence-tag.missing { background: #f8d7da; color: #721c24; }
-        .evidence-tag.unclear { background: #e2e3e5; color: #383d41; }
+        .evidence-tag.direct        { background: #d4edda; color: #155724; }
+        .evidence-tag.transferable  { background: #fff3cd; color: #856404; }
+        .evidence-tag.missing       { background: #f8d7da; color: #721c24; }
+        .evidence-tag.unclear       { background: #e2e3e5; color: #383d41; }
 
-        /* Recommendation badge */
         .rec-badge {
             font-size: 0.7rem;
             font-weight: 600;
@@ -306,11 +317,21 @@
             letter-spacing: 0.3px;
         }
         .rec-badge.strongly_recommended { background: #00b894; color: white; }
-        .rec-badge.recommended { background: #0984e3; color: white; }
-        .rec-badge.possible_but_risky { background: #fdcb6e; color: #2d3436; }
-        .rec-badge.not_recommended { background: #e17055; color: white; }
+        .rec-badge.recommended          { background: #0984e3; color: white; }
+        .rec-badge.possible_but_risky   { background: #fdcb6e; color: #2d3436; }
+        .rec-badge.not_recommended      { background: #e17055; color: white; }
 
-        /* ─── Pagination ────────────────────────────────────────────── */
+        .action-btn-group {
+            display: flex;
+            gap: 0.35rem;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .action-btn-group .btn-sm {
+            padding: 0.2rem 0.5rem;
+            font-size: 0.7rem;
+        }
+
         .pagination .page-link {
             border-radius: 50px;
             margin: 0 0.2rem;
@@ -326,7 +347,6 @@
             background: #e9ecef;
         }
 
-        /* ─── Empty / Loading ───────────────────────────────────────── */
         .loading-spinner {
             display: flex;
             justify-content: center;
@@ -339,7 +359,6 @@
         }
         .empty-state i { font-size: 3.5rem; color: #adb5bd; margin-bottom: 1rem; }
 
-        /* ─── Misc ──────────────────────────────────────────────────── */
         .text-truncate-2 {
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -632,47 +651,45 @@
             const score = match?.overall_score ?? 0;
             const hasMatch = !!match;
 
-            // ── Generate action buttons based on application_status ──
             const appStatus = pos.application_status || 'PENDING_REVIEW';
             let actionButtons = '';
             if (appStatus === 'PENDING_REVIEW') {
                 actionButtons = `
-                    <button class="btn btn-outline-warning p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'shortlist')" title="Shortlist"><i class="fas fa-star"></i></button>
-                    <button class="btn btn-outline-secondary p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'not-interested')" title="Not Interested"><i class="fas fa-times"></i></button>
+                    <button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();updateStatus(${pos.id}, 'shortlist')" title="Shortlist"><i class="fas fa-star"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus(${pos.id}, 'not-interested')" title="Not Interested"><i class="fas fa-times"></i></button>
                 `;
             } else if (appStatus === 'SHORTLISTED') {
                 actionButtons = `
-                    <button class="btn btn-outline-secondary p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'pending-review')" title="Back to Pending"><i class="fas fa-undo"></i></button>
-                    <button class="btn btn-outline-success p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'apply')" title="Apply"><i class="fas fa-paper-plane"></i></button>
-                    <button class="btn btn-outline-danger p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'reject')" title="Reject"><i class="fas fa-thumbs-down"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus(${pos.id}, 'pending-review')" title="Back"><i class="fas fa-undo"></i></button>
+                    <button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();updateStatus(${pos.id}, 'apply')" title="Apply"><i class="fas fa-paper-plane"></i></button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation();updateStatus(${pos.id}, 'reject')" title="Reject"><i class="fas fa-thumbs-down"></i></button>
                 `;
             } else if (appStatus === 'APPLIED' || appStatus === 'INTERVIEWING') {
                 actionButtons = `
-                    <button class="btn btn-outline-secondary p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'shortlist')" title="Back to Shortlisted"><i class="fas fa-undo"></i></button>
-                    <button class="btn btn-outline-primary p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'accept')" title="Accept"><i class="fas fa-check"></i></button>
-                    <button class="btn btn-outline-danger p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'reject')" title="Reject"><i class="fas fa-times"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus(${pos.id}, 'shortlist')" title="Back"><i class="fas fa-undo"></i></button>
+                    <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();updateStatus(${pos.id}, 'accept')" title="Accept"><i class="fas fa-check"></i></button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation();updateStatus(${pos.id}, 'reject')" title="Reject"><i class="fas fa-times"></i></button>
                 `;
             } else if (appStatus === 'OFFERED') {
                 actionButtons = `
-                    <button class="btn btn-outline-secondary p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'apply')" title="Back to Applied"><i class="fas fa-undo"></i></button>
-                    <button class="btn btn-outline-success p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'accept')" title="Accept Offer"><i class="fas fa-handshake"></i></button>
-                    <button class="btn btn-outline-danger p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'reject')" title="Decline"><i class="fas fa-thumbs-down"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus(${pos.id}, 'apply')" title="Back"><i class="fas fa-undo"></i></button>
+                    <button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();updateStatus(${pos.id}, 'accept')" title="Accept Offer"><i class="fas fa-handshake"></i></button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation();updateStatus(${pos.id}, 'reject')" title="Decline"><i class="fas fa-thumbs-down"></i></button>
                 `;
             } else if (appStatus === 'REJECTED' || appStatus === 'DEADLINE_MISSED') {
                 actionButtons = `
-                    <button class="btn btn-outline-secondary p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'shortlist')" title="Move to Shortlisted"><i class="fas fa-undo"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus(${pos.id}, 'shortlist')" title="Move"><i class="fas fa-undo"></i></button>
                     <span class="badge bg-secondary">${appStatus.replace('_', ' ')}</span>
                 `;
             } else if (appStatus === 'ACCEPTED') {
                 actionButtons = `
-                    <button class="btn btn-outline-secondary p-0 px-1" onclick="event.stopPropagation();updateStatus(${pos.id}, 'apply')" title="Back to Applied"><i class="fas fa-undo"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus(${pos.id}, 'apply')" title="Back"><i class="fas fa-undo"></i></button>
                     <span class="badge bg-success">✅ Accepted</span>
                 `;
             } else {
                 actionButtons = `<span class="badge bg-secondary">${appStatus.replace('_', ' ')}</span>`;
             }
 
-            // ── If no match, show a simplified card ──
             if (!hasMatch) {
                 const row = document.createElement('div');
                 row.className = 'position-row';
@@ -687,48 +704,34 @@
                         <div class="main-col">
                             <div class="title-row">
                                 <h5><a href="${escapeHtml(pos.url)}" target="_blank">${escapeHtml(pos.title)}</a></h5>
-                                <span class="badge bg-secondary">${pos.status_label || pos.status}</span>
                             </div>
                             <div class="meta-row">
-                                <span class="institution"><i class="fas fa-university me-1"></i>${escapeHtml(pos.company || 'Unknown')}</span>
+                                <span class="institution"><i class="fas fa-university ms-1"></i>${escapeHtml(pos.company || 'Unknown')}</span>
                                 <span class="badge-deadline safe">⏳ Awaiting matching</span>
                             </div>
-                            <div class="d-flex gap-1 mt-1 flex-wrap" style="justify-content: flex-end;">
-                                ${actionButtons}
-                            </div>
+                            <div class="action-btn-group">${actionButtons}</div>
                         </div>
-                        <div class="right-col" style="flex-direction: column; align-items: flex-end;">
+                        <div class="right-col">
                             <span class="badge-match-cat" style="background:#e9ecef; color:#6c757d;">Not Matched</span>
-                            <span class="expand-icon mt-1"><i class="fas fa-chevron-down"></i></span>
+                            <span class="expand-icon"><i class="fas fa-chevron-down"></i></span>
                         </div>
                     </div>
                     <div class="row-detail">
                         <div class="detail-grid">
-                            <div class="detail-item">
-                                <div class="label">Status</div>
-                                <div class="value">${pos.status_label || pos.status}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="label">Scraped At</div>
-                                <div class="value">${formatDate(pos.scraped_at)}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="label">Cleaned Text Preview</div>
-                                <div class="value small">${escapeHtml((pos.cleaned_text || '').substring(0, 200))}${(pos.cleaned_text || '').length > 200 ? '...' : ''}</div>
-                            </div>
+                            <div class="detail-item"><div class="label">Status</div><div class="value">${pos.status_label || pos.status}</div></div>
+                            <div class="detail-item"><div class="label">Scraped At</div><div class="value">${formatDate(pos.scraped_at)}</div></div>
                         </div>
                     </div>
                 `;
                 return row;
             }
 
-            // ── Full card for matched positions ──
             const scoreClass = getScoreClass(score);
             const days = match.days_until_deadline ?? null;
+            const application_deadline_iso = match.application_deadline_iso || "Not Specified";
             const deadlineInfo = getDeadlineBadge(days);
             const recClass = getRecBadgeClass(match.application_recommendation);
 
-            // Build skills tags
             const skills = match.required_skills || {};
             const allSkills = [
                 ...(skills.mandatory || []).map(s => ({ text: s, type: 'mandatory' })),
@@ -736,14 +739,12 @@
                 ...(skills.preferred || []).map(s => ({ text: s, type: 'preferred' })),
             ];
 
-            // Build evidence
             const evidence = match.evidence || {};
             const directMatches = evidence.direct_matches || [];
             const transferable = evidence.transferable_matches || [];
             const missing = evidence.missing_requirements || [];
             const unclear = evidence.unclear_requirements || [];
 
-            // Scores for bars
             const scoreBars = [
                 { label: 'Eligibility', key: 'eligibility_score' },
                 { label: 'Academic', key: 'academic_fit_score' },
@@ -754,7 +755,6 @@
                 { label: 'Competitive', key: 'competitiveness_score' },
             ];
 
-            // Weighted dimensions
             const wd = match.weighted_dimensions || {};
             const wdLabels = {
                 'mandatory_requirements': 'Mandatory',
@@ -784,60 +784,64 @@
                             ${match.application_recommendation ? `<span class="rec-badge ${recClass}">${match.application_recommendation_label || match.application_recommendation}</span>` : ''}
                         </div>
                         <div class="meta-row">
-                            <span class="institution"><i class="fas fa-university me-1"></i>${escapeHtml(match.institution || pos.company || 'Unknown')}</span>
-                            ${match.position_type ? `<span><i class="fas fa-tag me-1"></i>${escapeHtml(match.position_type)}</span>` : ''}
-                            ${match.country ? `<span><i class="fas fa-map-pin me-1"></i>${escapeHtml(match.country)}${match.city ? ', ' + escapeHtml(match.city) : ''}</span>` : ''}
+                            <span class="institution"><i class="fas fa-university ms-1"></i>${escapeHtml(match.institution || pos.company || 'Unknown')}</span>
+                            ${match.position_type ? `<span><i class="fas fa-tag ms-1"></i>${escapeHtml(match.position_type)}</span>` : ''}
+                            ${match.country ? `<span><i class="fas fa-map-pin ms-1"></i>${escapeHtml(match.country)}${match.city ? '، ' + escapeHtml(match.city) : ''}</span>` : ''}
                             <span class="badge-deadline ${deadlineInfo.cls}">${deadlineInfo.label}</span>
-                            ${match.start_date ? `<span><i class="far fa-calendar-plus me-1"></i>${formatDate(match.start_date)}</span>` : ''}
+                            <span class="badge-deadline ${deadlineInfo.cls}">Deadline: ${application_deadline_iso}</span>
+                            ${match.start_date ? `<span><i class="far fa-calendar-plus ms-1"></i>${formatDate(match.start_date)}</span>` : ''}
                         </div>
-                       <div class="d-flex gap-1 mt-1 flex-wrap" style="justify-content: flex-end;">
-                            ${actionButtons}
-                        </div>
+                        <div class="action-btn-group">${actionButtons}</div>
                     </div>
-                    <div class="right-col" style="flex-direction: column; align-items: flex-end;">
+                    <div class="right-col">
                         <span class="badge-match-cat" style="background:${score>=80?'#d4edda':score>=60?'#cce5ff':score>=40?'#fff3cd':'#f8d7da'}; color:${score>=80?'#155724':score>=60?'#004085':score>=40?'#856404':'#721c24'}">
                             ${score >= 80 ? '🌟 Strong' : score >= 60 ? '✅ Good' : score >= 40 ? '📌 Possible' : '⚠️ Weak'}
                         </span>
-                        <span class="expand-icon mt-1"><i class="fas fa-chevron-down"></i></span>
+                        <span class="expand-icon"><i class="fas fa-chevron-down"></i></span>
                     </div>
                 </div>
                 <div class="row-detail">
                     <div class="detail-grid">
-                        <!-- Left column -->
                         <div>
+                            ${match.project_narrative_description ? `
+                            <div class="detail-item">
+                                <div class="label"><i class="far fa-file-alt ms-1"></i>Position Summary</div>
+                                <div class="value small" style="text-align: justify;">${escapeHtml(match.project_narrative_description)}</div>
+                            </div>
+                            ` : ''}
                             ${match.summary ? `
                             <div class="detail-item">
-                                <div class="label"><i class="far fa-file-alt me-1"></i>Summary</div>
-                                <div class="value small">${escapeHtml(match.summary)}</div>
+                                <div class="label"><i class="far fa-file-alt ms-1"></i>Summary</div>
+                                <div class="value small" style="text-align: justify;">${escapeHtml(match.summary)}</div>
                             </div>
                             ` : ''}
                             ${match.main_reason ? `
                             <div class="detail-item">
-                                <div class="label"><i class="fas fa-bullseye me-1"></i>Main Reason</div>
-                                <div class="value small text-muted">${escapeHtml(match.main_reason)}</div>
+                                <div class="label"><i class="fas fa-bullseye ms-1"></i>Main Reason</div>
+                                <div class="value small text-muted" style="text-align: justify;">${escapeHtml(match.main_reason)}</div>
                             </div>
                             ` : ''}
                             ${match.funding_and_duration ? `
                             <div class="detail-item">
-                                <div class="label"><i class="fas fa-coins me-1"></i>Funding &amp; Duration</div>
+                                <div class="label"><i class="fas fa-coins ms-1"></i>Funding &amp; Duration</div>
                                 <div class="value small">${escapeHtml(match.funding_and_duration)}</div>
                             </div>
                             ` : ''}
                             ${match.research_area && match.research_area.length > 0 ? `
                             <div class="detail-item">
-                                <div class="label"><i class="fas fa-microscope me-1"></i>Research Areas</div>
+                                <div class="label"><i class="fas fa-microscope ms-1"></i>Research Areas</div>
                                 <div class="value">${match.research_area.map(a => `<span class="tag">${escapeHtml(a)}</span>`).join(' ')}</div>
                             </div>
                             ` : ''}
                             ${allSkills.length > 0 ? `
                             <div class="detail-item">
-                                <div class="label"><i class="fas fa-tools me-1"></i>Required Skills</div>
+                                <div class="label"><i class="fas fa-tools ms-1"></i>Required Skills</div>
                                 <div class="value">${allSkills.map(s => `<span class="tag ${s.type}">${escapeHtml(s.text)}</span>`).join(' ')}</div>
                             </div>
                             ` : ''}
                             ${directMatches.length > 0 || transferable.length > 0 || missing.length > 0 || unclear.length > 0 ? `
                             <div class="detail-item">
-                                <div class="label"><i class="fas fa-clipboard-check me-1"></i>Evidence</div>
+                                <div class="label"><i class="fas fa-clipboard-check ms-1"></i>Evidence</div>
                                 <div class="value">
                                     ${renderEvidenceTags(evidence, 'direct_matches')}
                                     ${renderEvidenceTags(evidence, 'transferable_matches')}
@@ -847,14 +851,13 @@
                             </div>
                             ` : ''}
                         </div>
-                        <!-- Right column -->
                         <div>
                             ${Object.keys(wd).length > 0 ? `
                             <div class="detail-item">
-                                <div class="label"><i class="fas fa-weight-hanging me-1"></i>Weighted Dimensions</div>
-                                <div class="value" style="display:flex; flex-wrap:wrap; gap:0.2rem 1rem;">
+                                <div class="label"><i class="fas fa-weight-hanging ms-1"></i>Weighted Dimensions</div>
+                                <div class="value" style="display:flex; flex-wrap:wrap; gap:0.25rem 0.75rem;">
                                     ${Object.entries(wd).filter(([k,v]) => v !== undefined && v !== null).map(([k, v]) => `
-                                        <span style="font-size:0.75rem; background:#f1f3f5; padding:0.1rem 0.5rem; border-radius:4px;">
+                                        <span style="font-size:0.7rem; background:#f1f3f5; padding:0.15rem 0.6rem; border-radius:4px;">
                                             ${wdLabels[k] || k}: <strong>${v}%</strong>
                                         </span>
                                     `).join('')}
@@ -862,7 +865,7 @@
                             </div>
                             ` : ''}
                             <div class="detail-item">
-                                <div class="label"><i class="fas fa-chart-bar me-1"></i>Detailed Scores</div>
+                                <div class="label"><i class="fas fa-chart-bar ms-1"></i>Detailed Scores</div>
                                 <div class="value">
                                     ${scoreBars.map(sb => {
                                         const val = match[sb.key] ?? 0;
@@ -879,11 +882,11 @@
                                     }).join('')}
                                 </div>
                             </div>
-                            <div class="detail-item" style="margin-top:0.25rem;">
-                                <div class="value" style="font-size:0.7rem; color:#6c757d;">
-                                    ${match.confidence_label ? `<span class="me-2">Confidence: ${match.confidence_label}</span>` : ''}
-                                    ${match.matched_at ? `<span><i class="far fa-clock me-1"></i>${new Date(match.matched_at).toLocaleString()}</span>` : ''}
-                                    ${match.application_url ? `<span class="ms-2"><a href="${escapeHtml(match.application_url)}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-paper-plane me-1"></i>Apply</a></span>` : ''}
+                            <div class="detail-item" style="margin-top:0.5rem;">
+                                <div class="value" style="font-size:0.7rem; color:#6c757d; display:flex; flex-wrap:wrap; gap:0.5rem;">
+                                    ${match.confidence_label ? `<span><i class="fas fa-check-circle ms-1"></i>Confidence: ${match.confidence_label}</span>` : ''}
+                                    ${match.matched_at ? `<span><i class="far fa-clock ms-1"></i>${new Date(match.matched_at).toLocaleString('fa-IR')}</span>` : ''}
+                                    ${match.application_url ? `<span><a href="${escapeHtml(match.application_url)}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-paper-plane ms-1"></i>Apply</a></span>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -892,7 +895,6 @@
             `;
             return row;
         }
-        
         // ─── Toggle Row ──────────────────────────────────────────────
         function toggleRow(row) {
             row.classList.toggle('expanded');
