@@ -1,3 +1,7 @@
+Here's the updated README with the field-of-study note added to the Fixtures section:
+
+---
+
 # 🔬 ApplyTools – Smart Academic Position Matcher
 
 **ApplyTools** is a Django-based application that scrapes academic and research positions from various sources, matches them against your CV using AI, and helps you manage your job applications. It leverages DeepSeek's free chat API (via the [Deepseek-API](https://github.com/sums001/Deepseek-API) library) for intelligent CV–job matching.
@@ -14,6 +18,18 @@
 - **REST API** – All operations available via a clean REST API with pagination.
 - **Admin‑friendly** – Web UI to add/edit websites and manage positions.
 - **Initial data fixtures** – Pre‑configured websites and AI prompts for a quick start.
+
+---
+
+## 📸 Screenshots
+
+![Main Dashboard](example/main-page.png)
+*Main dashboard showing websites, scraping progress, and match status.*
+
+![Position Details](example/position-details.png)
+*Detailed view of a matched position with AI-generated scores and recommendations.*
+
+More screenshots will be added as the project evolves.
 
 ---
 
@@ -107,6 +123,13 @@ python manage.py migrate
 ```
 
 ### 8. Load initial fixtures (optional but recommended)
+
+> **🔍 Field of Study Note**  
+> The provided website fixtures are pre‑configured for **Computer Science** positions (e.g., PhD, postdoc, and faculty positions in CS, AI, and related fields). If you are in a different field, you have two options:
+> 1. **Before loading**: Edit `fixtures/websites.json` manually to adjust search URLs, API endpoints, and filters to match your discipline.
+> 2. **After loading**: Use the web UI to modify the website settings (e.g., change the `pagination_url_pattern` to include your field's keywords).
+>
+> The fixtures are meant as a starting point – customize them to fit your research area!
 
 This imports a starter set of website configurations and AI prompt templates, so you can start scraping and matching immediately.
 
@@ -258,6 +281,13 @@ Two fixture files are provided for a quick start:
 
 - **`fixtures/websites.json`** – Pre‑configured websites (e.g., Academic Positions, DAAD, etc.) with working selectors/API endpoints.
 - **`fixtures/prompts.json`** – AI prompt templates for matching.
+
+> **🔍 Important Note**  
+> The websites in `fixtures/websites.json` are configured specifically for **Computer Science** research positions. The search URLs, API endpoints, and filters are tailored to CS-related keywords (e.g., "computer-science", "AI", "PhD").  
+> 
+> If your research area is different, you should:
+> - **Option A (Recommended)**: Load the fixtures, then use the web UI to edit each website's settings (e.g., change `pagination_url_pattern` from `/jobs/position/phd/field/computer-science` to `/jobs/position/phd/field/your-field`).
+> - **Option B**: Edit `fixtures/websites.json` directly (it's a JSON file) before loading it, adjusting the fields to match your discipline.
 
 To load them after migration:
 
