@@ -40,36 +40,63 @@
             font-weight: 800;
         }
 
+        /* ─── Card: minimal horizontal layout ─────────────────── */
         .card-website {
-            border-radius: 14px;
-            border: none;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            transition: 0.2s;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: #ffffff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            overflow: hidden;
         }
 
         .card-website:hover {
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            transform: translateY(-2px);
+            border-color: #d1d5db;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-website .card-body {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .card-website .card-footer {
+            background: #fafafa;
+            border-top: 1px solid #f0f0f0;
+            padding: 0.75rem 1.5rem;
+        }
+        /* Divider lines inside card */
+        .card-website .divider-v {
+            width: 1px;
+            background: #f0f0f0;
+            align-self: stretch;
+            margin: 0 1rem;
         }
 
         .badge-status {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
-            padding: 0.3rem 0.7rem;
-            border-radius: 50px;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+        .badge-active   { background: #ecfdf5; color: #047857; }
+        .badge-inactive { background: #fef2f2; color: #b91c1c; }
+
+        /* Selectors — monospace, muted, single line */
+        .selector-line {
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            font-size: 0.72rem;
+            color: #6b7280;
+            line-height: 1.7;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-
-        .badge-active {
-            background: #d4edda;
-            color: #155724;
+        .selector-line .label {
+            color: #9ca3af;
+            font-weight: 500;
+            margin-right: 0.4rem;
         }
-
-        .badge-inactive {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
         .selector-preview {
             background: #f8f9fa;
             padding: 0.5rem 0.75rem;
@@ -80,10 +107,35 @@
             word-break: break-all;
         }
 
-        .action-btn {
-            font-size: 0.8rem;
-            padding: 0.2rem 0.6rem;
+        /* Stats — compact horizontal pills */
+        .stat-pill {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.4rem 0.9rem;
+            background: #fafafa;
+            border-radius: 8px;
+            min-width: 70px;
         }
+        .stat-pill .number {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #111827;
+            line-height: 1.1;
+        }
+        .stat-pill .label {
+            font-size: 0.62rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 2px;
+        }
+    /* Action buttons — minimal outline style */
+    .action-btn {
+        font-size: 0.78rem;
+        padding: 0.3rem 0.7rem;
+        border-radius: 6px;
+    }
 
         .modal-content {
             border-radius: 14px;
@@ -118,42 +170,40 @@
             margin: 0 auto;
         }
 
-        .progress-container {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 10px;
-        }
-
-        .progress-container .progress {
-            height: 8px;
-        }
-
-        .scrape-status-text {
-            font-size: 0.8rem;
-            color: #6c757d;
-            margin-top: 4px;
-            word-break: break-word;
-        }
-
+        /* Progress bars — keep existing styles */
+        .progress-container,
         .match-progress-container {
-            background: #e8f4f8;
             border-radius: 8px;
-            padding: 12px;
+            padding: 10px;
             margin-top: 10px;
-            border-left: 3px solid #0d6efd;
         }
-
-        .match-progress-container .progress {
-            height: 8px;
+        .progress-container { background: #fafafa; }
+        .match-progress-container {
+            background: #f0f9ff;
+            border-left: 3px solid #0ea5e9;
         }
-
+        .progress-container .progress,
+        .match-progress-container .progress { height: 6px; }
+        .scrape-status-text,
         .match-status-text {
-            font-size: 0.8rem;
-            color: #6c757d;
-            margin-top: 4px;
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 6px;
             word-break: break-word;
         }
+
+        /* Method + status badges — small, subtle */
+        .method-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+        .method-html { background: #f3f4f6; color: #4b5563; }
+        .method-api  { background: #fef3c7; color: #92400e; }
+        .method-js   { background: #ede9fe; color: #5b21b6; }
     </style>
 </head>
 
@@ -275,32 +325,34 @@
                         </div>
                     </div>
                     <hr class="my-3">
+
                     <!-- ─── HTML Fields ─────────────────────────────── -->
                     <div id="htmlFields">
                         <div class="row g-3">
 
                             <!-- Base URL -->
                             <div class="col-12">
-                                <label class="form-label fw-bold" for="base_url">Base URL </label>
+                                <label class="form-label fw-bold" for="base_url">Base URL</label>
                                 <input type="url" class="form-control" id="base_url" placeholder="https://example.com" >
                             </div>
 
                             <!-- Pagination -->
                             <div class="col-12">
-                                <label class="form-label fw-bold" for="pagination_url_pattern">Pagination URL Pattern </label>
+                                <label class="form-label fw-bold" for="pagination_url_pattern">Pagination URL Pattern</label>
                                 <input type="text" class="form-control" id="pagination_url_pattern" placeholder="/jobs?page={page}" >
                                 <small class="text-muted">Use <code>{page}</code> as the page placeholder.</small>
                             </div>
 
                             <!-- Listing selector -->
                             <div class="col-12">
-                                <label class="form-label fw-bold" for="listing_item_selector">Listing Item Selector *</label>
+                                <label class="form-label fw-bold" for="listing_item_selector">Listing Item Selector</label>
                                 <input type="text" class="form-control" id="listing_item_selector" placeholder=".job-list-item" >
+                                <small class="text-muted">Leave blank if the site has JSON-LD JobPosting markup.</small>
                             </div>
 
                             <!-- Position link selector -->
                             <div class="col-12 col-md-6">
-                                <label class="form-label fw-bold" for="position_link_selector">Position Link Selector *</label>
+                                <label class="form-label fw-bold" for="position_link_selector">Position Link Selector</label>
                                 <input type="text" class="form-control" id="position_link_selector" placeholder="a.job-link" >
                             </div>
 
@@ -327,7 +379,7 @@
                         <div class="row g-3">
                             <!-- API Endpoint -->
                             <div class="col-12">
-                                <label class="form-label fw-bold" for="api_endpoint">API Endpoint URL *</label>
+                                <label class="form-label fw-bold" for="api_endpoint">API Endpoint URL</label>
                                 <input type="url" class="form-control" id="api_endpoint" placeholder="https://api.example.com/v1/jobs/">
                             </div>
 
@@ -361,28 +413,28 @@
 
                             <!-- Item Field Mappings -->
                             <div class="col-12 col-md-6">
-                                <label class="form-label" for="api_item_url_key">Item URL Key</label>
+                                <label class="form-label" for="api_item_url_key">Item URL Key <span class="text-muted">(optional)</span></label>
                                 <input type="text" class="form-control" id="api_item_url_key" placeholder="absolute_url">
                             </div>
 
                             <div class="col-12 col-md-6">
-                                <label class="form-label" for="api_item_title_key">Item Title Key</label>
+                                <label class="form-label" for="api_item_title_key">Item Title Key <span class="text-muted">(optional)</span></label>
                                 <input type="text" class="form-control" id="api_item_title_key" placeholder="title">
                             </div>
 
                             <div class="col-12 col-md-6">
-                                <label class="form-label" for="api_item_company_key">Item Company Key</label>
+                                <label class="form-label" for="api_item_company_key">Item Company Key <span class="text-muted">(optional)</span></label>
                                 <input type="text" class="form-control" id="api_item_company_key" placeholder="organisation_name">
                             </div>
 
                             <div class="col-12 col-md-6">
-                                <label class="form-label" for="api_item_description_key">Item Description Key</label>
+                                <label class="form-label" for="api_item_description_key">Item Description Key <span class="text-muted">(optional)</span></label>
                                 <input type="text" class="form-control" id="api_item_description_key" placeholder="description">
                             </div>
                                 <!-- Auth Token -->
                             <div class="col-12">
                                 <label class="form-label" for="api_auth_token">Auth Token <span class="text-muted">(optional)</span></label>
-                                <input type="text" class="form-control" id="api_auth_token" placeholder="Bearer token or API key">
+                                <input type="password" class="form-control" id="api_auth_token" placeholder="Bearer token or API key">
                             </div>
 
                             <!-- Extra Params (JSON) -->
@@ -395,8 +447,8 @@
                     </div>
 
                     <hr class="my-3">
-                    <!-- ─── Detail Dource ─────────────────────────── -->
-                    <div class="row g-3"> 
+                    <!-- ─── Detail Source ─────────────────────────── -->
+                    <div class="row g-3">
                         <div class="col-12">
                             <label class="form-label fw-bold" for="detail_source">Detail Source</label>
                             <select class="form-select" id="detail_source">
@@ -404,19 +456,19 @@
                                 <option value="api">API Scraping</option>
                             </select>
                         </div>
-                        <!-- Detail container -->
-                        <div class="col-12">
-                            <label class="form-label fw-bold" for="detail_container_selector">Detail Container Selector </label>
+                        <!-- Detail container (HTML) -->
+                        <div class="col-12" id="detail_container_field">
+                            <label class="form-label fw-bold" for="detail_container_selector">Detail Container Selector</label>
                             <input type="text" class="form-control" id="detail_container_selector" placeholder="#editor" >
                         </div>
                         <!-- Detail API Endpoint -->
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-bold" for="detail_api_endpoint">Detail API Endpoint </label>
-                            <input type="text" class="form-control" id="detail_api_endpoint" placeholder="" >
+                        <div class="col-12 col-md-6" id="detail_api_endpoint_field" style="display:none;">
+                            <label class="form-label fw-bold" for="detail_api_endpoint">Detail API Endpoint</label>
+                            <input type="text" class="form-control" id="detail_api_endpoint" placeholder="https://api.example.com/v1/jobs/" >
                         </div>
-                         <!-- Detail container -->
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-bold" for="api_detail_key">API Detail Key </label>
+                         <!-- API Detail Key -->
+                        <div class="col-12 col-md-6" id="api_detail_key_field" style="display:none;">
+                            <label class="form-label fw-bold" for="api_detail_key">API Detail Key</label>
                             <input type="text" class="form-control" id="api_detail_key" placeholder="detail" >
                         </div>
                     </div>
@@ -440,7 +492,14 @@
                         <!-- Delay -->
                         <div class="col-6 col-md-3">
                             <label class="form-label" for="request_delay">Delay (sec)</label>
-                            <input type="number" class="form-control" id="request_delay" value="1.0" step="0.1" min="0">
+                            <input type="number" class="form-control" id="request_delay" value="3.0" step="0.1" min="0">
+                        </div>
+
+                        <!-- Concurrency -->
+                        <div class="col-6 col-md-3">
+                            <label class="form-label" for="max_concurrency">Concurrency</label>
+                            <input type="number" class="form-control" id="max_concurrency" value="5" min="1" max="20">
+                            <small class="text-muted">Parallel fetches</small>
                         </div>
 
                         <!-- Active -->
@@ -452,12 +511,32 @@
                             </select>
                         </div>
 
+                        <!-- Needs JS -->
+                        <div class="col-6 col-md-3">
+                            <label class="form-label" for="needs_js">Needs JS</label>
+                            <select class="form-select" id="needs_js">
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
+                            </select>
+                            <small class="text-muted">Force browser</small>
+                        </div>
+
+                        <!-- Browser Fallback -->
+                        <div class="col-6 col-md-3">
+                            <label class="form-label" for="use_browser_fallback">Browser Fallback</label>
+                            <select class="form-select" id="use_browser_fallback">
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                            <small class="text-muted">Auto on challenge</small>
+                        </div>
+
                         <!-- User agent -->
                         <div class="col-12">
                             <label class="form-label" for="user_agent">
-                                User Agent <span class="text-muted">(optional)</span>
+                                User Agent <span class="text-muted">(optional — auto-rotated)</span>
                             </label>
-                            <input type="text" class="form-control" id="user_agent" value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36">
+                            <input type="text" class="form-control" id="user_agent" value="">
                         </div>
 
                         <!-- Description -->
@@ -509,7 +588,7 @@
 </div>
 
 <!-- =========================================================
-     CV MODAL
+     CV MODAL  (UNCHANGED — match functionality preserved)
 ========================================================= -->
 
 <div class="modal fade" id="cvModal" tabindex="-1" aria-hidden="true">
@@ -563,6 +642,7 @@
 
     const API_URL = '/api/v1/websites/';
     let editingId = null;
+
     function getCSRFToken() {
         const cookieValue = document.cookie
             .split('; ')
@@ -572,49 +652,54 @@
 
     const CSRF_TOKEN = getCSRFToken();
 
-    // ─── Toggle HTML / API Fields ──────────────────────────────
-    document.getElementById('scraping_method').addEventListener('change', function() {
-        const isApi = this.value === 'api';
+    // ─── Toggle HTML / API Fields (FIXED: no label destruction) ───
+
+    function toggleScrapingMethodFields() {
+        const isApi = document.getElementById('scraping_method').value === 'api';
         document.getElementById('htmlFields').style.display = isApi ? 'none' : 'block';
         document.getElementById('apiFields').style.display = isApi ? 'block' : 'none';
-        
-        // Toggle required attributes for API vs HTML fields
-        const htmlRequired = ['listing_item_selector', 'position_link_selector', 'detail_container_selector'];
-        const apiRequired = ['api_endpoint'];
-        
+
+        // Toggle required attributes only (no label manipulation)
+        const htmlRequired = ['listing_item_selector', 'position_link_selector'];
+        const apiRequired = ['api_endpoint', 'api_results_key'];
+
         htmlRequired.forEach(id => {
             const el = document.getElementById(id);
-            if (el) {
-                el.required = !isApi;
-                el.closest('.col-12, .col-12, .col-md-6').querySelector('label').innerHTML = el.required ? 
-                    el.id.replace(/_/g, ' ').toUpperCase() + ' *' : 
-                    el.id.replace(/_/g, ' ').toUpperCase();
-            }
+            if (el) el.required = !isApi;
         });
-        
+
         apiRequired.forEach(id => {
             const el = document.getElementById(id);
-            if (el) {
-                el.required = isApi;
-                el.closest('.col-12').querySelector('label').innerHTML = el.required ? 
-                    el.id.replace(/_/g, ' ').toUpperCase() + ' *' : 
-                    el.id.replace(/_/g, ' ').toUpperCase();
-            }
+            if (el) el.required = isApi;
         });
-    });
+    }
 
-    document.getElementById('detail_source').addEventListener('change', function() {
-        const isApi = this.value === 'api';
-        // Hide/show the HTML detail container field
-        const htmlField = document.getElementById('detail_container_selector').closest('.col-12');
-        if (htmlField) htmlField.style.display = isApi ? 'none' : 'block';
-        // Hide/show the API detail key field
-        const apiDetailsKeyField = document.getElementById('api_detail_key').closest('.col-12, .col-md-6');
-        if (apiDetailsKeyField) apiDetailsKeyField.style.display = isApi ? 'block' : 'none';
-        const apiEndpointField = document.getElementById('detail_api_endpoint').closest('.col-12, .col-md-6');
+    document.getElementById('scraping_method').addEventListener('change', toggleScrapingMethodFields);
+
+    // ─── Toggle Detail Source fields (FIXED: cleaner ID-based approach) ───
+
+    function toggleDetailSourceFields() {
+        const isApi = document.getElementById('detail_source').value === 'api';
+
+        const containerField = document.getElementById('detail_container_field');
+        const apiEndpointField = document.getElementById('detail_api_endpoint_field');
+        const apiDetailKeyField = document.getElementById('api_detail_key_field');
+
+        if (containerField) containerField.style.display = isApi ? 'none' : 'block';
         if (apiEndpointField) apiEndpointField.style.display = isApi ? 'block' : 'none';
-    });
-    // document.getElementById('detail_source').dispatchEvent(new Event('change'));
+        if (apiDetailKeyField) apiDetailKeyField.style.display = isApi ? 'block' : 'none';
+
+        // Toggle required
+        const containerInput = document.getElementById('detail_container_selector');
+        const apiEndpointInput = document.getElementById('detail_api_endpoint');
+        const apiDetailKeyInput = document.getElementById('api_detail_key');
+
+        if (containerInput) containerInput.required = !isApi;
+        if (apiEndpointInput) apiEndpointInput.required = isApi;
+        if (apiDetailKeyInput) apiDetailKeyInput.required = isApi;
+    }
+
+    document.getElementById('detail_source').addEventListener('change', toggleDetailSourceFields);
 
     // =========================================================
     // FETCH WEBSITES
@@ -660,6 +745,137 @@
     }
 
     // =========================================================
+    // CHECK SCRAPE STATUS (reconnect after refresh)
+    // =========================================================
+
+    async function checkScrapeStatus(websiteId) {
+        try {
+            const res = await fetch(`/api/v1/scrape/${websiteId}/status/`);
+            if (!res.ok) return;
+            const data = await res.json();
+
+            if (data.in_progress || (data.completed && data.total_processed > 0 && (Date.now() / 1000 - data.started_at) < 60)) {
+                // A scrape is in-flight (or just completed < 60s ago)
+                const card = document.getElementById(`website-card-${websiteId}`);
+                const btn = card.querySelector('.scrape-btn');
+                const progressContainer = document.getElementById(`progress-${websiteId}`);
+
+                if (data.in_progress) {
+                    // Show progress bar with current counts
+                    progressContainer.style.display = 'block';
+                    const progressBar = progressContainer.querySelector('.progress-bar');
+                    const progressText = progressContainer.querySelector('.progress-text');
+                    const statusText = progressContainer.querySelector('.scrape-status-text');
+                    const spinner = progressContainer.querySelector('.spinner-border');
+
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Scraping...';
+                    if (spinner) spinner.style.display = 'inline-block';
+
+                    const total = data.saved + data.skipped + data.failed;
+                    const pct = Math.min(10 + (total * 0.5), 90);
+                    progressBar.style.width = `${pct}%`;
+                    progressText.textContent = `${Math.round(pct)}%`;
+                    statusText.textContent = `🔄 Reconnected — Saved: ${data.saved}, Skipped: ${data.skipped}, Failed: ${data.failed}`;
+
+                    // Open SSE to continue receiving events
+                    reconnectScrapeSSE(websiteId, btn);
+                } else if (data.completed) {
+                    // Scrape finished while we were away — show final state briefly
+                    const progressBar = progressContainer.querySelector('.progress-bar');
+                    const progressText = progressContainer.querySelector('.progress-text');
+                    const statusText = progressContainer.querySelector('.scrape-status-text');
+
+                    progressContainer.style.display = 'block';
+                    progressBar.style.width = '100%';
+                    progressBar.classList.add('bg-success');
+                    progressBar.classList.remove('progress-bar-animated');
+                    progressText.textContent = '100%';
+                    statusText.textContent = `✅ Completed — Saved: ${data.saved}, Skipped: ${data.skipped}`;
+
+                    setTimeout(() => { progressContainer.style.display = 'none'; }, 5000);
+                }
+            }
+        } catch (e) {
+            console.warn(`Status check failed for website ${websiteId}:`, e);
+        }
+    }
+
+    function reconnectScrapeSSE(websiteId, btn) {
+        const progressContainer = document.getElementById(`progress-${websiteId}`);
+        const progressBar = progressContainer.querySelector('.progress-bar');
+        const progressText = progressContainer.querySelector('.progress-text');
+        const statusText = progressContainer.querySelector('.scrape-status-text');
+        const spinner = progressContainer.querySelector('.spinner-border');
+
+        const url = `/api/v1/scrape/${websiteId}/stream/`;
+        const eventSource = new EventSource(url);
+        window.eventSource = eventSource;
+
+        let isComplete = false;
+
+        eventSource.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                switch (data.type) {
+                    case 'start':
+                    case 'progress':
+                        statusText.textContent = data.message;
+                        progressBar.style.width = `${data.percentage || 10}%`;
+                        progressText.textContent = `${data.percentage || 10}%`;
+                        break;
+                    case 'position_saved':
+                    case 'position_skipped':
+                    case 'position_failed':
+                        {
+                            const total = data.saved + data.skipped + data.failed;
+                            const pct = Math.min(10 + (total * 0.5), 90);
+                            progressBar.style.width = `${pct}%`;
+                            progressText.textContent = `${Math.round(pct)}%`;
+                            const emoji = data.type === 'position_saved' ? '✅' :
+                                          data.type === 'position_skipped' ? '⏭️' : '❌';
+                            statusText.textContent = `${emoji} ${data.title.substring(0, 50)}... (S:${data.saved} K:${data.skipped} F:${data.failed})`;
+                        }
+                        break;
+                    case 'complete':
+                        isComplete = true;
+                        progressBar.style.width = '100%';
+                        progressText.textContent = '100%';
+                        progressBar.classList.remove('progress-bar-animated');
+                        progressBar.classList.add('bg-success');
+                        if (spinner) spinner.style.display = 'none';
+                        statusText.textContent = `✅ Done! Saved ${data.saved}, Skipped ${data.skipped}, Failed ${data.failed || 0}`;
+                        setTimeout(() => {
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
+                            eventSource.close();
+                            fetchWebsites();  // refresh the cards
+                        }, 3000);
+                        break;
+                    case 'error':
+                        progressBar.style.width = '100%';
+                        progressBar.classList.add('bg-danger');
+                        progressBar.classList.remove('progress-bar-animated');
+                        if (spinner) spinner.style.display = 'none';
+                        statusText.textContent = `❌ ${data.message}`;
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
+                        eventSource.close();
+                        break;
+                }
+            } catch (e) {
+                console.error('Parse error on reconnect:', e);
+            }
+        };
+
+        eventSource.onerror = function() {
+            if (isComplete) return;
+            // The server-side scrape may have completed; re-check status
+            setTimeout(() => checkScrapeStatus(websiteId), 1000);
+            eventSource.close();
+        };
+    }
+    // =========================================================
     // RENDER WEBSITES
     // =========================================================
 
@@ -683,7 +899,7 @@
 
         websites.forEach(function(w) {
             const col = document.createElement('div');
-            col.className = 'col-12 col-md-6 col-xl-6';
+            col.className = 'col-12';
 
             const isActive = Boolean(w.is_active);
             const name = escapeHtml(w.name || 'Unnamed Website');
@@ -697,101 +913,129 @@
             const maxPages = Number(w.max_pages || 0);
             const maxPagesText = maxPages === 0 ? 'Unlimited' : maxPages;
 
+            // Method badges
+            const method = w.scraping_method || 'html';
+            const needsJs = Boolean(w.needs_js);
+            let methodBadge = '';
+            if (method === 'api') {
+                methodBadge = '<span class="method-badge method-api">API</span>';
+            } else if (needsJs) {
+                methodBadge = '<span class="method-badge method-js">JS</span>';
+            } else {
+                methodBadge = '<span class="method-badge method-html">HTML</span>';
+            }
+
+            const lastScrapeCount = Number(w.last_scrape_count || 0);
+
             col.innerHTML = `
-                <div class="card card-website h-100" id="website-card-${w.id}">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start gap-2">
-                            <h5 class="card-title fw-bold mb-1">${name}</h5>
-                            <span class="badge-status ${isActive ? 'badge-active' : 'badge-inactive'}">
-                                ${isActive ? '🟢 Active' : '🔴 Inactive'}
-                            </span>
-                        </div>
-                        ${description ? `<p class="card-text small text-muted mt-2 mb-2">${description}</p>` : ''}
-                        <div class="small text-truncate website-url" title="${baseUrl}">
-                            <i class="fas fa-link me-1"></i> ${baseUrl}
-                        </div>
-                        <div class="selector-preview mt-3">
-                            <div class="mb-1"><strong>Listing:</strong> ${listingSelector || '-'}</div>
-                            <div class="mb-1"><strong>Link:</strong> ${linkSelector || '-'}</div>
-                            <div><strong>Detail:</strong> ${detailSelector || '-'}</div>
-                        </div>
-                        <div class="row g-2 mt-2">
-                            <div class="col-4">
-                                <div class="scrape-stat">
-                                    <div class="number">${totalScraped}</div>
-                                    <div class="label">Scraped</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="scrape-stat">
-                                    <div class="number">${maxPagesText}</div>
-                                    <div class="label">Max Pages</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="scrape-stat">
-                                    <div class="number" style="font-size: 0.8rem;">${lastScraped}</div>
-                                    <div class="label">Last Scrape</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-3 small text-muted">
-                            <div class="d-flex justify-content-between">
-                                <span><i class="fas fa-file-alt me-1"></i> Last scrape:</span>
-                                <strong>${Number(w.last_scrape_count || 0)} items</strong>
-                            </div>
-                        </div>
+            <div class="card card-website" id="website-card-${w.id}">
+                <div class="card-body">
 
-                        <!-- Scrape Progress Bar -->
-                        <div class="progress-container" id="progress-${w.id}" style="display:none;">
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="spinner-border spinner-border-sm text-primary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <div class="progress flex-grow-1">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:0%;"></div>
-                                </div>
-                                <small class="text-muted progress-text">0%</small>
+                    <!-- ─── Row 1: Name + badges (left) | URL (right) ─── -->
+                    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
+                        <div>
+                            <h5 class="card-title fw-bold mb-2" style="font-size: 1.05rem;">
+                                ${name}
+                            </h5>
+                            <div class="d-flex gap-2 align-items-center">
+                                ${methodBadge}
+                                <span class="badge-status ${isActive ? 'badge-active' : 'badge-inactive'}">
+                                    ${isActive ? 'Active' : 'Inactive'}
+                                </span>
+                                ${description ? `<span class="text-muted small">·</span><span class="text-muted small">${description}</span>` : ''}
                             </div>
-                            <div class="scrape-status-text">Initializing...</div>
                         </div>
-
-                        <!-- Match Progress Bar -->
-                        <div class="match-progress-container" id="match-progress-${w.id}" style="display:none;">
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="spinner-border spinner-border-sm text-success" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <div class="progress flex-grow-1">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width:0%;"></div>
-                                </div>
-                                <small class="text-muted match-progress-text">0%</small>
-                            </div>
-                            <div class="match-status-text">Initializing...</div>
+                        <div class="text-muted small text-end" style="min-width: 200px;">
+                            <i class="fas fa-link me-1"></i>${baseUrl}
                         </div>
                     </div>
 
-                    <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between align-items-center flex-wrap gap-2 pb-3">
-                        <div>
-                            <button class="btn btn-outline-primary btn-sm action-btn" onclick="editWebsite(${Number(w.id)})" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-outline-danger btn-sm action-btn" onclick="confirmDelete(${Number(w.id)}, '${escapeJsString(w.name || '')}')" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                    <!-- ─── Row 2: Selectors (left) | Stats (right) ─── -->
+                    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+
+                        <!-- Selectors -->
+                        <div class="flex-grow-1" style="min-width: 300px;">
+                            <div class="selector-line"><span class="label">listing</span>${listingSelector || '—'}</div>
+                            <div class="selector-line"><span class="label">link</span>${linkSelector || '—'}</div>
+                            <div class="selector-line"><span class="label">detail</span>${detailSelector || '—'}</div>
                         </div>
-                        <div class="d-flex gap-1">
-                            <button class="btn btn-sm btn-primary scrape-btn" data-id="${w.id}" data-name="${escapeJsString(w.name)}">
-                                <i class="fas fa-play me-1"></i> Scrape
-                            </button>
-                            <button class="btn btn-sm btn-success match-btn" data-id="${w.id}" data-name="${escapeJsString(w.name)}" onclick="openMatchModal(${w.id})">
-                                <i class="fas fa-brain me-1"></i> Match
-                            </button>
+
+                        <!-- Stats pills -->
+                        <div class="d-flex gap-2 flex-wrap">
+                            <div class="stat-pill">
+                                <div class="number">${totalScraped}</div>
+                                <div class="label">Total</div>
+                            </div>
+                            <div class="stat-pill">
+                                <div class="number">${lastScrapeCount}</div>
+                                <div class="label">Last Run</div>
+                            </div>
+                            <div class="stat-pill">
+                                <div class="number">${maxPagesText}</div>
+                                <div class="label">Max Pages</div>
+                            </div>
+                            <div class="stat-pill">
+                                <div class="number" style="font-size: 0.78rem;">${lastScraped}</div>
+                                <div class="label">Last Scrape</div>
+                            </div>
                         </div>
+                    </div>
+
+                    <!-- Scrape Progress Bar -->
+                    <div class="progress-container" id="progress-${w.id}" style="display:none;">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div class="progress flex-grow-1">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:0%;"></div>
+                            </div>
+                            <small class="text-muted progress-text">0%</small>
+                        </div>
+                        <div class="scrape-status-text">Initializing...</div>
+                    </div>
+
+                    <!-- Match Progress Bar -->
+                    <div class="match-progress-container" id="match-progress-${w.id}" style="display:none;">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="spinner-border spinner-border-sm text-success" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div class="progress flex-grow-1">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width:0%;"></div>
+                            </div>
+                            <small class="text-muted match-progress-text">0%</small>
+                        </div>
+                        <div class="match-status-text">Initializing...</div>
                     </div>
                 </div>
-            `;
+
+                <!-- ─── Footer: action buttons ─── -->
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        ${w.last_scraped_at ? formatDate(w.last_scraped_at) : 'Never scraped'}
+                    </small>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary btn-sm action-btn" onclick="editWebsite(${Number(w.id)})" title="Edit">
+                            <i class="fas fa-pen me-1"></i> Edit
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm action-btn" onclick="confirmDelete(${Number(w.id)}, '${escapeJsString(w.name || '')}')" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn btn-primary btn-sm action-btn scrape-btn" data-id="${w.id}" data-name="${escapeJsString(w.name)}">
+                            <i class="fas fa-play me-1"></i> Scrape
+                        </button>
+                        <button class="btn btn-success btn-sm action-btn match-btn" data-id="${w.id}" data-name="${escapeJsString(w.name)}" onclick="openMatchModal(${w.id})">
+                            <i class="fas fa-brain me-1"></i> Match
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
             grid.appendChild(col);
+            // ─── Check if a scrape is in-flight for this website ───
+            checkScrapeStatus(w.id);
         });
 
         // Attach scrape event listeners
@@ -802,7 +1046,7 @@
     }
 
     // =========================================================
-    // MATCH FUNCTION (SSE)
+    // MATCH FUNCTION (SSE)  — UNCHANGED (positions app preserved)
     // =========================================================
 
     function openMatchModal(websiteId) {
@@ -969,7 +1213,7 @@
     }
 
     // =========================================================
-    // SCRAPE FUNCTION (SSE)
+    // SCRAPE FUNCTION (SSE) — FIXED: declared failedCount, cleaned up
     // =========================================================
 
     function handleScrapeClick(e) {
@@ -980,6 +1224,28 @@
     }
 
     function startScrape(websiteId, websiteName, btn) {
+        // ─── Don't start if a scrape is already in-flight ───
+        if (window.eventSource && window.eventSource.readyState === EventSource.OPEN) {
+            // Could be a different website's scrape; check the active registry
+            // For simplicity, just check via the status endpoint:
+            fetch(`/api/v1/scrape/${websiteId}/status/`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.in_progress) {
+                        // Just reconnect instead of starting a new scrape
+                        reconnectScrapeSSE(websiteId, btn);
+                        return;
+                    }
+                    // No in-flight scrape — proceed normally
+                    _actuallyStartScrape(websiteId, websiteName, btn);
+                })
+                .catch(() => _actuallyStartScrape(websiteId, websiteName, btn));
+            return;
+        }
+        _actuallyStartScrape(websiteId, websiteName, btn);
+    }
+    
+    function _actuallyStartScrape(websiteId, websiteName, btn) {
         const card = document.getElementById(`website-card-${websiteId}`);
         const progressContainer = document.getElementById(`progress-${websiteId}`);
         const progressBar = progressContainer.querySelector('.progress-bar');
@@ -1003,12 +1269,13 @@
 
         const url = `/api/v1/scrape/${websiteId}/stream/`;
         console.log('🔗 Connecting to SSE:', url);
-        
+
         const eventSource = new EventSource(url);
         window.eventSource = eventSource;
 
         let savedCount = 0;
         let skippedCount = 0;
+        let failedCount = 0;  // FIXED: declared the variable
         let isComplete = false;
 
         eventSource.onopen = function() {
@@ -1039,23 +1306,32 @@
                     case 'position_saved':
                         savedCount = data.saved;
                         skippedCount = data.skipped;
-                        const total = savedCount + skippedCount + data.failed;
-                        const percentage = Math.min(10 + (total * 0.5), 90);
-                        progressBar.style.width = `${percentage}%`;
-                        progressText.textContent = `${Math.round(percentage)}%`;
-                        statusText.textContent = `✅ Saved: ${data.title.substring(0, 50)}... (Saved: ${data.saved}, Skipped: ${data.skipped})`;
+                        failedCount = data.failed;
+                        {
+                            const total = savedCount + skippedCount + failedCount;
+                            const percentage = Math.min(10 + (total * 0.5), 90);
+                            progressBar.style.width = `${percentage}%`;
+                            progressText.textContent = `${Math.round(percentage)}%`;
+                            statusText.textContent = `✅ Saved: ${data.title.substring(0, 50)}... (Saved: ${data.saved}, Skipped: ${data.skipped})`;
+                        }
                         break;
-                        
+
                     case 'position_skipped':
+                        savedCount = data.saved;
                         skippedCount = data.skipped;
-                        const total2 = data.saved + data.skipped + data.failed;
-                        const percentage2 = Math.min(10 + (total2 * 0.5), 90);
-                        progressBar.style.width = `${percentage2}%`;
-                        progressText.textContent = `${Math.round(percentage2)}%`;
-                        statusText.textContent = `⏭️ Skipped (already exists): ${data.title.substring(0, 50)}... (Saved: ${data.saved}, Skipped: ${data.skipped})`;
+                        failedCount = data.failed;
+                        {
+                            const total = savedCount + skippedCount + failedCount;
+                            const percentage = Math.min(10 + (total * 0.5), 90);
+                            progressBar.style.width = `${percentage}%`;
+                            progressText.textContent = `${Math.round(percentage)}%`;
+                            statusText.textContent = `⏭️ Skipped (already exists): ${data.title.substring(0, 50)}... (Saved: ${data.saved}, Skipped: ${data.skipped})`;
+                        }
                         break;
-                        
+
                     case 'position_failed':
+                        savedCount = data.saved;
+                        skippedCount = data.skipped;
                         failedCount = data.failed;
                         statusText.textContent = `❌ Failed: ${data.title.substring(0, 50)}... - ${data.error}`;
                         break;
@@ -1066,11 +1342,11 @@
                         progressText.textContent = '100%';
                         progressBar.classList.remove('progress-bar-animated');
                         progressBar.classList.add('bg-success');
-                        
+
                         if (spinner) {
                             spinner.style.display = 'none';
                         }
-                        
+
                         if (data.saved === 0 && data.skipped === 0) {
                             statusText.textContent = `ℹ️ No new positions found (already have ${data.total} positions)`;
                         } else {
@@ -1097,6 +1373,8 @@
                             btn.disabled = false;
                             btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
                             eventSource.close();
+                            // Refresh the website list to show updated stats
+                            fetchWebsites();
                         }, 3000);
                         break;
 
@@ -1122,17 +1400,17 @@
         eventSource.onerror = function(event) {
             console.error('❌ SSE error:', event);
             console.log('📊 EventSource readyState:', eventSource.readyState);
-            
+
             if (isComplete) {
                 console.log('ℹ️ SSE closed normally after completion');
                 return;
             }
-            
+
             if (eventSource.readyState === EventSource.CLOSED) {
                 console.log('ℹ️ SSE connection closed');
                 return;
             }
-            
+
             if (spinner) {
                 spinner.style.display = 'none';
             }
@@ -1157,15 +1435,18 @@
 
         document.getElementById('max_pages').value = 10;
         document.getElementById('request_timeout').value = 30;
-        document.getElementById('request_delay').value = 1.0;
+        document.getElementById('request_delay').value = 3.0;
+        document.getElementById('max_concurrency').value = 5;
+        document.getElementById('needs_js').value = 'false';
+        document.getElementById('use_browser_fallback').value = 'true';
         document.getElementById('is_active').value = 'true';
         document.getElementById('scraping_method').value = 'html';
-        document.getElementById('htmlFields').style.display = 'block';
-        document.getElementById('apiFields').style.display = 'none';
-        document.getElementById('user_agent').value =
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
-            'AppleWebKit/537.36 (KHTML, like Gecko) ' +
-            'Chrome/120.0.0.0 Safari/537.36';
+        document.getElementById('detail_source').value = 'html';
+        document.getElementById('user_agent').value = '';
+
+        // Toggle field visibility
+        toggleScrapingMethodFields();
+        toggleDetailSourceFields();
     }
 
     // =========================================================
@@ -1200,11 +1481,14 @@
             document.getElementById('position_company_selector').value = data.position_company_selector || '';
             document.getElementById('max_pages').value = data.max_pages ?? 0;
             document.getElementById('request_timeout').value = data.request_timeout ?? 30;
-            document.getElementById('request_delay').value = data.request_delay ?? 1.0;
+            document.getElementById('request_delay').value = data.request_delay ?? 3.0;
+            document.getElementById('max_concurrency').value = data.max_concurrency ?? 5;
+            document.getElementById('needs_js').value = data.needs_js ? 'true' : 'false';
+            document.getElementById('use_browser_fallback').value = data.use_browser_fallback ? 'true' : 'false';
             document.getElementById('is_active').value = data.is_active ? 'true' : 'false';
             document.getElementById('user_agent').value = data.user_agent || '';
             document.getElementById('description').value = data.description || '';
-            
+
             // API fields
             document.getElementById('scraping_method').value = data.scraping_method || 'html';
             document.getElementById('api_endpoint').value = data.api_endpoint || '';
@@ -1217,22 +1501,17 @@
             document.getElementById('api_item_title_key').value = data.api_item_title_key || '';
             document.getElementById('api_item_company_key').value = data.api_item_company_key || '';
             document.getElementById('api_item_description_key').value = data.api_item_description_key || '';
-            document.getElementById('api_auth_token').value = data.api_auth_token || '';
+            // api_auth_token is write_only — won't be in the response, so leave blank
+            document.getElementById('api_auth_token').value = '';
             document.getElementById('api_extra_params').value = data.api_extra_params ? JSON.stringify(data.api_extra_params) : '';
             document.getElementById('detail_source').value = data.detail_source || 'html';
             document.getElementById('api_detail_key').value = data.api_detail_key || '';
             document.getElementById('detail_api_endpoint').value = data.detail_api_endpoint || '';
-            // Toggle fields based on method
-            const isApi = document.getElementById('scraping_method').value === 'api';
-            document.getElementById('htmlFields').style.display = isApi ? 'none' : 'block';
-            document.getElementById('apiFields').style.display = isApi ? 'block' : 'none';
-            const detail_source_is_api = document.getElementById('detail_source').value === 'api';
-            const detail_container_selector = document.getElementById('detail_container_selector').closest('.col-12, .col-md-6');
-            if (detail_container_selector) detail_container_selector.style.display = detail_source_is_api ? 'none' : 'block';
-            const api_detail_key = document.getElementById('api_detail_key').closest('.col-12, .col-md-6');
-            if (api_detail_key) api_detail_key.style.display = detail_source_is_api ? 'block' : 'none';
-            const detail_api_endpoint = document.getElementById('detail_api_endpoint').closest('.col-12, .col-md-6');
-            if (detail_api_endpoint) detail_api_endpoint.style.display = detail_source_is_api ? 'block' : 'none'; 
+
+            // Toggle field visibility based on current values
+            toggleScrapingMethodFields();
+            toggleDetailSourceFields();
+
             const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('websiteModal'));
             modal.show();
         } catch (error) {
@@ -1256,7 +1535,17 @@
         const method = id ? 'PUT' : 'POST';
         const url = id ? `${API_URL}${id}/` : API_URL;
 
-        const isApi = document.getElementById('scraping_method').value === 'api';
+        // FIXED: safe JSON parse with try/catch
+        let extraParams = {};
+        const extraParamsStr = document.getElementById('api_extra_params').value.trim();
+        if (extraParamsStr) {
+            try {
+                extraParams = JSON.parse(extraParamsStr);
+            } catch (e) {
+                alert('Invalid JSON in Extra Parameters:\n' + e.message);
+                return;
+            }
+        }
 
         const payload = {
             name: document.getElementById('name').value.trim(),
@@ -1269,7 +1558,10 @@
             position_company_selector: document.getElementById('position_company_selector').value.trim(),
             max_pages: parseInt(document.getElementById('max_pages').value) || 0,
             request_timeout: parseInt(document.getElementById('request_timeout').value) || 30,
-            request_delay: parseFloat(document.getElementById('request_delay').value) || 1.0,
+            request_delay: parseFloat(document.getElementById('request_delay').value) || 3.0,
+            max_concurrency: parseInt(document.getElementById('max_concurrency').value) || 5,
+            needs_js: document.getElementById('needs_js').value === 'true',
+            use_browser_fallback: document.getElementById('use_browser_fallback').value === 'true',
             is_active: document.getElementById('is_active').value === 'true',
             user_agent: document.getElementById('user_agent').value.trim(),
             description: document.getElementById('description').value.trim(),
@@ -1285,7 +1577,7 @@
             api_item_company_key: document.getElementById('api_item_company_key').value.trim(),
             api_item_description_key: document.getElementById('api_item_description_key').value.trim(),
             api_auth_token: document.getElementById('api_auth_token').value.trim(),
-            api_extra_params: JSON.parse(document.getElementById('api_extra_params').value || '{}'),
+            api_extra_params: extraParams,
             detail_source: document.getElementById('detail_source').value,
             api_detail_key: document.getElementById('api_detail_key').value.trim(),
             detail_api_endpoint: document.getElementById('detail_api_endpoint').value.trim(),
@@ -1300,7 +1592,11 @@
         try {
             const res = await fetch(url, {
                 method: method,
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRFToken': CSRF_TOKEN
+                },
                 body: JSON.stringify(payload)
             });
 
