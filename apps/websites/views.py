@@ -26,6 +26,7 @@ from rest_framework import viewsets, permissions
 
 from .models import Website
 from .serializers import WebsiteSerializer
+from .website_analyzer import analyze_website, AnalyzeError
 
 logger = logging.getLogger(__name__)
 
@@ -431,3 +432,55 @@ def scrape_cancel(request, website_id):
         logger.info("Cancel requested for website_id=%s", website_id)
         return JsonResponse({'status': 'cancelling', 'website_id': website_id})
     return JsonResponse({'status': 'not_running'}, status=404)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def analyze_website_view(request):
+    """POST /api/v1/websites/analyze/
+
+    Body:
+        { "listing_url": "https://...", "detail_url": "https://..." (optional) }
+
+    Response 200:
+        { "success": true, "fields": {...}, "analysis": {...}, "warnings": [...] }
+        { "success": false, "reason": "blocked"|"invalid_url"|"fetch_failed"|"deepseek_error",
+          "message": "..." }
+    """
+    try:
+        body = json.loads(request.body or "{}")
+    except json.JSONDecodeError:
+        return JsonResponse(
+            {"success": False, "reason": "invalid_json",
+             "message": "Request body must be valid JSON."},
+            status=400,
+        )
+
+    listing_url = body.get("listing_url", "").strip()
+    detail_url = (body.get("detail_url") or "").strip() or None
+
+    if not listing_url:
+        return JsonResponse(
+            {"success": False, "reason": "invalid_url",
+             "message": "listing_url is required."},
+            status=422,
+        )
+
+    try:
+        result = analyze_website(listing_url, detail_url=detail_url)
+    except AnalyzeError as e:
+        # Distinguish user-fixable errors from impossible ones
+        status_code = 422 if e.reason == "invalid_url" else 200
+        return JsonResponse(
+            {"success": False, "reason": e.reason, "message": e.message},
+            status=status_code,
+        )
+    except Exception as e:
+        logger.exception("Unexpected analyzer error")
+        return JsonResponse(
+            {"success": False, "reason": "unexpected_error",
+             "message": f"Unexpected error: {e}"},
+            status=500,
+        )
+
+    return JsonResponse(result)
