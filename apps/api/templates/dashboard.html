@@ -3,72 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApplyTools – Position Dashboard</title>
-    <!-- Bootstrap 5 CSS -->
+    <title>ApplyTools — Position Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
     <style>
-        * { font-family: 'Vazir', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-        body { 
-            background: #f0f2f5;
+        :root {
+            /* ── Foundational palette ─────────────────────────────── */
+            --bg-app: #F8FAFC;           /* slate-50  — soft, low-strain background */
+            --bg-card: #FFFFFF;
+            --bg-subtle: #F1F5F9;        /* slate-100 */
+            --bg-hover: #F8FAFC;
+            --bg-elevated: #FFFFFF;
+
+            /* ── Text ────────────────────────────────────────────── */
+            --text-primary: #0F172A;     /* slate-900 — headings, strong text */
+            --text-body: #334155;        /* slate-700 — body */
+            --text-muted: #64748B;       /* slate-500 — meta */
+            --text-faint: #94A3B8;       /* slate-400 — labels */
+
+            /* ── Borders ─────────────────────────────────────────── */
+            --border: #E2E8F0;           /* slate-200 */
+            --border-strong: #CBD5E1;    /* slate-300 */
+
+            /* ── Brand ───────────────────────────────────────────── */
+            --brand: #4F46E5;            /* indigo-600 — trust, intellect */
+            --brand-soft: #EEF2FF;      /* indigo-50  */
+            --brand-hover: #4338CA;     /* indigo-700 */
+
+            /* ── Semantic ────────────────────────────────────────── */
+            --success: #10B981;         /* emerald-500 */
+            --success-soft: #D1FAE5;
+            --warning: #F59E0B;         /* amber-500 */
+            --warning-soft: #FEF3C7;
+            --danger: #F43F5E;           /* rose-500 */
+            --danger-soft: #FFE4E6;
+            --info: #0EA5E9;             /* sky-500 */
+            --info-soft: #E0F2FE;
+
+            /* ── Score colors ────────────────────────────────────── */
+            --score-excellent: #10B981;
+            --score-good: #4F46E5;
+            --score-possible: #F59E0B;
+            --score-weak: #F43F5E;
+
+            /* ── Shadows ─────────────────────────────────────────── */
+            --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(15 23 42 / 0.07), 0 2px 4px -2px rgb(15 23 42 / 0.05);
+            --shadow-lg: 0 10px 15px -3px rgb(15 23 42 / 0.08), 0 4px 6px -4px rgb(15 23 42 / 0.05);
+            --shadow-xl: 0 20px 25px -5px rgb(15 23 42 / 0.10), 0 8px 10px -6px rgb(15 23 42 / 0.05);
+
+            /* ── Radii ──────────────────────────────────────────── */
+            --r-sm: 6px;
+            --r-md: 10px;
+            --r-lg: 14px;
+            --r-xl: 20px;
+            --r-full: 9999px;
+        }
+
+        * {
+            font-family: 'Vazir', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            box-sizing: border-box;
+        }
+        body {
+            background: var(--bg-app);
             font-size: 15px;
             line-height: 1.6;
+            color: var(--text-body);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
+        /* ──────────────────────────────────────────────────────────
+           HEADER
+        ────────────────────────────────────────────────────────── */
         .dashboard-header {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background:
+                radial-gradient(ellipse at top left, rgb(99 102 241 / 0.15), transparent 50%),
+                radial-gradient(ellipse at bottom right, rgb(14 165 233 / 0.10), transparent 50%),
+                linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #312E81 100%);
             color: white;
-            padding: 1.75rem 0;
+            padding: 2rem 0 1.5rem;
             margin-bottom: 1.5rem;
-            border-bottom: 3px solid #e94560;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border-bottom: 1px solid rgb(255 255 255 / 0.08);
+            position: relative;
+            overflow: hidden;
         }
-        .dashboard-header h1 { font-weight: 800; letter-spacing: -0.5px; }
-        .dashboard-header .badge-count {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            padding: 0.5rem 1.25rem;
-            border-radius: 50px;
-            font-size: 0.95rem;
-            border: 1px solid rgba(255,255,255,0.1);
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgb(255 255 255 / 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgb(255 255 255 / 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
         }
-
-        .filter-bar {
-            background: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            margin-bottom: 1.5rem;
+        .dashboard-header > .container { position: relative; z-index: 1; }
+        .dashboard-header h1 {
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            font-size: 1.75rem;
         }
-        .filter-bar .btn-group .btn {
-            border-radius: 50px !important;
-            padding: 0.35rem 1.2rem;
-            font-size: 0.8rem;
+        .dashboard-header .subtitle {
+            color: rgb(255 255 255 / 0.65);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .header-action {
+            background: rgb(255 255 255 / 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgb(255 255 255 / 0.12);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--r-full);
+            font-size: 0.825rem;
             font-weight: 500;
+            transition: all 0.15s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
         }
-        .filter-bar .btn-group .btn.active {
-            background: #0d6efd;
+        .header-action:hover {
+            background: rgb(255 255 255 / 0.16);
             color: white;
-            border-color: #0d6efd;
+            transform: translateY(-1px);
+        }
+        .badge-count {
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            padding: 0.4rem 0.9rem;
+            border-radius: var(--r-full);
+            font-size: 0.825rem;
+            font-weight: 600;
+            border: 1px solid rgb(255 255 255 / 0.15);
+            box-shadow: 0 4px 12px rgb(79 70 229 / 0.3);
         }
 
+        /* ──────────────────────────────────────────────────────────
+           STATS STRIP — bento-grid inspired summary
+        ────────────────────────────────────────────────────────── */
+        .stats-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card:hover {
+            border-color: var(--border-strong);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        .stat-card.active {
+            border-color: var(--brand);
+            background: linear-gradient(135deg, var(--brand-soft) 0%, var(--bg-card) 100%);
+        }
+        .stat-card .stat-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--r-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .stat-card .stat-icon.pending    { background: var(--info-soft);    color: var(--info); }
+        .stat-card .stat-icon.shortlist  { background: var(--warning-soft); color: var(--warning); }
+        .stat-card .stat-icon.rejected   { background: var(--danger-soft);  color: var(--danger); }
+        .stat-card .stat-icon.deadline   { background: var(--brand-soft);   color: var(--brand); }
+
+        .stat-card .stat-text { min-width: 0; }
+        .stat-card .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.1;
+            font-family: 'Inter', sans-serif;
+        }
+        .stat-card .stat-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        /* ──────────────────────────────────────────────────────────
+           FILTER BAR
+        ────────────────────────────────────────────────────────── */
+        .filter-bar {
+            background: var(--bg-card);
+            padding: 0.65rem 1rem;
+            border-radius: var(--r-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            background: rgb(255 255 255 / 0.95);
+        }
+        .seg-btn {
+            border-radius: var(--r-full) !important;
+            padding: 0.35rem 0.95rem !important;
+            font-size: 0.8rem !important;
+            font-weight: 500 !important;
+            border: 1px solid var(--border) !important;
+            color: var(--text-body) !important;
+            background: var(--bg-card) !important;
+            transition: all 0.15s ease !important;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .seg-btn:hover {
+            border-color: var(--border-strong) !important;
+            background: var(--bg-subtle) !important;
+        }
+        .seg-btn.active {
+            background: var(--text-primary) !important;
+            color: white !important;
+            border-color: var(--text-primary) !important;
+        }
+        .seg-btn .count-pill {
+            background: rgb(255 255 255 / 0.2);
+            color: inherit;
+            font-size: 0.68rem;
+            padding: 0.1rem 0.45rem;
+            border-radius: var(--r-full);
+            font-weight: 600;
+        }
+        .seg-btn:not(.active) .count-pill {
+            background: var(--bg-subtle);
+            color: var(--text-muted);
+        }
+        .filter-bar .btn-group-sm > .btn {
+            margin: 0 1px;
+        }
+
+        /* ──────────────────────────────────────────────────────────
+           POSITION CARDS
+        ────────────────────────────────────────────────────────── */
         .position-row {
-            background: white;
-            border-radius: 16px;
-            margin-bottom: 1.25rem;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-            transition: all 0.25s ease;
-            border: 1px solid #edf2f7;
+            background: var(--bg-card);
+            border-radius: var(--r-lg);
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
             overflow: hidden;
         }
         .position-row:hover {
-            box-shadow: 0 8px 30px rgba(0,0,0,0.10);
-            border-color: #d0d7de;
-            transform: translateY(-2px);
+            border-color: var(--border-strong);
+            box-shadow: var(--shadow-md);
+        }
+        .position-row.expanded {
+            border-color: var(--brand);
+            box-shadow: var(--shadow-lg);
         }
 
         .row-header {
@@ -77,50 +284,60 @@
             padding: 0;
             cursor: pointer;
             transition: background 0.15s;
+            min-height: 88px;
         }
-        .row-header:hover {
-            background: #f9fbfd;
-        }
+        .row-header:hover { background: var(--bg-hover); }
 
+        /* Score column — refined ring instead of circle */
         .score-col {
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 100px;
             padding: 1rem 1.25rem;
-            background: #f8fafc;
-            border-right: 1px solid #edf2f7;
             flex-shrink: 0;
+            width: 96px;
+            border-right: 1px solid var(--border);
+            background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-subtle) 100%);
         }
-        .score-circle {
-            width: 68px;
-            height: 68px;
+        .score-ring {
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             font-weight: 700;
             color: white;
             position: relative;
-            transition: transform 0.2s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+            transition: transform 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.02em;
         }
-        .score-circle:hover {
-            transform: scale(1.05);
-        }
-        .score-circle.excellent { background: linear-gradient(135deg, #00b894, #00a381); }
-        .score-circle.good     { background: linear-gradient(135deg, #0984e3, #6c5ce7); }
-        .score-circle.possible { background: linear-gradient(135deg, #fdcb6e, #f39c12); }
-        .score-circle.weak     { background: linear-gradient(135deg, #e17055, #d63031); }
-        .score-circle .score-label {
+        .score-ring::before {
+            content: '';
             position: absolute;
-            bottom: -22px;
-            font-size: 0.6rem;
+            inset: -3px;
+            border-radius: 50%;
+            background: inherit;
+            opacity: 0.2;
+            filter: blur(8px);
+            z-index: -1;
+        }
+        .score-ring:hover { transform: scale(1.06); }
+        .score-ring.excellent { background: linear-gradient(135deg, #10B981, #059669); }
+        .score-ring.good     { background: linear-gradient(135deg, #4F46E5, #7C3AED); }
+        .score-ring.possible { background: linear-gradient(135deg, #F59E0B, #D97706); }
+        .score-ring.weak     { background: linear-gradient(135deg, #F43F5E, #BE123C); }
+        .score-ring.none     { background: linear-gradient(135deg, #94A3B8, #64748B); }
+        .score-ring .score-label {
+            position: absolute;
+            bottom: -20px;
+            font-size: 0.58rem;
             font-weight: 600;
-            color: #6c757d;
+            color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.06em;
             white-space: nowrap;
         }
 
@@ -135,45 +352,74 @@
         .title-row {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.65rem;
             flex-wrap: wrap;
+            margin-bottom: 0.3rem;
         }
         .title-row h5 {
-            font-size: 1.05rem;
+            font-size: 1rem;
             font-weight: 600;
             margin: 0;
-            color: #1a1a2e;
+            color: var(--text-primary);
             line-height: 1.3;
+            letter-spacing: -0.01em;
         }
         .title-row h5 a {
-            color: #1a1a2e;
+            color: var(--text-primary);
             text-decoration: none;
+            transition: color 0.15s;
         }
-        .title-row h5 a:hover { color: #0d6efd; }
+        .title-row h5 a:hover { color: var(--brand); }
 
         .meta-row {
             display: flex;
             align-items: center;
-            gap: 0.75rem 1.25rem;
+            gap: 0.5rem 1rem;
             flex-wrap: wrap;
-            margin-top: 0.3rem;
             font-size: 0.8rem;
-            color: #6c757d;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
         }
         .meta-row .institution {
-            font-weight: 500;
-            color: #2d3436;
-        }
-        .meta-row .badge-deadline {
-            font-size: 0.7rem;
             font-weight: 600;
-            padding: 0.2rem 0.7rem;
-            border-radius: 50px;
+            color: var(--text-body);
         }
-        .badge-deadline.urgent   { background: #ffeaa7; color: #6c5200; }
-        .badge-deadline.critical { background: #fab1a0; color: #7a2e1a; }
-        .badge-deadline.safe     { background: #b2dfdb; color: #004d40; }
-        .badge-deadline.passed   { background: #dfe6e9; color: #636e72; }
+        .meta-row .meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .meta-row i {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .badge-deadline {
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 0.2rem 0.65rem;
+            border-radius: var(--r-full);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .badge-deadline.urgent   { background: var(--warning-soft); color: #92400E; }
+        .badge-deadline.critical { background: var(--danger-soft);  color: #9F1239; }
+        .badge-deadline.safe     { background: var(--success-soft); color: #065F46; }
+        .badge-deadline.passed   { background: var(--bg-subtle);    color: var(--text-muted); }
+
+        .action-btn-group {
+            display: flex;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+            margin-top: 0.2rem;
+        }
+        .action-btn-group .btn-sm {
+            padding: 0.25rem 0.6rem;
+            font-size: 0.72rem;
+            border-radius: var(--r-md);
+            font-weight: 500;
+        }
 
         .right-col {
             display: flex;
@@ -182,43 +428,56 @@
             justify-content: center;
             padding: 0.85rem 1.25rem;
             flex-shrink: 0;
-            border-left: 1px solid #edf2f7;
-            background: #fafbfc;
-            min-width: 130px;
+            border-left: 1px solid var(--border);
+            background: var(--bg-subtle);
+            min-width: 140px;
+            gap: 0.4rem;
         }
-        .right-col .badge-match-cat {
-            font-size: 0.7rem;
+        .badge-match-cat {
+            font-size: 0.68rem;
             font-weight: 600;
-            padding: 0.3rem 0.8rem;
-            border-radius: 50px;
+            padding: 0.3rem 0.75rem;
+            border-radius: var(--r-full);
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.04em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
         }
-        .right-col .expand-icon {
-            color: #adb5bd;
-            transition: transform 0.25s ease;
-            font-size: 0.9rem;
-            width: 30px;
-            height: 30px;
+        .expand-icon {
+            color: var(--text-faint);
+            transition: transform 0.25s ease, color 0.15s;
+            font-size: 0.85rem;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            background: #f1f3f5;
-            margin-top: 0.4rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
         }
-        .position-row.expanded .expand-icon { transform: rotate(180deg); }
-        .right-col .expand-icon:hover {
-            background: #e9ecef;
-            color: #495057;
+        .position-row.expanded .expand-icon {
+            transform: rotate(180deg);
+            color: var(--brand);
+            border-color: var(--brand);
+        }
+        .expand-icon:hover {
+            background: var(--brand-soft);
+            color: var(--brand);
+            border-color: var(--brand);
         }
 
+        /* ──────────────────────────────────────────────────────────
+           DETAIL PANEL (RTL — for AI output in Persian/Arabic)
+        ────────────────────────────────────────────────────────── */
         .row-detail {
             display: none;
             direction: rtl;
             padding: 1.5rem 1.75rem 2rem;
-            border-top: 1px solid #edf2f7;
-            background: #fafbfc;
+            border-top: 1px solid var(--border);
+            background: linear-gradient(180deg, var(--bg-subtle) 0%, var(--bg-card) 100%);
+            text-align: right;
         }
         .position-row.expanded .row-detail { display: block; }
 
@@ -232,156 +491,250 @@
         }
 
         .detail-item {
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.85rem;
         }
         .detail-item .label {
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
-            color: #6c757d;
-            margin-bottom: 0.15rem;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
             display: flex;
             align-items: center;
             gap: 0.4rem;
         }
+        .detail-item .label i {
+            color: var(--brand);
+            font-size: 0.75rem;
+        }
         .detail-item .value {
             font-size: 0.85rem;
-            color: #1a1a2e;
-            line-height: 1.5;
+            color: var(--text-primary);
+            line-height: 1.6;
         }
         .detail-item .value .tag {
             display: inline-block;
-            background: #eef1f4;
-            padding: 0.1rem 0.6rem;
-            border-radius: 50px;
+            background: var(--bg-subtle);
+            padding: 0.15rem 0.65rem;
+            border-radius: var(--r-full);
             font-size: 0.7rem;
-            margin: 0.1rem 0.15rem;
-            color: #2d3436;
+            margin: 0.15rem 0.1rem;
+            color: var(--text-body);
+            border: 1px solid var(--border);
+            font-weight: 500;
         }
-        .detail-item .value .tag.mandatory { background: #ffe0e0; color: #a02c2c; }
-        .detail-item .value .tag.core     { background: #ffecd2; color: #7a5a1a; }
-        .detail-item .value .tag.preferred{ background: #d4edda; color: #155724; }
+        .detail-item .value .tag.mandatory { background: var(--danger-soft);  color: #9F1239; border-color: var(--danger-soft); }
+        .detail-item .value .tag.core      { background: var(--warning-soft); color: #92400E; border-color: var(--warning-soft); }
+        .detail-item .value .tag.preferred { background: var(--success-soft); color: #065F46; border-color: var(--success-soft); }
 
+        /* Score bars */
         .score-bar-wrap {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.3rem;
         }
         .score-bar-wrap .bar-label {
-            font-size: 0.7rem;
+            font-size: 0.72rem;
             font-weight: 500;
-            color: #495057;
+            color: var(--text-body);
             min-width: 90px;
         }
         .score-bar-wrap .bar-track {
             flex: 1;
-            height: 5px;
-            background: #e9ecef;
-            border-radius: 10px;
+            height: 6px;
+            background: var(--bg-subtle);
+            border-radius: var(--r-full);
             overflow: hidden;
             max-width: 160px;
         }
         .score-bar-wrap .bar-track .bar-fill {
             height: 100%;
-            border-radius: 10px;
+            border-radius: var(--r-full);
             transition: width 0.6s ease;
         }
         .score-bar-wrap .bar-value {
-            font-size: 0.7rem;
+            font-size: 0.72rem;
             font-weight: 600;
-            min-width: 30px;
+            min-width: 28px;
             text-align: right;
-            color: #1a1a2e;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
         }
 
+        /* Evidence tags */
         .evidence-tag {
             display: inline-block;
             font-size: 0.65rem;
-            padding: 0.1rem 0.6rem;
-            border-radius: 50px;
-            margin: 0.1rem 0.2rem;
-        }
-        .evidence-tag.direct        { background: #d4edda; color: #155724; }
-        .evidence-tag.transferable  { background: #fff3cd; color: #856404; }
-        .evidence-tag.missing       { background: #f8d7da; color: #721c24; }
-        .evidence-tag.unclear       { background: #e2e3e5; color: #383d41; }
-
-        .rec-badge {
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 0.2rem 0.8rem;
-            border-radius: 50px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-        .rec-badge.strongly_recommended { background: #00b894; color: white; }
-        .rec-badge.recommended          { background: #0984e3; color: white; }
-        .rec-badge.possible_but_risky   { background: #fdcb6e; color: #2d3436; }
-        .rec-badge.not_recommended      { background: #e17055; color: white; }
-
-        .action-btn-group {
-            display: flex;
-            gap: 0.35rem;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-        }
-        .action-btn-group .btn-sm {
-            padding: 0.2rem 0.5rem;
-            font-size: 0.7rem;
-        }
-
-        .pagination .page-link {
-            border-radius: 50px;
-            margin: 0 0.2rem;
-            border: none;
-            color: #1a1a2e;
+            padding: 0.15rem 0.6rem;
+            border-radius: var(--r-full);
+            margin: 0.1rem 0.15rem;
             font-weight: 500;
+            border: 1px solid transparent;
+        }
+        .evidence-tag.direct        { background: var(--success-soft); color: #065F46; border-color: var(--success-soft); }
+        .evidence-tag.transferable  { background: var(--warning-soft); color: #92400E; border-color: var(--warning-soft); }
+        .evidence-tag.missing       { background: var(--danger-soft);  color: #9F1239; border-color: var(--danger-soft); }
+        .evidence-tag.unclear       { background: var(--bg-subtle);   color: var(--text-muted); border-color: var(--border); }
+
+        /* Recommendation badge */
+        .rec-badge {
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 0.2rem 0.7rem;
+            border-radius: var(--r-full);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .rec-badge.strongly_recommended { background: var(--success); color: white; }
+        .rec-badge.recommended          { background: var(--brand);   color: white; }
+        .rec-badge.possible_but_risky   { background: var(--warning); color: #422006; }
+        .rec-badge.not_recommended      { background: var(--danger);  color: white; }
+
+        /* ──────────────────────────────────────────────────────────
+           PAGINATION
+        ────────────────────────────────────────────────────────── */
+        .pagination .page-link {
+            border-radius: var(--r-md);
+            margin: 0 0.2rem;
+            border: 1px solid var(--border);
+            color: var(--text-body);
+            font-weight: 500;
+            min-width: 36px;
+            text-align: center;
+            padding: 0.4rem 0.7rem;
         }
         .pagination .page-item.active .page-link {
-            background: #0d6efd;
+            background: var(--text-primary);
             color: white;
+            border-color: var(--text-primary);
         }
         .pagination .page-item .page-link:hover {
-            background: #e9ecef;
+            background: var(--bg-subtle);
+            border-color: var(--border-strong);
         }
 
+        /* ──────────────────────────────────────────────────────────
+           STATES
+        ────────────────────────────────────────────────────────── */
         .loading-spinner {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 300px;
+            gap: 1rem;
+        }
+        .loading-spinner .spinner-border {
+            width: 2.5rem;
+            height: 2.5rem;
+            color: var(--brand);
         }
         .empty-state {
             text-align: center;
             padding: 4rem 1rem;
         }
-        .empty-state i { font-size: 3.5rem; color: #adb5bd; margin-bottom: 1rem; }
+        .empty-state .empty-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            background: var(--bg-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--text-faint);
+        }
+        .empty-state h5 { color: var(--text-primary); font-weight: 700; }
+        .empty-state p { color: var(--text-muted); }
 
+        /* Status filter pills (second-level) */
+        .pill-btn {
+            border-radius: var(--r-full) !important;
+            padding: 0.3rem 0.85rem !important;
+            font-size: 0.75rem !important;
+            font-weight: 500 !important;
+            border: 1px solid var(--border) !important;
+            color: var(--text-body) !important;
+            background: var(--bg-card) !important;
+            transition: all 0.15s !important;
+        }
+        .pill-btn:hover { background: var(--bg-subtle) !important; }
+        .pill-btn.active {
+            background: var(--brand-soft) !important;
+            color: var(--brand) !important;
+            border-color: var(--brand) !important;
+        }
+
+        /* Make Bootstrap outline buttons less harsh */
+        .btn-outline-success, .btn-outline-warning,
+        .btn-outline-danger, .btn-outline-primary,
+        .btn-outline-secondary {
+            border-width: 1px;
+        }
+
+        /* Utility */
         .text-truncate-2 {
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        .gap-1 { gap: 0.25rem; }
-        .gap-2 { gap: 0.5rem; }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-subtle); }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-strong);
+            border-radius: var(--r-full);
+            border: 2px solid var(--bg-subtle);
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+        /* Subtle entrance animation */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .position-row { animation: fadeUp 0.3s ease backwards; }
+        .position-row:nth-child(1) { animation-delay: 0.02s; }
+        .position-row:nth-child(2) { animation-delay: 0.04s; }
+        .position-row:nth-child(3) { animation-delay: 0.06s; }
+        .position-row:nth-child(4) { animation-delay: 0.08s; }
+        .position-row:nth-child(5) { animation-delay: 0.10s; }
+        .position-row:nth-child(n+6) { animation-delay: 0.12s; }
+
+        /* Focus visible accessibility */
+        button:focus-visible, a:focus-visible {
+            outline: 2px solid var(--brand);
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ─── Header ──────────────────────────────────────────────────── -->
+    <!-- ─── HEADER ─────────────────────────────────────────────── -->
     <div class="dashboard-header">
         <div class="container">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <div>
-                    <h1 class="display-6 fw-bold mb-0"><i class="fas fa-briefcase me-2"></i>Position Dashboard</h1>
-                    <p class="mb-0 opacity-75 small">AI-matched academic positions ranked by fit</p>
+                    <h1 class="mb-0">
+                        <i class="fas fa-briefcase me-2" style="opacity: 0.9;"></i>
+                        Position Dashboard
+                    </h1>
+                    <p class="subtitle mb-0">
+                        AI-matched academic positions ranked by fit
+                    </p>
                 </div>
-                <div class="d-flex align-items-center gap-3">
-                    <a href="/websites/" class="btn btn-outline-light btn-sm">
-                        <i class="fas fa-globe me-1"></i> Websites
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <a href="/websites/" class="header-action">
+                        <i class="fas fa-globe"></i>
+                        <span>Websites</span>
                     </a>
                     <span class="badge-count" id="totalCount">0 positions</span>
                 </div>
@@ -391,63 +744,106 @@
 
     <div class="container">
 
-        <!-- ─── Filter Bar ──────────────────────────────────────────── -->
+        <!-- ─── STATS STRIP ────────────────────────────────────── -->
+        <div class="stats-strip">
+            <div class="stat-card" data-view="pending" onclick="switchView('pending')">
+                <div class="stat-icon pending">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-text">
+                    <div class="stat-value" id="statPending">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+            <div class="stat-card" data-view="shortlisted" onclick="switchView('shortlisted')">
+                <div class="stat-icon shortlist">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-text">
+                    <div class="stat-value" id="statShortlisted">0</div>
+                    <div class="stat-label">Shortlisted</div>
+                </div>
+            </div>
+            <div class="stat-card" data-view="not_interested" onclick="switchView('not_interested')">
+                <div class="stat-icon rejected">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="stat-text">
+                    <div class="stat-value" id="statNotInterested">0</div>
+                    <div class="stat-label">Not Interested</div>
+                </div>
+            </div>
+            <div class="stat-card" onclick="checkDeadlines()" title="Scan for passed deadlines">
+                <div class="stat-icon deadline">
+                    <i class="fas fa-stopwatch"></i>
+                </div>
+                <div class="stat-text">
+                    <div class="stat-value" style="font-size: 0.95rem; line-height: 1.4;">Check</div>
+                    <div class="stat-label">Deadlines</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── FILTER BAR ─────────────────────────────────────── -->
         <div class="filter-bar d-flex flex-wrap align-items-center justify-content-between gap-2">
             <div class="d-flex flex-wrap align-items-center gap-2">
-                <!-- View Selector -->
                 <div class="btn-group btn-group-sm" role="group" id="viewSelector">
-                    <button class="btn btn-outline-primary active" data-view="pending">
-                        📋 Pending <span class="badge bg-secondary" id="pendingCount">0</span>
+                    <button class="btn seg-btn active" data-view="pending">
+                        <i class="fas fa-clock"></i>
+                        <span>Pending</span>
+                        <span class="count-pill" id="pendingCount">0</span>
                     </button>
-                    <button class="btn btn-outline-primary" data-view="shortlisted">
-                        ⭐ Shortlisted <span class="badge bg-secondary" id="shortlistedCount">0</span>
+                    <button class="btn seg-btn" data-view="shortlisted">
+                        <i class="fas fa-star"></i>
+                        <span>Shortlisted</span>
+                        <span class="count-pill" id="shortlistedCount">0</span>
                     </button>
-                    <button class="btn btn-outline-primary" data-view="not_interested">
-                        🚫 Not Interested <span class="badge bg-secondary" id="notInterestedCount">0</span>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="checkDeadlines()">
-                        ⏰ Check Deadlines
+                    <button class="btn seg-btn" data-view="not_interested">
+                        <i class="fas fa-times-circle"></i>
+                        <span>Not Interested</span>
+                        <span class="count-pill" id="notInterestedCount">0</span>
                     </button>
                 </div>
 
-                <!-- Second-level status filter (dynamic) -->
                 <div id="statusFilterContainer" class="d-flex align-items-center gap-2"></div>
             </div>
 
             <div class="d-flex align-items-center gap-2">
                 <i class="fas fa-sort-amount-down text-muted small"></i>
-                <span class="text-muted small">Sorted by score</span>
+                <span class="text-muted small">Sorted by match score</span>
             </div>
         </div>
 
-        <!-- ─── Positions Container ─────────────────────────────────── -->
+        <!-- ─── POSITIONS CONTAINER ────────────────────────────── -->
         <div id="positionsContainer"></div>
 
-        <!-- ─── Loading ──────────────────────────────────────────────── -->
+        <!-- ─── LOADING ────────────────────────────────────────── -->
         <div id="loadingSpinner" class="loading-spinner">
-            <div class="spinner-border text-primary" style="width: 2.5rem; height: 2.5rem;" role="status">
+            <div class="spinner-border" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
+            <div class="text-muted small">Loading positions…</div>
         </div>
 
-        <!-- ─── No Results ──────────────────────────────────────────── -->
+        <!-- ─── NO RESULTS ────────────────────────────────────── -->
         <div id="noResults" class="empty-state d-none">
-            <i class="fas fa-search"></i>
+            <div class="empty-icon">
+                <i class="fas fa-search"></i>
+            </div>
             <h5 class="fw-bold">No positions found</h5>
-            <p class="text-muted small">Adjust your filters or run the matcher first.</p>
+            <p class="small">Adjust your filters or run the matcher first.</p>
         </div>
 
-        <!-- ─── Pagination ──────────────────────────────────────────── -->
+        <!-- ─── PAGINATION ────────────────────────────────────── -->
         <nav aria-label="Page navigation" class="mt-4 d-none" id="paginationNav">
             <ul class="pagination justify-content-center" id="paginationList"></ul>
         </nav>
 
     </div>
 
-    <!-- ─── Scripts ────────────────────────────────────────────────── -->
+    <!-- ─── Scripts ─────────────────────────────────────────────── -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-
         function getCSRFToken() {
             const cookieValue = document.cookie
                 .split('; ')
@@ -455,17 +851,17 @@
             return cookieValue ? cookieValue.split('=')[1] : '';
         }
 
-        // ─── Configuration ───────────────────────────────────────────
+        // ─── Configuration ────────────────────────────────────────
         const API_BASE = '/api/v1/positions/dashboard/';
         const PAGE_SIZE = 12;
 
-        // ─── State ───────────────────────────────────────────────────
+        // ─── State ────────────────────────────────────────────────
         let currentView = 'pending';
         let currentPage = 1;
         let currentStatus = '';
         let totalCount = 0;
 
-        // ─── DOM refs ────────────────────────────────────────────────
+        // ─── DOM refs ─────────────────────────────────────────────
         const container = document.getElementById('positionsContainer');
         const spinner = document.getElementById('loadingSpinner');
         const noResults = document.getElementById('noResults');
@@ -473,7 +869,7 @@
         const paginationNav = document.getElementById('paginationNav');
         const paginationList = document.getElementById('paginationList');
 
-        // ─── Helpers ──────────────────────────────────────────────────
+        // ─── Helpers ──────────────────────────────────────────────
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
@@ -496,11 +892,11 @@
         }
 
         function getDeadlineBadge(days) {
-            if (days === null || days === undefined) return { cls: 'safe', label: 'No deadline' };
-            if (days < 0) return { cls: 'passed', label: '⚠️ Passed' };
-            if (days <= 7) return { cls: 'critical', label: `🔥 ${days}d left` };
-            if (days <= 30) return { cls: 'urgent', label: `📅 ${days}d left` };
-            return { cls: 'safe', label: `📅 ${days}d left` };
+            if (days === null || days === undefined) return { cls: 'safe', label: 'No deadline', icon: 'far fa-calendar' };
+            if (days < 0)  return { cls: 'passed',   label: 'Passed',       icon: 'fas fa-exclamation-circle' };
+            if (days <= 7)  return { cls: 'critical', label: `${days}d left`,  icon: 'fas fa-fire' };
+            if (days <= 30) return { cls: 'urgent',   label: `${days}d left`,  icon: 'fas fa-clock' };
+            return { cls: 'safe', label: `${days}d left`, icon: 'far fa-calendar' };
         }
 
         function getRecBadgeClass(rec) {
@@ -518,16 +914,55 @@
             return evidence[type].map(t => `<span class="evidence-tag ${type}">${escapeHtml(t)}</span>`).join(' ');
         }
 
+        // ─── Deadline check ───────────────────────────────────────
         async function checkDeadlines() {
-            const response = await fetch('/api/v1/positions/check-deadlines/', {
-                method: 'POST',
-                headers: { 'X-CSRFToken': getCSRFToken() }
-            });
-            const data = await response.json();
-            alert(data.message);  
-            fetchPositions(currentPage);  
+            try {
+                const response = await fetch('/api/v1/positions/check-deadlines/', {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': getCSRFToken() }
+                });
+                const data = await response.json();
+                // Use a non-blocking toast-style notification instead of alert()
+                showToast(data.message || 'Deadlines checked');
+                fetchPositions(currentPage);
+                fetchCounts();
+            } catch (e) {
+                showToast('Failed to check deadlines', 'error');
+            }
         }
-        // ─── Fetch counts for badges ────────────────────────────────
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            const colors = {
+                success: { bg: '#10B981', icon: 'fa-check-circle' },
+                error:   { bg: '#F43F5E', icon: 'fa-exclamation-circle' },
+                info:    { bg: '#4F46E5', icon: 'fa-info-circle' },
+            };
+            const c = colors[type] || colors.success;
+            toast.style.cssText = `
+                position: fixed; top: 20px; right: 20px; z-index: 9999;
+                background: ${c.bg}; color: white; padding: 0.85rem 1.25rem;
+                border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+                font-size: 0.875rem; font-weight: 500; max-width: 360px;
+                display: flex; align-items: center; gap: 0.5rem;
+                transform: translateX(400px); transition: transform 0.3s ease;
+            `;
+            toast.innerHTML = `<i class="fas ${c.icon}"></i><span>${escapeHtml(message)}</span>`;
+            document.body.appendChild(toast);
+            requestAnimationFrame(() => { toast.style.transform = 'translateX(0)'; });
+            setTimeout(() => {
+                toast.style.transform = 'translateX(400px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // ─── View switching (also used by stat cards) ───────────
+        function switchView(view) {
+            const btn = document.querySelector(`#viewSelector [data-view="${view}"]`);
+            if (btn) btn.click();
+        }
+
+        // ─── Fetch counts for badges ────────────────────────────
         async function fetchCounts() {
             try {
                 const res = await fetch('/api/v1/positions/counts/');
@@ -536,27 +971,29 @@
                 document.getElementById('pendingCount').textContent = data.pending;
                 document.getElementById('shortlistedCount').textContent = data.shortlisted;
                 document.getElementById('notInterestedCount').textContent = data.not_interested;
+                document.getElementById('statPending').textContent = data.pending;
+                document.getElementById('statShortlisted').textContent = data.shortlisted;
+                document.getElementById('statNotInterested').textContent = data.not_interested;
             } catch (e) {
                 console.error('Counts error:', e);
             }
         }
-                // ─── Build second-level filter buttons ──────────────────────
+
+        // ─── Build second-level filter buttons ──────────────────
         function buildStatusFilterButtons(view) {
-            const container = document.getElementById('statusFilterContainer');
+            const filterContainer = document.getElementById('statusFilterContainer');
             let buttons = '';
             if (view === 'pending') {
-                // Original status filter (SCRAPED, MATCHED, FAILED)
                 buttons = `
-                    <span class="fw-semibold small me-1">Status:</span>
+                    <span class="fw-semibold small me-1 text-muted">Status:</span>
                     <div class="btn-group btn-group-sm" role="group" id="statusFilter">
-                        <button class="btn btn-outline-secondary active" data-status="">All</button>
-                        <button class="btn btn-outline-success" data-status="MATCHED">Matched</button>
-                        <button class="btn btn-outline-warning" data-status="SCRAPED">Scraped</button>
-                        <button class="btn btn-outline-danger" data-status="FAILED">Failed</button>
+                        <button class="btn pill-btn active" data-status="">All</button>
+                        <button class="btn pill-btn" data-status="MATCHED">Matched</button>
+                        <button class="btn pill-btn" data-status="SCRAPED">Scraped</button>
+                        <button class="btn pill-btn" data-status="FAILED">Failed</button>
                     </div>
                 `;
             } else if (view === 'shortlisted') {
-                // Application status filters
                 const appStatuses = [
                     { value: '', label: 'All' },
                     { value: 'SHORTLISTED', label: '⭐ Shortlisted' },
@@ -565,24 +1002,23 @@
                     { value: 'OFFERED', label: '💰 Offered' },
                     { value: 'ACCEPTED', label: '✅ Accepted' },
                     { value: 'REJECTED', label: '❌ Rejected' },
-                    { value: 'DEADLINE_MISSED', label: '⏰ Deadline Missed' },
+                    { value: 'DEADLINE_MISSED', label: '⏰ Missed' },
                 ];
                 buttons = `
-                    <span class="fw-semibold small me-1">Application:</span>
-                    <div class="btn-group btn-group-sm" role="group" id="appStatusFilter">
+                    <span class="fw-semibold small me-1 text-muted">Application:</span>
+                    <div class="btn-group btn-group-sm flex-wrap" role="group" id="appStatusFilter">
                         ${appStatuses.map(s => `
-                            <button class="btn btn-outline-primary ${s.value === '' ? 'active' : ''}" data-appstatus="${s.value}">
+                            <button class="btn pill-btn ${s.value === '' ? 'active' : ''}" data-appstatus="${s.value}">
                                 ${s.label}
                             </button>
                         `).join('')}
                     </div>
                 `;
-            } else { // not_interested
+            } else {
                 buttons = `<span class="text-muted small">Showing Not Interested positions</span>`;
             }
-            container.innerHTML = buttons;
+            filterContainer.innerHTML = buttons;
 
-            // Re-bind events for the newly created buttons
             if (view === 'pending') {
                 document.getElementById('statusFilter')?.addEventListener('click', handleStatusFilterClick);
             } else if (view === 'shortlisted') {
@@ -590,7 +1026,7 @@
             }
         }
 
-        // ─── Event handlers ──────────────────────────────────────────
+        // ─── Event handlers ──────────────────────────────────────
         function handleViewSelectorClick(e) {
             const btn = e.target.closest('button');
             if (!btn) return;
@@ -598,9 +1034,11 @@
             btn.classList.add('active');
             currentView = btn.dataset.view;
             currentPage = 1;
-            // Reset second-level filter
             currentStatus = '';
-            // Rebuild the second-level filter buttons
+            // Update stat-card active state
+            document.querySelectorAll('.stat-card[data-view]').forEach(c => {
+                c.classList.toggle('active', c.dataset.view === currentView);
+            });
             buildStatusFilterButtons(currentView);
             fetchPositions(currentPage);
         }
@@ -620,32 +1058,35 @@
             if (!btn) return;
             document.querySelectorAll('#appStatusFilter .btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            currentStatus = btn.dataset.appstatus;  // used as app_status in API
+            currentStatus = btn.dataset.appstatus;
             currentPage = 1;
             fetchPositions(currentPage);
         }
-        // ─── Update Status ──────────────────────────────────────────────
+
+        // ─── Update Status ───────────────────────────────────────
         async function updateStatus(positionId, action, reason = null) {
             const url = `/api/v1/positions/${positionId}/${action}/`;
             const payload = reason ? { reason } : {};
-            
             try {
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': getCSRFToken(), 
+                        'X-CSRFToken': getCSRFToken(),
                     },
                     body: JSON.stringify(payload)
                 });
                 const data = await response.json();
+                showToast(`Position ${action.replace('-', ' ')}`, 'success');
                 fetchPositions(currentPage);
+                fetchCounts();
             } catch (error) {
                 console.error('Error updating status:', error);
-                alert('Failed to update status. Please try again.');
+                showToast('Failed to update status', 'error');
             }
         }
 
+        // ─── Render single row ───────────────────────────────────
         function renderRow(pos) {
             const match = pos.match;
             const score = match?.overall_score ?? 0;
@@ -696,30 +1137,30 @@
                 row.innerHTML = `
                     <div class="row-header" onclick="toggleRow(this.closest('.position-row'))">
                         <div class="score-col">
-                            <div class="score-circle weak" style="background: #6c757d;">
+                            <div class="score-ring none">
                                 —
                                 <span class="score-label">No Match</span>
                             </div>
                         </div>
                         <div class="main-col">
                             <div class="title-row">
-                                <h5><a href="${escapeHtml(pos.url)}" target="_blank">${escapeHtml(pos.title)}</a></h5>
+                                <h5><a href="${escapeHtml(pos.url)}" target="_blank" onclick="event.stopPropagation()">${escapeHtml(pos.title)}</a></h5>
                             </div>
                             <div class="meta-row">
                                 <span class="institution"><i class="fas fa-university ms-1"></i>${escapeHtml(pos.company || 'Unknown')}</span>
-                                <span class="badge-deadline safe">⏳ Awaiting matching</span>
+                                <span class="badge-deadline safe"><i class="fas fa-hourglass-half"></i>Awaiting matching</span>
                             </div>
                             <div class="action-btn-group">${actionButtons}</div>
                         </div>
                         <div class="right-col">
-                            <span class="badge-match-cat" style="background:#e9ecef; color:#6c757d;">Not Matched</span>
+                            <span class="badge-match-cat" style="background:var(--bg-subtle); color:var(--text-muted);">Not Matched</span>
                             <span class="expand-icon"><i class="fas fa-chevron-down"></i></span>
                         </div>
                     </div>
                     <div class="row-detail">
                         <div class="detail-grid">
-                            <div class="detail-item"><div class="label">Status</div><div class="value">${pos.status_label || pos.status}</div></div>
-                            <div class="detail-item"><div class="label">Scraped At</div><div class="value">${formatDate(pos.scraped_at)}</div></div>
+                            <div class="detail-item"><div class="label"><i class="fas fa-circle-info"></i>Status</div><div class="value">${pos.status_label || pos.status}</div></div>
+                            <div class="detail-item"><div class="label"><i class="far fa-clock"></i>Scraped At</div><div class="value">${formatDate(pos.scraped_at)}</div></div>
                         </div>
                     </div>
                 `;
@@ -768,34 +1209,45 @@
                 'preferred_requirements': 'Preferred',
             };
 
+            const matchCatLabel = score >= 80 ? '🌟 Strong' : score >= 60 ? '✅ Good' : score >= 40 ? '📌 Possible' : '⚠️ Weak';
+            const matchCatColors = {
+                80: { bg: 'var(--success-soft)', fg: '#065F46' },
+                60: { bg: 'var(--brand-soft)',   fg: 'var(--brand)' },
+                40: { bg: 'var(--warning-soft)', fg: '#92400E' },
+                0:  { bg: 'var(--danger-soft)',  fg: '#9F1239' },
+            };
+            const catColor = score >= 80 ? matchCatColors[80] :
+                            score >= 60 ? matchCatColors[60] :
+                            score >= 40 ? matchCatColors[40] : matchCatColors[0];
+
             const row = document.createElement('div');
             row.className = 'position-row';
             row.innerHTML = `
                 <div class="row-header" onclick="toggleRow(this.closest('.position-row'))">
                     <div class="score-col">
-                        <div class="score-circle ${scoreClass}">
+                        <div class="score-ring ${scoreClass}">
                             ${score.toFixed(0)}
                             <span class="score-label">${match.match_category_label || 'Match'}</span>
                         </div>
                     </div>
                     <div class="main-col">
                         <div class="title-row">
-                            <h5><a href="${escapeHtml(pos.url)}" target="_blank">${escapeHtml(pos.title)}</a></h5>
+                            <h5><a href="${escapeHtml(pos.url)}" target="_blank" onclick="event.stopPropagation()">${escapeHtml(pos.title)}</a></h5>
                             ${match.application_recommendation ? `<span class="rec-badge ${recClass}">${match.application_recommendation_label || match.application_recommendation}</span>` : ''}
                         </div>
                         <div class="meta-row">
                             <span class="institution"><i class="fas fa-university ms-1"></i>${escapeHtml(match.institution || pos.company || 'Unknown')}</span>
-                            ${match.position_type ? `<span><i class="fas fa-tag ms-1"></i>${escapeHtml(match.position_type)}</span>` : ''}
-                            ${match.country ? `<span><i class="fas fa-map-pin ms-1"></i>${escapeHtml(match.country)}${match.city ? '، ' + escapeHtml(match.city) : ''}</span>` : ''}
-                            <span class="badge-deadline ${deadlineInfo.cls}">${deadlineInfo.label}</span>
-                            <span class="badge-deadline ${deadlineInfo.cls}">Deadline: ${application_deadline_iso}</span>
-                            ${match.start_date ? `<span><i class="far fa-calendar-plus ms-1"></i>${formatDate(match.start_date)}</span>` : ''}
+                            ${match.position_type ? `<span class="meta-item"><i class="fas fa-tag ms-1"></i>${escapeHtml(match.position_type)}</span>` : ''}
+                            ${match.country ? `<span class="meta-item"><i class="fas fa-map-pin ms-1"></i>${escapeHtml(match.country)}${match.city ? '، ' + escapeHtml(match.city) : ''}</span>` : ''}
+                            <span class="badge-deadline ${deadlineInfo.cls}"><i class="${deadlineInfo.icon}"></i>${deadlineInfo.label}</span>
+                            <span class="badge-deadline ${deadlineInfo.cls}"><i class="far fa-calendar"></i>${application_deadline_iso}</span>
+                            ${match.start_date ? `<span class="meta-item"><i class="far fa-calendar-plus ms-1"></i>${formatDate(match.start_date)}</span>` : ''}
                         </div>
                         <div class="action-btn-group">${actionButtons}</div>
                     </div>
                     <div class="right-col">
-                        <span class="badge-match-cat" style="background:${score>=80?'#d4edda':score>=60?'#cce5ff':score>=40?'#fff3cd':'#f8d7da'}; color:${score>=80?'#155724':score>=60?'#004085':score>=40?'#856404':'#721c24'}">
-                            ${score >= 80 ? '🌟 Strong' : score >= 60 ? '✅ Good' : score >= 40 ? '📌 Possible' : '⚠️ Weak'}
+                        <span class="badge-match-cat" style="background:${catColor.bg}; color:${catColor.fg};">
+                            ${matchCatLabel}
                         </span>
                         <span class="expand-icon"><i class="fas fa-chevron-down"></i></span>
                     </div>
@@ -805,43 +1257,43 @@
                         <div>
                             ${match.project_narrative_description ? `
                             <div class="detail-item">
-                                <div class="label"><i class="far fa-file-alt ms-1"></i>Position Summary</div>
+                                <div class="label"><i class="far fa-file-alt"></i>Position Summary</div>
                                 <div class="value small" style="text-align: justify;">${escapeHtml(match.project_narrative_description)}</div>
                             </div>
                             ` : ''}
                             ${match.summary ? `
                             <div class="detail-item">
-                                <div class="label"><i class="far fa-file-alt ms-1"></i>Summary</div>
+                                <div class="label"><i class="far fa-file-alt"></i>Summary</div>
                                 <div class="value small" style="text-align: justify;">${escapeHtml(match.summary)}</div>
                             </div>
                             ` : ''}
                             ${match.main_reason ? `
                             <div class="detail-item">
-                                <div class="label"><i class="fas fa-bullseye ms-1"></i>Main Reason</div>
+                                <div class="label"><i class="fas fa-bullseye"></i>Main Reason</div>
                                 <div class="value small text-muted" style="text-align: justify;">${escapeHtml(match.main_reason)}</div>
                             </div>
                             ` : ''}
                             ${match.funding_and_duration ? `
                             <div class="detail-item">
-                                <div class="label"><i class="fas fa-coins ms-1"></i>Funding &amp; Duration</div>
+                                <div class="label"><i class="fas fa-coins"></i>Funding &amp; Duration</div>
                                 <div class="value small">${escapeHtml(match.funding_and_duration)}</div>
                             </div>
                             ` : ''}
                             ${match.research_area && match.research_area.length > 0 ? `
                             <div class="detail-item">
-                                <div class="label"><i class="fas fa-microscope ms-1"></i>Research Areas</div>
+                                <div class="label"><i class="fas fa-microscope"></i>Research Areas</div>
                                 <div class="value">${match.research_area.map(a => `<span class="tag">${escapeHtml(a)}</span>`).join(' ')}</div>
                             </div>
                             ` : ''}
                             ${allSkills.length > 0 ? `
                             <div class="detail-item">
-                                <div class="label"><i class="fas fa-tools ms-1"></i>Required Skills</div>
+                                <div class="label"><i class="fas fa-tools"></i>Required Skills</div>
                                 <div class="value">${allSkills.map(s => `<span class="tag ${s.type}">${escapeHtml(s.text)}</span>`).join(' ')}</div>
                             </div>
                             ` : ''}
                             ${directMatches.length > 0 || transferable.length > 0 || missing.length > 0 || unclear.length > 0 ? `
                             <div class="detail-item">
-                                <div class="label"><i class="fas fa-clipboard-check ms-1"></i>Evidence</div>
+                                <div class="label"><i class="fas fa-clipboard-check"></i>Evidence</div>
                                 <div class="value">
                                     ${renderEvidenceTags(evidence, 'direct_matches')}
                                     ${renderEvidenceTags(evidence, 'transferable_matches')}
@@ -854,22 +1306,22 @@
                         <div>
                             ${Object.keys(wd).length > 0 ? `
                             <div class="detail-item">
-                                <div class="label"><i class="fas fa-weight-hanging ms-1"></i>Weighted Dimensions</div>
-                                <div class="value" style="display:flex; flex-wrap:wrap; gap:0.25rem 0.75rem;">
+                                <div class="label"><i class="fas fa-weight-hanging"></i>Weighted Dimensions</div>
+                                <div class="value" style="display:flex; flex-wrap:wrap; gap:0.25rem 0.5rem;">
                                     ${Object.entries(wd).filter(([k,v]) => v !== undefined && v !== null).map(([k, v]) => `
-                                        <span style="font-size:0.7rem; background:#f1f3f5; padding:0.15rem 0.6rem; border-radius:4px;">
-                                            ${wdLabels[k] || k}: <strong>${v}%</strong>
+                                        <span style="font-size:0.7rem; background:var(--bg-subtle); padding:0.2rem 0.65rem; border-radius:var(--r-full); border:1px solid var(--border); color:var(--text-body);">
+                                            ${wdLabels[k] || k}: <strong style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">${v}%</strong>
                                         </span>
                                     `).join('')}
                                 </div>
                             </div>
                             ` : ''}
                             <div class="detail-item">
-                                <div class="label"><i class="fas fa-chart-bar ms-1"></i>Detailed Scores</div>
+                                <div class="label"><i class="fas fa-chart-bar"></i>Detailed Scores</div>
                                 <div class="value">
                                     ${scoreBars.map(sb => {
                                         const val = match[sb.key] ?? 0;
-                                        const color = val >= 70 ? '#00b894' : val >= 50 ? '#fdcb6e' : '#e17055';
+                                        const color = val >= 70 ? 'var(--success)' : val >= 50 ? 'var(--warning)' : 'var(--danger)';
                                         return `
                                         <div class="score-bar-wrap">
                                             <span class="bar-label">${sb.label}</span>
@@ -883,10 +1335,10 @@
                                 </div>
                             </div>
                             <div class="detail-item" style="margin-top:0.5rem;">
-                                <div class="value" style="font-size:0.7rem; color:#6c757d; display:flex; flex-wrap:wrap; gap:0.5rem;">
-                                    ${match.confidence_label ? `<span><i class="fas fa-check-circle ms-1"></i>Confidence: ${match.confidence_label}</span>` : ''}
+                                <div class="value" style="font-size:0.72rem; color:var(--text-muted); display:flex; flex-wrap:wrap; gap:0.5rem;">
+                                    ${match.confidence_label ? `<span><i class="fas fa-check-circle ms-1" style="color:var(--success);"></i>Confidence: ${match.confidence_label}</span>` : ''}
                                     ${match.matched_at ? `<span><i class="far fa-clock ms-1"></i>${new Date(match.matched_at).toLocaleString('fa-IR')}</span>` : ''}
-                                    ${match.application_url ? `<span><a href="${escapeHtml(match.application_url)}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-paper-plane ms-1"></i>Apply</a></span>` : ''}
+                                    ${match.application_url ? `<a href="${escapeHtml(match.application_url)}" target="_blank" class="btn btn-sm btn-primary" style="font-size:0.72rem; padding:0.25rem 0.7rem;"><i class="fas fa-paper-plane ms-1"></i>Apply</a>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -895,13 +1347,14 @@
             `;
             return row;
         }
-        // ─── Toggle Row ──────────────────────────────────────────────
+
+        // ─── Toggle Row ──────────────────────────────────────────
         function toggleRow(row) {
             row.classList.toggle('expanded');
         }
         window.toggleRow = toggleRow;
 
-        // ─── Render All ──────────────────────────────────────────────
+        // ─── Render All ──────────────────────────────────────────
         function renderCards(positions) {
             container.innerHTML = '';
             if (!positions || positions.length === 0) {
@@ -909,14 +1362,13 @@
                 return;
             }
             noResults.classList.add('d-none');
-
             positions.forEach(pos => {
                 const row = renderRow(pos);
                 if (row) container.appendChild(row);
             });
         }
 
-        // // ─── Pagination ──────────────────────────────────────────────
+        // ─── Pagination ──────────────────────────────────────────
         function renderPagination(count, currentPage) {
             const totalPages = Math.ceil(count / PAGE_SIZE);
             if (totalPages <= 1) {
@@ -926,7 +1378,6 @@
             paginationNav.classList.remove('d-none');
             paginationList.innerHTML = '';
 
-            // Helper to create a page link
             function createPageLink(page, label, isActive = false) {
                 const li = document.createElement('li');
                 li.className = `page-item ${isActive ? 'active' : ''}`;
@@ -944,34 +1395,20 @@
                 return li;
             }
 
-            // First page
-            if (currentPage > 1) {
-                paginationList.appendChild(createPageLink(1, 'First'));
-            }
+            if (currentPage > 1) paginationList.appendChild(createPageLink(1, 'First'));
+            if (currentPage > 1) paginationList.appendChild(createPageLink(currentPage - 1, '«'));
 
-            // Previous page
-            if (currentPage > 1) {
-                paginationList.appendChild(createPageLink(currentPage - 1, '«'));
-            }
-
-            // Page numbers (show current - 2 to current + 2)
             const start = Math.max(1, currentPage - 2);
             const end = Math.min(totalPages, currentPage + 2);
             for (let i = start; i <= end; i++) {
                 paginationList.appendChild(createPageLink(i, i, i === currentPage));
             }
 
-            // Next page
-            if (currentPage < totalPages) {
-                paginationList.appendChild(createPageLink(currentPage + 1, '»'));
-            }
-
-            // Last page
-            if (currentPage < totalPages) {
-                paginationList.appendChild(createPageLink(totalPages, 'Last'));
-            }
+            if (currentPage < totalPages) paginationList.appendChild(createPageLink(currentPage + 1, '»'));
+            if (currentPage < totalPages) paginationList.appendChild(createPageLink(totalPages, 'Last'));
         }
-        // ─── Update fetchPositions ────────────────────────────────────
+
+        // ─── Fetch positions ─────────────────────────────────────
         async function fetchPositions(page = 1) {
             spinner.classList.remove('d-none');
             container.innerHTML = '';
@@ -982,9 +1419,8 @@
                 const params = new URLSearchParams({
                     page: page,
                     view: currentView,
-                    status: currentStatus,   // for 'pending' view this is the old status filter
+                    status: currentStatus,
                 });
-                // For 'shortlisted' view, add app_status param
                 if (currentView === 'shortlisted') {
                     params.append('app_status', currentStatus);
                 }
@@ -1019,9 +1455,11 @@
             }
         }
 
-        // ─── Initialize events ──────────────────────────────────────
+        // ─── Initialize events ───────────────────────────────────
         document.getElementById('viewSelector').addEventListener('click', handleViewSelectorClick);
-        // Initial call: build filter buttons for default view and fetch counts
+        // Set initial stat-card active state
+        document.querySelector('.stat-card[data-view="pending"]')?.classList.add('active');
+        // Initial load
         fetchCounts();
         buildStatusFilterButtons('pending');
         fetchPositions(1);

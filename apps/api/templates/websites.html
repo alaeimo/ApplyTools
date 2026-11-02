@@ -1,295 +1,598 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>ApplyTools – Websites</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    >
-
+    <title>ApplyTools — Websites</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
     <style>
+        :root {
+            /* ── Foundational palette ─────────────────────────────── */
+            --bg-app: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --bg-subtle: #F1F5F9;
+            --bg-hover: #F8FAFC;
+            --bg-elevated: #FFFFFF;
+
+            /* ── Text ────────────────────────────────────────────── */
+            --text-primary: #0F172A;
+            --text-body: #334155;
+            --text-muted: #64748B;
+            --text-faint: #94A3B8;
+
+            /* ── Borders ─────────────────────────────────────────── */
+            --border: #E2E8F0;
+            --border-strong: #CBD5E1;
+
+            /* ── Brand ───────────────────────────────────────────── */
+            --brand: #4F46E5;
+            --brand-soft: #EEF2FF;
+            --brand-hover: #4338CA;
+
+            /* ── Semantic ────────────────────────────────────────── */
+            --success: #10B981;
+            --success-soft: #D1FAE5;
+            --warning: #F59E0B;
+            --warning-soft: #FEF3C7;
+            --danger: #F43F5E;
+            --danger-soft: #FFE4E6;
+            --info: #0EA5E9;
+            --info-soft: #E0F2FE;
+
+            /* ── Method colors ───────────────────────────────────── */
+            --method-html: #6366F1;   /* indigo-500 */
+            --method-api:  #F59E0B;   /* amber-500  */
+            --method-js:   #8B5CF6;   /* violet-500 */
+
+            /* ── Shadows ─────────────────────────────────────────── */
+            --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(15 23 42 / 0.07), 0 2px 4px -2px rgb(15 23 42 / 0.05);
+            --shadow-lg: 0 10px 15px -3px rgb(15 23 42 / 0.08), 0 4px 6px -4px rgb(15 23 42 / 0.05);
+            --shadow-xl: 0 20px 25px -5px rgb(15 23 42 / 0.10), 0 8px 10px -6px rgb(15 23 42 / 0.05);
+
+            /* ── Radii ──────────────────────────────────────────── */
+            --r-sm: 6px;
+            --r-md: 10px;
+            --r-lg: 14px;
+            --r-xl: 20px;
+            --r-full: 9999px;
+        }
+
+        * {
+            font-family: 'Vazir', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            box-sizing: border-box;
+        }
         body {
-            background: #f0f2f5;
-            font-family: 'Inter', sans-serif;
+            background: var(--bg-app);
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-body);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
+        /* ──────────────────────────────────────────────────────────
+           HEADER
+        ────────────────────────────────────────────────────────── */
         .dashboard-header {
-            background: linear-gradient(
-                135deg,
-                #1a1a2e 0%,
-                #16213e 50%,
-                #0f3460 100%
-            );
+            background:
+                radial-gradient(ellipse at top left, rgb(99 102 241 / 0.15), transparent 50%),
+                radial-gradient(ellipse at bottom right, rgb(14 165 233 / 0.10), transparent 50%),
+                linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #312E81 100%);
             color: white;
-            padding: 1.75rem 0;
+            padding: 2rem 0 1.5rem;
             margin-bottom: 1.5rem;
-            border-bottom: 3px solid #e94560;
-        }
-
-        .dashboard-header h1 {
-            font-weight: 800;
-        }
-
-        /* ─── Card: minimal horizontal layout ─────────────────── */
-        .card-website {
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            background: #ffffff;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            border-bottom: 1px solid rgb(255 255 255 / 0.08);
+            position: relative;
             overflow: hidden;
         }
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgb(255 255 255 / 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgb(255 255 255 / 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+        }
+        .dashboard-header > .container { position: relative; z-index: 1; }
+        .dashboard-header h1 {
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            font-size: 1.75rem;
+        }
+        .dashboard-header .subtitle {
+            color: rgb(255 255 255 / 0.65);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .header-action {
+            background: rgb(255 255 255 / 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgb(255 255 255 / 0.12);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--r-full);
+            font-size: 0.825rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .header-action:hover {
+            background: rgb(255 255 255 / 0.16);
+            color: white;
+            transform: translateY(-1px);
+        }
+        .header-action-success {
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgb(16 185 129 / 0.3);
+        }
+        .header-action-success:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+            transform: translateY(-1px);
+        }
 
+        /* ──────────────────────────────────────────────────────────
+           STATS STRIP
+        ────────────────────────────────────────────────────────── */
+        .stats-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card:hover {
+            border-color: var(--border-strong);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        .stat-card.active {
+            border-color: var(--brand);
+            background: linear-gradient(135deg, var(--brand-soft) 0%, var(--bg-card) 100%);
+        }
+        .stat-card .stat-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--r-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .stat-card .stat-icon.total    { background: var(--brand-soft);   color: var(--brand); }
+        .stat-card .stat-icon.active   { background: var(--success-soft); color: var(--success); }
+        .stat-card .stat-icon.inactive { background: var(--danger-soft);  color: var(--danger); }
+        .stat-card .stat-icon.scraped  { background: var(--info-soft);    color: var(--info); }
+        .stat-card .stat-text { min-width: 0; }
+        .stat-card .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.1;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.02em;
+        }
+        .stat-card .stat-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        /* ──────────────────────────────────────────────────────────
+           FILTER BAR (sticky)
+        ────────────────────────────────────────────────────────── */
+        .filter-bar {
+            background: rgb(255 255 255 / 0.95);
+            backdrop-filter: blur(8px);
+            padding: 0.65rem 1rem;
+            border-radius: var(--r-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .search-input {
+            border-radius: var(--r-full);
+            border: 1px solid var(--border);
+            padding: 0.45rem 1rem;
+            font-size: 0.85rem;
+            background: var(--bg-subtle);
+            color: var(--text-primary);
+            transition: all 0.15s;
+            min-width: 240px;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--brand);
+            background: var(--bg-card);
+            box-shadow: 0 0 0 3px rgb(79 70 229 / 0.1);
+        }
+        .search-input::placeholder { color: var(--text-faint); }
+
+        /* ──────────────────────────────────────────────────────────
+           WEBSITE CARDS
+        ────────────────────────────────────────────────────────── */
+        .card-website {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            transition: all 0.2s ease;
+            overflow: hidden;
+        }
         .card-website:hover {
-            border-color: #d1d5db;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            border-color: var(--border-strong);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
         }
-
-        .card-website .card-body {
-            padding: 1.25rem 1.5rem;
-        }
-
+        .card-website .card-body { padding: 1.25rem 1.5rem; }
         .card-website .card-footer {
-            background: #fafafa;
-            border-top: 1px solid #f0f0f0;
+            background: var(--bg-subtle);
+            border-top: 1px solid var(--border);
             padding: 0.75rem 1.5rem;
         }
-        /* Divider lines inside card */
-        .card-website .divider-v {
-            width: 1px;
-            background: #f0f0f0;
-            align-self: stretch;
-            margin: 0 1rem;
-        }
 
+        /* Method + status badges */
         .badge-status {
             font-size: 0.65rem;
             font-weight: 600;
-            padding: 0.15rem 0.5rem;
-            border-radius: 4px;
-            letter-spacing: 0.03em;
+            padding: 0.2rem 0.6rem;
+            border-radius: var(--r-full);
+            letter-spacing: 0.04em;
             text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
         }
-        .badge-active   { background: #ecfdf5; color: #047857; }
-        .badge-inactive { background: #fef2f2; color: #b91c1c; }
+        .badge-active   { background: var(--success-soft); color: #065F46; }
+        .badge-inactive { background: var(--danger-soft);  color: #9F1239; }
 
-        /* Selectors — monospace, muted, single line */
+        .method-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: var(--r-full);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .method-html { background: var(--brand-soft);  color: var(--method-html); }
+        .method-api  { background: var(--warning-soft); color: #92400E; }
+        .method-js   { background: rgb(237 233 254);  color: var(--method-js); }
+
+        /* Selectors — monospace */
         .selector-line {
-            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
             font-size: 0.72rem;
-            color: #6b7280;
+            color: var(--text-muted);
             line-height: 1.7;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .selector-line .label {
-            color: #9ca3af;
+            color: var(--text-faint);
             font-weight: 500;
             margin-right: 0.4rem;
-        }
-        .selector-preview {
-            background: #f8f9fa;
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 0.75rem;
-            color: #495057;
-            word-break: break-all;
+            text-transform: uppercase;
+            font-size: 0.65rem;
+            letter-spacing: 0.05em;
         }
 
-        /* Stats — compact horizontal pills */
+        /* Stat pills */
         .stat-pill {
             display: inline-flex;
             flex-direction: column;
             align-items: center;
-            padding: 0.4rem 0.9rem;
-            background: #fafafa;
-            border-radius: 8px;
+            padding: 0.4rem 0.85rem;
+            background: var(--bg-subtle);
+            border-radius: var(--r-md);
             min-width: 70px;
+            border: 1px solid var(--border);
         }
         .stat-pill .number {
             font-size: 1.05rem;
             font-weight: 700;
-            color: #111827;
+            color: var(--text-primary);
             line-height: 1.1;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.02em;
         }
         .stat-pill .label {
-            font-size: 0.62rem;
-            color: #9ca3af;
+            font-size: 0.6rem;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            font-weight: 500;
             margin-top: 2px;
         }
-    /* Action buttons — minimal outline style */
-    .action-btn {
-        font-size: 0.78rem;
-        padding: 0.3rem 0.7rem;
-        border-radius: 6px;
-    }
 
-        .modal-content {
-            border-radius: 14px;
+        /* Action buttons */
+        .action-btn {
+            font-size: 0.78rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: var(--r-md);
+            font-weight: 500;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
         }
+        .action-btn:hover { transform: translateY(-1px); }
+
+        .modal-content { border-radius: var(--r-xl); border: none; box-shadow: var(--shadow-xl); }
+        .modal-header { border-bottom: 1px solid var(--border); }
 
         .website-url {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            color: var(--text-muted);
         }
 
-        .scrape-stat {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .scrape-stat .number {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0d6efd;
-        }
-
-        .scrape-stat .label {
-            font-size: 0.7rem;
-            color: #6c757d;
-        }
-
-        .error-box {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        /* Progress bars — keep existing styles */
+        /* Progress bars */
         .progress-container,
         .match-progress-container {
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 10px;
+            border-radius: var(--r-md);
+            padding: 0.75rem 1rem;
+            margin-top: 0.85rem;
         }
-        .progress-container { background: #fafafa; }
+        .progress-container {
+            background: var(--brand-soft);
+            border: 1px solid rgb(79 70 229 / 0.15);
+        }
         .match-progress-container {
-            background: #f0f9ff;
-            border-left: 3px solid #0ea5e9;
+            background: var(--success-soft);
+            border: 1px solid rgb(16 185 129 / 0.2);
         }
         .progress-container .progress,
-        .match-progress-container .progress { height: 6px; }
+        .match-progress-container .progress {
+            height: 6px;
+            border-radius: var(--r-full);
+        }
         .scrape-status-text,
         .match-status-text {
             font-size: 0.75rem;
-            color: #6b7280;
-            margin-top: 6px;
+            color: var(--text-body);
+            margin-top: 0.4rem;
             word-break: break-word;
+            font-weight: 500;
         }
 
-        /* Method + status badges — small, subtle */
-        .method-badge {
-            font-size: 0.65rem;
-            font-weight: 600;
-            padding: 0.15rem 0.5rem;
-            border-radius: 4px;
-            letter-spacing: 0.03em;
-            text-transform: uppercase;
+        .error-box { max-width: 700px; margin: 0 auto; }
+
+        /* Loading + empty states */
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+            gap: 1rem;
         }
-        .method-html { background: #f3f4f6; color: #4b5563; }
-        .method-api  { background: #fef3c7; color: #92400e; }
-        .method-js   { background: #ede9fe; color: #5b21b6; }
+        .loading-spinner .spinner-border {
+            width: 2.5rem;
+            height: 2.5rem;
+            color: var(--brand);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 4rem 1rem;
+        }
+        .empty-state .empty-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            background: var(--bg-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--text-faint);
+        }
+        .empty-state h5 { color: var(--text-primary); font-weight: 700; }
+
+        /* CV modal tabs */
+        .nav-pills .nav-link {
+            color: var(--text-body);
+            border-radius: var(--r-full);
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+        .nav-pills .nav-link:hover { background: var(--bg-subtle); }
+        .nav-pills .nav-link.active {
+            background: var(--brand);
+            color: white;
+        }
+
+        /* Form inputs */
+        .form-control, .form-select {
+            border-color: var(--border);
+            border-radius: var(--r-md);
+            font-size: 0.875rem;
+            padding: 0.45rem 0.85rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px rgb(79 70 229 / 0.1);
+        }
+        .form-label { font-size: 0.825rem; font-weight: 500; color: var(--text-body); }
+        .form-label.fw-bold { color: var(--text-primary); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-subtle); }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-strong);
+            border-radius: var(--r-full);
+            border: 2px solid var(--bg-subtle);
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .card-website { animation: fadeUp 0.3s ease backwards; }
+        .card-website:nth-child(1) { animation-delay: 0.02s; }
+        .card-website:nth-child(2) { animation-delay: 0.04s; }
+        .card-website:nth-child(3) { animation-delay: 0.06s; }
+        .card-website:nth-child(4) { animation-delay: 0.08s; }
+        .card-website:nth-child(5) { animation-delay: 0.10s; }
+        .card-website:nth-child(n+6) { animation-delay: 0.12s; }
+
+        /* Focus accessibility */
+        button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+            outline: 2px solid var(--brand);
+            outline-offset: 2px;
+        }
     </style>
 </head>
-
 <body>
 
 <!-- =========================================================
      HEADER
 ========================================================= -->
-
 <div class="dashboard-header">
-    <div class="container d-flex justify-content-between align-items-center">
-
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
-            <h1 class="display-6 fw-bold mb-1">
-                <i class="fas fa-globe me-2"></i>
+            <h1 class="mb-0">
+                <i class="fas fa-globe me-2" style="opacity: 0.9;"></i>
                 Websites
             </h1>
-
-            <p class="mb-0 opacity-75 small">
-                Manage scraping sources
-            </p>
+            <p class="subtitle mb-0">Manage scraping sources</p>
         </div>
-
-        <div>
-            <button
-                class="btn btn-light btn-sm"
-                onclick="window.location.href='/'"
-            >
-                <i class="fas fa-arrow-left me-1"></i>
-                Dashboard
-            </button>
-
-            <button
-                class="btn btn-success btn-sm ms-2"
-                data-bs-toggle="modal"
-                data-bs-target="#websiteModal"
-                onclick="prepareAddWebsite()"
-            >
-                <i class="fas fa-plus me-1"></i>
-                Add Website
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <a href="/" class="header-action">
+                <i class="fas fa-arrow-left"></i>
+                <span>Dashboard</span>
+            </a>
+            <button class="header-action header-action-success"
+                    data-bs-toggle="modal" data-bs-target="#websiteModal"
+                    onclick="prepareAddWebsite()">
+                <i class="fas fa-plus"></i>
+                <span>Add Website</span>
             </button>
         </div>
-
     </div>
 </div>
 
 <!-- =========================================================
      MAIN CONTENT
 ========================================================= -->
-
 <div class="container">
 
-    <!-- Loading -->
-    <div id="loading" class="text-center py-5">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+    <!-- ─── STATS STRIP ────────────────────────────────────── -->
+    <div class="stats-strip">
+        <div class="stat-card active" data-filter="all" onclick="filterStat('all')">
+            <div class="stat-icon total"><i class="fas fa-globe"></i></div>
+            <div class="stat-text">
+                <div class="stat-value" id="statTotal">0</div>
+                <div class="stat-label">Total</div>
+            </div>
         </div>
-        <div class="mt-3 text-muted small">Loading websites...</div>
+        <div class="stat-card" data-filter="active" onclick="filterStat('active')">
+            <div class="stat-icon active"><i class="fas fa-circle-check"></i></div>
+            <div class="stat-text">
+                <div class="stat-value" id="statActiveCount">0</div>
+                <div class="stat-label">Active</div>
+            </div>
+        </div>
+        <div class="stat-card" data-filter="inactive" onclick="filterStat('inactive')">
+            <div class="stat-icon inactive"><i class="fas fa-circle-xmark"></i></div>
+            <div class="stat-text">
+                <div class="stat-value" id="statInactiveCount">0</div>
+                <div class="stat-label">Inactive</div>
+            </div>
+        </div>
+        <div class="stat-card" data-filter="all" onclick="filterStat('all')">
+            <div class="stat-icon scraped"><i class="fas fa-database"></i></div>
+            <div class="stat-text">
+                <div class="stat-value" id="statTotalScraped">0</div>
+                <div class="stat-label">Positions Scraped</div>
+            </div>
+        </div>
     </div>
 
-    <!-- Error -->
+    <!-- ─── FILTER BAR (sticky) ─────────────────────────────── -->
+    <div class="filter-bar d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <div class="d-flex align-items-center gap-2 flex-grow-1">
+            <i class="fas fa-magnifying-glass text-muted"></i>
+            <input type="text" class="form-control search-input border-0 bg-transparent"
+                   id="searchInput" placeholder="Search by name or URL..."
+                   oninput="filterWebsites()">
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <i class="fas fa-sort-amount-down text-muted small"></i>
+            <span class="text-muted small" id="resultCount">0 websites</span>
+        </div>
+    </div>
+
+    <!-- ─── LOADING ─────────────────────────────────────────── -->
+    <div id="loading" class="loading-spinner">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="text-muted small">Loading websites…</div>
+    </div>
+
+    <!-- ─── ERROR ───────────────────────────────────────────── -->
     <div id="errorMessage" class="alert alert-danger error-box d-none" role="alert">
         <i class="fas fa-exclamation-triangle me-2"></i>
         <span id="errorText">Error loading websites.</span>
         <button class="btn btn-sm btn-outline-danger ms-3" onclick="fetchWebsites()">Retry</button>
     </div>
 
-    <!-- Websites Grid -->
+    <!-- ─── WEBSITES GRID ───────────────────────────────────── -->
     <div id="websiteGrid" class="row g-3" style="display: none;"></div>
 
-    <!-- No results -->
-    <div id="noWebsites" class="text-center py-5 d-none">
-        <i class="fas fa-globe fa-3x text-muted mb-3"></i>
-        <h5>No websites configured</h5>
-        <p class="text-muted small">Add your first scraping source.</p>
+    <!-- ─── NO RESULTS ──────────────────────────────────────── -->
+    <div id="noWebsites" class="empty-state d-none">
+        <div class="empty-icon"><i class="fas fa-globe"></i></div>
+        <h5 class="fw-bold">No websites found</h5>
+        <p class="text-muted small">Add your first scraping source to get started.</p>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#websiteModal" onclick="prepareAddWebsite()">
             <i class="fas fa-plus me-1"></i> Add Website
         </button>
     </div>
-
 </div>
 
 <!-- =========================================================
      ADD / EDIT MODAL
 ========================================================= -->
-
 <div class="modal fade" id="websiteModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -299,12 +602,10 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-
             <div class="modal-body">
                 <form id="websiteForm">
                     <input type="hidden" id="editId" value="">
 
-                    <!-- ─── Scraping Method ─────────────────────────── -->
                     <div class="row g-3">
                         <div class="col-12">
                             <label class="form-label fw-bold" for="scraping_method">Scraping Method</label>
@@ -314,10 +615,8 @@
                             </select>
                         </div>
                     </div>
-
                     <hr class="my-3">
 
-                    <!-- Name -->
                     <div class="row g-3">
                         <div class="col-12">
                             <label class="form-label fw-bold" for="name">Name *</label>
@@ -326,128 +625,101 @@
                     </div>
                     <hr class="my-3">
 
-                    <!-- ─── HTML Fields ─────────────────────────────── -->
+                    <!-- HTML Fields -->
                     <div id="htmlFields">
                         <div class="row g-3">
-
-                            <!-- Base URL -->
                             <div class="col-12">
                                 <label class="form-label fw-bold" for="base_url">Base URL</label>
-                                <input type="url" class="form-control" id="base_url" placeholder="https://example.com" >
+                                <input type="url" class="form-control" id="base_url" placeholder="https://example.com">
                             </div>
-
-                            <!-- Pagination -->
                             <div class="col-12">
                                 <label class="form-label fw-bold" for="pagination_url_pattern">Pagination URL Pattern</label>
-                                <input type="text" class="form-control" id="pagination_url_pattern" placeholder="/jobs?page={page}" >
+                                <input type="text" class="form-control" id="pagination_url_pattern" placeholder="/jobs?page={page}">
                                 <small class="text-muted">Use <code>{page}</code> as the page placeholder.</small>
                             </div>
-
-                            <!-- Listing selector -->
                             <div class="col-12">
                                 <label class="form-label fw-bold" for="listing_item_selector">Listing Item Selector</label>
-                                <input type="text" class="form-control" id="listing_item_selector" placeholder=".job-list-item" >
+                                <input type="text" class="form-control" id="listing_item_selector" placeholder=".job-list-item">
                                 <small class="text-muted">Leave blank if the site has JSON-LD JobPosting markup.</small>
                             </div>
-
-                            <!-- Position link selector -->
                             <div class="col-12 col-md-6">
                                 <label class="form-label fw-bold" for="position_link_selector">Position Link Selector</label>
-                                <input type="text" class="form-control" id="position_link_selector" placeholder="a.job-link" >
+                                <input type="text" class="form-control" id="position_link_selector" placeholder="a.job-link">
                             </div>
-
-                            <!-- Title selector -->
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="position_title_selector">
                                     Title Selector <span class="text-muted">(optional)</span>
                                 </label>
                                 <input type="text" class="form-control" id="position_title_selector" placeholder="h4">
                             </div>
-
-                            <!-- Company selector -->
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="position_company_selector">
                                     Company Selector <span class="text-muted">(optional)</span>
                                 </label>
                                 <input type="text" class="form-control" id="position_company_selector" placeholder=".company">
                             </div>
-                         </div>
+                        </div>
                     </div>
 
-                    <!-- ─── API Fields ──────────────────────────────── -->
+                    <!-- API Fields -->
                     <div id="apiFields" style="display: none;">
                         <div class="row g-3">
-                            <!-- API Endpoint -->
                             <div class="col-12">
                                 <label class="form-label fw-bold" for="api_endpoint">API Endpoint URL</label>
                                 <input type="url" class="form-control" id="api_endpoint" placeholder="https://api.example.com/v1/jobs/">
                             </div>
-
-                            <!-- API Pagination Params -->
                             <div class="col-12 col-md-6">
                                 <label class="form-label fw-bold" for="api_pagination_param">Pagination Parameter</label>
                                 <input type="text" class="form-control" id="api_pagination_param" placeholder="page" value="page">
                             </div>
-
                             <div class="col-12 col-md-6">
                                 <label class="form-label fw-bold" for="api_limit_param">Limit Parameter</label>
                                 <input type="text" class="form-control" id="api_limit_param" placeholder="limit" value="limit">
                             </div>
-
-                            <!-- JSON Key Paths -->
                             <div class="col-12">
                                 <label class="form-label fw-bold" for="api_results_key">Results Key Path</label>
                                 <input type="text" class="form-control" id="api_results_key" placeholder="results.items" value="results">
-                                <small class="text-muted">Dot notation for nested keys, e.g., <code>data.results</code> or <code>results.items</code></small>
+                                <small class="text-muted">Dot notation for nested keys, e.g., <code>data.results</code></small>
                             </div>
-
                             <div class="col-12 col-md-6">
-                                <label class="form-label" for="api_next_key">Next Page Key</label>
+                                <label class="form-label" for="api_next_key">Next Page Key <span class="text-muted">(optional)</span></label>
                                 <input type="text" class="form-control" id="api_next_key" placeholder="next">
                             </div>
-
                             <div class="col-12 col-md-6">
-                                <label class="form-label" for="api_count_key">Total Count Key</label>
+                                <label class="form-label" for="api_count_key">Total Count Key <span class="text-muted">(optional)</span></label>
                                 <input type="text" class="form-control" id="api_count_key" placeholder="count">
                             </div>
-
-                            <!-- Item Field Mappings -->
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="api_item_url_key">Item URL Key <span class="text-muted">(optional)</span></label>
                                 <input type="text" class="form-control" id="api_item_url_key" placeholder="absolute_url">
                             </div>
-
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="api_item_title_key">Item Title Key <span class="text-muted">(optional)</span></label>
                                 <input type="text" class="form-control" id="api_item_title_key" placeholder="title">
                             </div>
-
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="api_item_company_key">Item Company Key <span class="text-muted">(optional)</span></label>
                                 <input type="text" class="form-control" id="api_item_company_key" placeholder="organisation_name">
                             </div>
-
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="api_item_description_key">Item Description Key <span class="text-muted">(optional)</span></label>
                                 <input type="text" class="form-control" id="api_item_description_key" placeholder="description">
                             </div>
-                                <!-- Auth Token -->
                             <div class="col-12">
                                 <label class="form-label" for="api_auth_token">Auth Token <span class="text-muted">(optional)</span></label>
                                 <input type="password" class="form-control" id="api_auth_token" placeholder="Bearer token or API key">
                             </div>
-
-                            <!-- Extra Params (JSON) -->
                             <div class="col-12">
                                 <label class="form-label" for="api_extra_params">Extra Parameters (JSON)</label>
-                                <input type="text" class="form-control" id="api_extra_params" placeholder='{"boost_spotlights": true, "is_active": true}'>
+                                <input type="text" class="form-control" id="api_extra_params" placeholder='{"boost_spotlights": true}'>
                                 <small class="text-muted">Static query parameters as a JSON object.</small>
                             </div>
                         </div>
                     </div>
 
                     <hr class="my-3">
-                    <!-- ─── Detail Source ─────────────────────────── -->
+
+                    <!-- Detail Source -->
                     <div class="row g-3">
                         <div class="col-12">
                             <label class="form-label fw-bold" for="detail_source">Detail Source</label>
@@ -456,53 +728,42 @@
                                 <option value="api">API Scraping</option>
                             </select>
                         </div>
-                        <!-- Detail container (HTML) -->
                         <div class="col-12" id="detail_container_field">
                             <label class="form-label fw-bold" for="detail_container_selector">Detail Container Selector</label>
-                            <input type="text" class="form-control" id="detail_container_selector" placeholder="#editor" >
+                            <input type="text" class="form-control" id="detail_container_selector" placeholder="#editor">
                         </div>
-                        <!-- Detail API Endpoint -->
                         <div class="col-12 col-md-6" id="detail_api_endpoint_field" style="display:none;">
                             <label class="form-label fw-bold" for="detail_api_endpoint">Detail API Endpoint</label>
-                            <input type="text" class="form-control" id="detail_api_endpoint" placeholder="https://api.example.com/v1/jobs/" >
+                            <input type="text" class="form-control" id="detail_api_endpoint" placeholder="https://api.example.com/v1/jobs/">
                         </div>
-                         <!-- API Detail Key -->
                         <div class="col-12 col-md-6" id="api_detail_key_field" style="display:none;">
                             <label class="form-label fw-bold" for="api_detail_key">API Detail Key</label>
-                            <input type="text" class="form-control" id="api_detail_key" placeholder="detail" >
+                            <input type="text" class="form-control" id="api_detail_key" placeholder="detail">
                         </div>
                     </div>
 
                     <hr class="my-3">
-                    <!-- ─── Common Fields ───────────────────────────── -->
+
+                    <!-- Common Fields -->
                     <div class="row g-3">
-                        <!-- Max pages -->
                         <div class="col-6 col-md-3">
                             <label class="form-label" for="max_pages">Max Pages</label>
                             <input type="number" class="form-control" id="max_pages" value="10" min="0">
                             <small class="text-muted">0 = unlimited</small>
                         </div>
-
-                        <!-- Timeout -->
                         <div class="col-6 col-md-3">
                             <label class="form-label" for="request_timeout">Timeout (sec)</label>
                             <input type="number" class="form-control" id="request_timeout" value="30" min="1">
                         </div>
-
-                        <!-- Delay -->
                         <div class="col-6 col-md-3">
                             <label class="form-label" for="request_delay">Delay (sec)</label>
                             <input type="number" class="form-control" id="request_delay" value="3.0" step="0.1" min="0">
                         </div>
-
-                        <!-- Concurrency -->
                         <div class="col-6 col-md-3">
                             <label class="form-label" for="max_concurrency">Concurrency</label>
                             <input type="number" class="form-control" id="max_concurrency" value="5" min="1" max="20">
                             <small class="text-muted">Parallel fetches</small>
                         </div>
-
-                        <!-- Active -->
                         <div class="col-6 col-md-3">
                             <label class="form-label" for="is_active">Active</label>
                             <select class="form-select" id="is_active">
@@ -510,8 +771,6 @@
                                 <option value="false">No</option>
                             </select>
                         </div>
-
-                        <!-- Needs JS -->
                         <div class="col-6 col-md-3">
                             <label class="form-label" for="needs_js">Needs JS</label>
                             <select class="form-select" id="needs_js">
@@ -520,8 +779,6 @@
                             </select>
                             <small class="text-muted">Force browser</small>
                         </div>
-
-                        <!-- Browser Fallback -->
                         <div class="col-6 col-md-3">
                             <label class="form-label" for="use_browser_fallback">Browser Fallback</label>
                             <select class="form-select" id="use_browser_fallback">
@@ -530,16 +787,12 @@
                             </select>
                             <small class="text-muted">Auto on challenge</small>
                         </div>
-
-                        <!-- User agent -->
                         <div class="col-12">
                             <label class="form-label" for="user_agent">
                                 User Agent <span class="text-muted">(optional — auto-rotated)</span>
                             </label>
                             <input type="text" class="form-control" id="user_agent" value="">
                         </div>
-
-                        <!-- Description -->
                         <div class="col-12">
                             <label class="form-label" for="description">
                                 Description <span class="text-muted">(optional)</span>
@@ -549,7 +802,6 @@
                     </div>
                 </form>
             </div>
-
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button class="btn btn-primary" id="saveWebsiteBtn">
@@ -563,7 +815,6 @@
 <!-- =========================================================
      DELETE MODAL
 ========================================================= -->
-
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -571,12 +822,10 @@
                 <h5 class="modal-title"><i class="fas fa-trash me-2"></i> Delete Website</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-
             <div class="modal-body">
                 <p>Are you sure you want to delete <strong id="deleteName"></strong>?</p>
                 <input type="hidden" id="deleteId" value="">
             </div>
-
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button class="btn btn-danger" id="confirmDeleteBtn">
@@ -588,9 +837,8 @@
 </div>
 
 <!-- =========================================================
-     CV MODAL  (UNCHANGED — match functionality preserved)
+     CV MODAL (Match Positions)
 ========================================================= -->
-
 <div class="modal fade" id="cvModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -600,20 +848,86 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-
             <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">CV Text *</label>
-                    <textarea class="form-control" id="cvText" rows="10" placeholder="Paste your CV text here..."></textarea>
-                    <small class="text-muted">Paste your full CV text for AI matching.</small>
+                <ul class="nav nav-pills mb-3" id="cvSourceTabs">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-source="existing">
+                            <i class="fas fa-folder-open me-1"></i> Select Existing CV
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-source="paste">
+                            <i class="fas fa-paste me-1"></i> Paste Text
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-source="upload">
+                            <i class="fas fa-upload me-1"></i> Upload File
+                        </button>
+                    </li>
+                </ul>
+
+                <div id="sourceExisting" class="cv-source-pane">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Saved CVs</label>
+                        <select class="form-select" id="existingCvSelect">
+                            <option value="">Loading CVs...</option>
+                        </select>
+                        <small class="text-muted">By default, the most recent CV is selected.</small>
+                    </div>
+                    <div id="existingCvPreview" class="border rounded p-3 bg-light small text-muted"
+                         style="min-height: 80px; max-height: 200px; overflow-y: auto;">
+                        Select a CV to preview its content.
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Language</label>
-                    <input type="text" class="form-control" id="matchLanguage" value="English" placeholder="English">
+
+                <div id="sourcePaste" class="cv-source-pane" style="display: none;">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">CV Name <span class="text-muted">(optional)</span></label>
+                        <input type="text" class="form-control" id="pasteCvName" placeholder="e.g., My Academic CV (Nov 2026)">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">CV Text *</label>
+                        <textarea class="form-control" id="pasteCvText" rows="10" placeholder="Paste your full CV text here..."></textarea>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="savePastedCv" checked>
+                        <label class="form-check-label" for="savePastedCv">Save this CV for future use</label>
+                    </div>
                 </div>
+
+                <div id="sourceUpload" class="cv-source-pane" style="display: none;">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">CV Name <span class="text-muted">(optional)</span></label>
+                        <input type="text" class="form-control" id="uploadCvName" placeholder="e.g., CV_JohnDoe_2026">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">CV File (PDF or TXT) *</label>
+                        <input type="file" class="form-control" id="uploadCvFile" accept=".pdf,.txt">
+                        <small class="text-muted">Max size: 10MB. Supported formats: PDF, TXT.</small>
+                    </div>
+                </div>
+
+                <hr class="my-3">
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Response Language</label>
+                        <select class="form-select" id="matchLanguage">
+                            <option value="English" selected>English</option>
+                            <option value="Persian (Farsi)">Persian (Farsi) — فارسی</option>
+                            <option value="German">German — Deutsch</option>
+                            <option value="French">French — Français</option>
+                            <option value="Spanish">Spanish — Español</option>
+                            <option value="Arabic">Arabic — العربية</option>
+                            <option value="Chinese">Chinese — 中文</option>
+                        </select>
+                        <small class="text-muted">The match analysis will be written in this language.</small>
+                    </div>
+                </div>
+
                 <input type="hidden" id="matchWebsiteId" value="">
             </div>
-
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button class="btn btn-success" id="startMatchBtn">
@@ -627,21 +941,17 @@
 <!-- =========================================================
      BOOTSTRAP JS
 ========================================================= -->
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- =========================================================
      APPLICATION JAVASCRIPT
 ========================================================= -->
-
 <script>
-
-    // =========================================================
-    // API
-    // =========================================================
-
     const API_URL = '/api/v1/websites/';
     let editingId = null;
+    let selectedCvId = null;
+    let allWebsites = [];          // cached for client-side filtering
+    let currentFilter = 'all';     // all | active | inactive
 
     function getCSRFToken() {
         const cookieValue = document.cookie
@@ -649,93 +959,92 @@
             .find(row => row.startsWith('csrftoken='));
         return cookieValue ? cookieValue.split('=')[1] : '';
     }
-
     const CSRF_TOKEN = getCSRFToken();
 
-    // ─── Toggle HTML / API Fields (FIXED: no label destruction) ───
+    // ─── Toast notifications (replaces alert) ────────────────
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        const colors = {
+            success: { bg: '#10B981', icon: 'fa-check-circle' },
+            error:   { bg: '#F43F5E', icon: 'fa-exclamation-circle' },
+            info:    { bg: '#4F46E5', icon: 'fa-info-circle' },
+            warning: { bg: '#F59E0B', icon: 'fa-exclamation-triangle' },
+        };
+        const c = colors[type] || colors.success;
+        toast.style.cssText = `
+            position: fixed; top: 20px; right: 20px; z-index: 9999;
+            background: ${c.bg}; color: white; padding: 0.85rem 1.25rem;
+            border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            font-size: 0.875rem; font-weight: 500; max-width: 360px;
+            display: flex; align-items: center; gap: 0.5rem;
+            transform: translateX(400px); transition: transform 0.3s ease;
+        `;
+        toast.innerHTML = `<i class="fas ${c.icon}"></i><span>${escapeHtml(message)}</span>`;
+        document.body.appendChild(toast);
+        requestAnimationFrame(() => { toast.style.transform = 'translateX(0)'; });
+        setTimeout(() => {
+            toast.style.transform = 'translateX(400px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    }
 
+    // ─── Toggle HTML / API Fields ───
     function toggleScrapingMethodFields() {
         const isApi = document.getElementById('scraping_method').value === 'api';
         document.getElementById('htmlFields').style.display = isApi ? 'none' : 'block';
         document.getElementById('apiFields').style.display = isApi ? 'block' : 'none';
-
-        // Toggle required attributes only (no label manipulation)
         const htmlRequired = ['listing_item_selector', 'position_link_selector'];
         const apiRequired = ['api_endpoint', 'api_results_key'];
-
         htmlRequired.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.required = !isApi;
         });
-
         apiRequired.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.required = isApi;
         });
     }
-
     document.getElementById('scraping_method').addEventListener('change', toggleScrapingMethodFields);
 
-    // ─── Toggle Detail Source fields (FIXED: cleaner ID-based approach) ───
-
+    // ─── Toggle Detail Source Fields ───
     function toggleDetailSourceFields() {
         const isApi = document.getElementById('detail_source').value === 'api';
-
         const containerField = document.getElementById('detail_container_field');
         const apiEndpointField = document.getElementById('detail_api_endpoint_field');
         const apiDetailKeyField = document.getElementById('api_detail_key_field');
-
         if (containerField) containerField.style.display = isApi ? 'none' : 'block';
         if (apiEndpointField) apiEndpointField.style.display = isApi ? 'block' : 'none';
         if (apiDetailKeyField) apiDetailKeyField.style.display = isApi ? 'block' : 'none';
-
-        // Toggle required
         const containerInput = document.getElementById('detail_container_selector');
         const apiEndpointInput = document.getElementById('detail_api_endpoint');
         const apiDetailKeyInput = document.getElementById('api_detail_key');
-
         if (containerInput) containerInput.required = !isApi;
         if (apiEndpointInput) apiEndpointInput.required = isApi;
         if (apiDetailKeyInput) apiDetailKeyInput.required = isApi;
     }
-
     document.getElementById('detail_source').addEventListener('change', toggleDetailSourceFields);
 
     // =========================================================
     // FETCH WEBSITES
     // =========================================================
-
     async function fetchWebsites() {
         const loading = document.getElementById('loading');
         const grid = document.getElementById('websiteGrid');
         const noWebsites = document.getElementById('noWebsites');
         const errorMessage = document.getElementById('errorMessage');
 
-        loading.style.display = 'block';
+        loading.style.display = 'flex';
         grid.style.display = 'none';
         noWebsites.classList.add('d-none');
         errorMessage.classList.add('d-none');
 
-        loading.innerHTML = `
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <div class="mt-3 text-muted small">Loading websites...</div>
-        `;
-
         try {
-            const res = await fetch(API_URL, {
-                method: 'GET',
-                headers: { 'Accept': 'application/json' }
-            });
-
-            if (!res.ok) {
-                throw new Error(`Failed to fetch websites (${res.status} ${res.statusText})`);
-            }
-
+            const res = await fetch(API_URL, { method: 'GET', headers: { 'Accept': 'application/json' } });
+            if (!res.ok) throw new Error(`Failed to fetch websites (${res.status} ${res.statusText})`);
             const data = await res.json();
-            let websites = Array.isArray(data) ? data : (data.results || []);
-            renderWebsites(websites);
+            allWebsites = Array.isArray(data) ? data : (data.results || []);
+            updateStats(allWebsites);
+            applyFilterAndRender();
         } catch (error) {
             console.error('fetchWebsites error:', error);
             loading.style.display = 'none';
@@ -744,10 +1053,218 @@
         }
     }
 
-    // =========================================================
-    // CHECK SCRAPE STATUS (reconnect after refresh)
-    // =========================================================
+    // ─── Stats strip ─────────────────────────────────────────
+    function updateStats(websites) {
+        const total = websites.length;
+        const active = websites.filter(w => w.is_active).length;
+        const inactive = total - active;
+        const totalScraped = websites.reduce((sum, w) => sum + Number(w.total_scraped_count || 0), 0);
 
+        document.getElementById('statTotal').textContent = total;
+        document.getElementById('statActiveCount').textContent = active;
+        document.getElementById('statInactiveCount').textContent = inactive;
+        document.getElementById('statTotalScraped').textContent = totalScraped;
+    }
+
+    // ─── Stat card click → filter ───────────────────────────
+    function filterStat(filter) {
+        currentFilter = filter;
+        document.querySelectorAll('.stat-card').forEach(c => {
+            c.classList.toggle('active', c.dataset.filter === filter);
+        });
+        // If user clicked "Positions Scraped" card (filter=all), reset to all
+        if (filter === 'all') {
+            document.querySelector('.stat-card[data-filter="all"]').classList.add('active');
+        }
+        applyFilterAndRender();
+    }
+
+    // ─── Client-side search + status filter ────────────────
+    function filterWebsites() {
+        applyFilterAndRender();
+    }
+
+    function applyFilterAndRender() {
+        const searchTerm = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+        let filtered = allWebsites;
+
+        // Status filter
+        if (currentFilter === 'active') {
+            filtered = filtered.filter(w => w.is_active);
+        } else if (currentFilter === 'inactive') {
+            filtered = filtered.filter(w => !w.is_active);
+        }
+
+        // Search filter
+        if (searchTerm) {
+            filtered = filtered.filter(w =>
+                (w.name || '').toLowerCase().includes(searchTerm) ||
+                (w.base_url || '').toLowerCase().includes(searchTerm) ||
+                (w.description || '').toLowerCase().includes(searchTerm)
+            );
+        }
+
+        document.getElementById('resultCount').textContent = `${filtered.length} website${filtered.length !== 1 ? 's' : ''}`;
+        renderWebsites(filtered);
+    }
+
+    // =========================================================
+    // RENDER WEBSITES
+    // =========================================================
+    function renderWebsites(websites) {
+        const grid = document.getElementById('websiteGrid');
+        const loading = document.getElementById('loading');
+        const noWebsites = document.getElementById('noWebsites');
+        grid.innerHTML = '';
+
+        if (!websites || websites.length === 0) {
+            loading.style.display = 'none';
+            grid.style.display = 'none';
+            noWebsites.classList.remove('d-none');
+            return;
+        }
+
+        loading.style.display = 'none';
+        noWebsites.classList.add('d-none');
+        grid.style.display = 'flex';
+
+        websites.forEach(function(w) {
+            const col = document.createElement('div');
+            col.className = 'col-12';
+
+            const isActive = Boolean(w.is_active);
+            const name = escapeHtml(w.name || 'Unnamed Website');
+            const description = escapeHtml(w.description || '');
+            const baseUrl = escapeHtml(w.base_url || '');
+            const listingSelector = escapeHtml(w.listing_item_selector || '');
+            const linkSelector = escapeHtml(w.position_link_selector || '');
+            const detailSelector = escapeHtml(w.detail_container_selector || '');
+            const totalScraped = Number(w.total_scraped_count || 0);
+            const lastScraped = w.last_scraped_at ? formatDate(w.last_scraped_at) : 'Never';
+            const maxPages = Number(w.max_pages || 0);
+            const maxPagesText = maxPages === 0 ? '∞' : maxPages;
+            const lastScrapeCount = Number(w.last_scrape_count || 0);
+
+            const method = w.scraping_method || 'html';
+            const needsJs = Boolean(w.needs_js);
+            let methodBadge = '';
+            if (method === 'api') {
+                methodBadge = '<span class="method-badge method-api"><i class="fas fa-plug"></i>API</span>';
+            } else if (needsJs) {
+                methodBadge = '<span class="method-badge method-js"><i class="fab fa-js"></i>JS</span>';
+            } else {
+                methodBadge = '<span class="method-badge method-html"><i class="fas fa-code"></i>HTML</span>';
+            }
+
+            col.innerHTML = `
+            <div class="card card-website" id="website-card-${w.id}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
+                        <div>
+                            <h5 class="card-title fw-bold mb-2" style="font-size: 1.05rem; color: var(--text-primary);">
+                                ${name}
+                            </h5>
+                            <div class="d-flex gap-2 align-items-center flex-wrap">
+                                ${methodBadge}
+                                <span class="badge-status ${isActive ? 'badge-active' : 'badge-inactive'}">
+                                    <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                                    ${isActive ? 'Active' : 'Inactive'}
+                                </span>
+                                ${description ? `<span class="text-muted small">·</span><span class="text-muted small">${description}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="website-url small text-end" style="min-width: 200px;" title="${baseUrl}">
+                            <i class="fas fa-link me-1"></i>${baseUrl}
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                        <div class="flex-grow-1" style="min-width: 300px;">
+                            <div class="selector-line"><span class="label">listing</span>${listingSelector || '—'}</div>
+                            <div class="selector-line"><span class="label">link</span>${linkSelector || '—'}</div>
+                            <div class="selector-line"><span class="label">detail</span>${detailSelector || '—'}</div>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <div class="stat-pill">
+                                <div class="number">${totalScraped}</div>
+                                <div class="label">Total</div>
+                            </div>
+                            <div class="stat-pill">
+                                <div class="number">${lastScrapeCount}</div>
+                                <div class="label">Last Run</div>
+                            </div>
+                            <div class="stat-pill">
+                                <div class="number">${maxPagesText}</div>
+                                <div class="label">Max Pages</div>
+                            </div>
+                            <div class="stat-pill">
+                                <div class="number" style="font-size: 0.75rem;">${lastScraped}</div>
+                                <div class="label">Last Scrape</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="progress-container" id="progress-${w.id}" style="display:none;">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div class="progress flex-grow-1">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:0%;"></div>
+                            </div>
+                            <small class="text-muted progress-text">0%</small>
+                        </div>
+                        <div class="scrape-status-text">Initializing...</div>
+                    </div>
+
+                    <div class="match-progress-container" id="match-progress-${w.id}" style="display:none;">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="spinner-border spinner-border-sm text-success" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div class="progress flex-grow-1">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width:0%;"></div>
+                            </div>
+                            <small class="text-muted match-progress-text">0%</small>
+                        </div>
+                        <div class="match-status-text">Initializing...</div>
+                    </div>
+                </div>
+
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        ${w.last_scraped_at ? formatDate(w.last_scraped_at) : 'Never scraped'}
+                    </small>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary btn-sm action-btn" onclick="editWebsite(${Number(w.id)})" title="Edit">
+                            <i class="fas fa-pen"></i> Edit
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm action-btn" onclick="confirmDelete(${Number(w.id)}, '${escapeJsString(w.name || '')}')" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn btn-primary btn-sm action-btn scrape-btn" data-id="${w.id}" data-name="${escapeJsString(w.name)}" data-running="false">
+                            <i class="fas fa-play me-1"></i> Scrape
+                        </button>
+                        <button class="btn btn-success btn-sm action-btn match-btn" data-id="${w.id}" data-name="${escapeJsString(w.name)}" data-running="false" onclick="openMatchModal(${w.id})">
+                            <i class="fas fa-brain me-1"></i> Match
+                        </button>
+                    </div>
+                </div>
+            </div>
+            `;
+            grid.appendChild(col);
+            checkScrapeStatus(w.id);
+        });
+
+        document.querySelectorAll('.scrape-btn').forEach(btn => {
+            btn.removeEventListener('click', handleScrapeClick);
+            btn.addEventListener('click', handleScrapeClick);
+        });
+    }
+
+    // =========================================================
+    // SCRAPE STATUS — reconnect after refresh
+    // =========================================================
     async function checkScrapeStatus(websiteId) {
         try {
             const res = await fetch(`/api/v1/scrape/${websiteId}/status/`);
@@ -755,21 +1272,23 @@
             const data = await res.json();
 
             if (data.in_progress || (data.completed && data.total_processed > 0 && (Date.now() / 1000 - data.started_at) < 60)) {
-                // A scrape is in-flight (or just completed < 60s ago)
                 const card = document.getElementById(`website-card-${websiteId}`);
+                if (!card) return;
                 const btn = card.querySelector('.scrape-btn');
                 const progressContainer = document.getElementById(`progress-${websiteId}`);
 
                 if (data.in_progress) {
-                    // Show progress bar with current counts
                     progressContainer.style.display = 'block';
                     const progressBar = progressContainer.querySelector('.progress-bar');
                     const progressText = progressContainer.querySelector('.progress-text');
                     const statusText = progressContainer.querySelector('.scrape-status-text');
                     const spinner = progressContainer.querySelector('.spinner-border');
 
-                    btn.disabled = true;
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Scraping...';
+                    btn.disabled = false;
+                    btn.dataset.running = 'true';
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-danger');
+                    btn.innerHTML = '<i class="fas fa-stop me-1"></i> Stop';
                     if (spinner) spinner.style.display = 'inline-block';
 
                     const total = data.saved + data.skipped + data.failed;
@@ -778,21 +1297,17 @@
                     progressText.textContent = `${Math.round(pct)}%`;
                     statusText.textContent = `🔄 Reconnected — Saved: ${data.saved}, Skipped: ${data.skipped}, Failed: ${data.failed}`;
 
-                    // Open SSE to continue receiving events
                     reconnectScrapeSSE(websiteId, btn);
                 } else if (data.completed) {
-                    // Scrape finished while we were away — show final state briefly
                     const progressBar = progressContainer.querySelector('.progress-bar');
                     const progressText = progressContainer.querySelector('.progress-text');
                     const statusText = progressContainer.querySelector('.scrape-status-text');
-
                     progressContainer.style.display = 'block';
                     progressBar.style.width = '100%';
                     progressBar.classList.add('bg-success');
                     progressBar.classList.remove('progress-bar-animated');
                     progressText.textContent = '100%';
                     statusText.textContent = `✅ Completed — Saved: ${data.saved}, Skipped: ${data.skipped}`;
-
                     setTimeout(() => { progressContainer.style.display = 'none'; }, 5000);
                 }
             }
@@ -811,7 +1326,6 @@
         const url = `/api/v1/scrape/${websiteId}/stream/`;
         const eventSource = new EventSource(url);
         window.eventSource = eventSource;
-
         let isComplete = false;
 
         eventSource.onmessage = function(event) {
@@ -844,13 +1358,18 @@
                         progressBar.classList.remove('progress-bar-animated');
                         progressBar.classList.add('bg-success');
                         if (spinner) spinner.style.display = 'none';
-                        statusText.textContent = `✅ Done! Saved ${data.saved}, Skipped ${data.skipped}, Failed ${data.failed || 0}`;
-                        setTimeout(() => {
-                            btn.disabled = false;
-                            btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
-                            eventSource.close();
-                            fetchWebsites();  // refresh the cards
-                        }, 3000);
+                        if (data.cancelled) {
+                            statusText.textContent = data.summary || '⏹️ Cancelled';
+                            showToast('Scrape cancelled', 'info');
+                        } else {
+                            statusText.textContent = `✅ Done! Saved ${data.saved}, Skipped ${data.skipped}, Failed ${data.failed || 0}`;
+                            showToast(`Scrape complete — ${data.saved} new positions`, 'success');
+                        }
+                        btn.dataset.running = 'false';
+                        btn.classList.remove('btn-danger');
+                        btn.classList.add('btn-primary');
+                        btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
+                        setTimeout(() => { eventSource.close(); fetchWebsites(); }, 3000);
                         break;
                     case 'error':
                         progressBar.style.width = '100%';
@@ -858,7 +1377,10 @@
                         progressBar.classList.remove('progress-bar-animated');
                         if (spinner) spinner.style.display = 'none';
                         statusText.textContent = `❌ ${data.message}`;
-                        btn.disabled = false;
+                        showToast(`Scrape error: ${data.message}`, 'error');
+                        btn.dataset.running = 'false';
+                        btn.classList.remove('btn-danger');
+                        btn.classList.add('btn-primary');
                         btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
                         eventSource.close();
                         break;
@@ -870,261 +1392,354 @@
 
         eventSource.onerror = function() {
             if (isComplete) return;
-            // The server-side scrape may have completed; re-check status
             setTimeout(() => checkScrapeStatus(websiteId), 1000);
             eventSource.close();
         };
     }
+
     // =========================================================
-    // RENDER WEBSITES
+    // SCRAPE FUNCTION (SSE) — with Stop button support
     // =========================================================
-
-    function renderWebsites(websites) {
-        const grid = document.getElementById('websiteGrid');
-        const loading = document.getElementById('loading');
-        const noWebsites = document.getElementById('noWebsites');
-
-        grid.innerHTML = '';
-
-        if (!websites || websites.length === 0) {
-            loading.style.display = 'none';
-            grid.style.display = 'none';
-            noWebsites.classList.remove('d-none');
-            return;
+    function handleScrapeClick(e) {
+        const btn = e.currentTarget;
+        const id = btn.dataset.id;
+        const name = btn.dataset.name;
+        const isRunning = btn.dataset.running === 'true';
+        if (isRunning) {
+            stopScrape(id, btn);
+        } else {
+            fetch(`/api/v1/scrape/${id}/status/`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.in_progress) {
+                        reconnectScrapeSSE(id, btn);
+                    } else {
+                        _actuallyStartScrape(id, name, btn);
+                    }
+                })
+                .catch(() => _actuallyStartScrape(id, name, btn));
         }
+    }
 
-        loading.style.display = 'none';
-        noWebsites.classList.add('d-none');
-        grid.style.display = 'flex';
-
-        websites.forEach(function(w) {
-            const col = document.createElement('div');
-            col.className = 'col-12';
-
-            const isActive = Boolean(w.is_active);
-            const name = escapeHtml(w.name || 'Unnamed Website');
-            const description = escapeHtml(w.description || '');
-            const baseUrl = escapeHtml(w.base_url || '');
-            const listingSelector = escapeHtml(w.listing_item_selector || '');
-            const linkSelector = escapeHtml(w.position_link_selector || '');
-            const detailSelector = escapeHtml(w.detail_container_selector || '');
-            const totalScraped = Number(w.total_scraped_count || 0);
-            const lastScraped = w.last_scraped_at ? formatDate(w.last_scraped_at) : 'Never';
-            const maxPages = Number(w.max_pages || 0);
-            const maxPagesText = maxPages === 0 ? 'Unlimited' : maxPages;
-
-            // Method badges
-            const method = w.scraping_method || 'html';
-            const needsJs = Boolean(w.needs_js);
-            let methodBadge = '';
-            if (method === 'api') {
-                methodBadge = '<span class="method-badge method-api">API</span>';
-            } else if (needsJs) {
-                methodBadge = '<span class="method-badge method-js">JS</span>';
-            } else {
-                methodBadge = '<span class="method-badge method-html">HTML</span>';
+    async function stopScrape(websiteId, btn) {
+        if (!confirm('Stop scraping this website?')) return;
+        try {
+            const res = await fetch(`/api/v1/scrape/${websiteId}/cancel/`, {
+                method: 'POST',
+                headers: {'X-CSRFToken': CSRF_TOKEN},
+            });
+            if (res.ok) {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Stopping...';
             }
+        } catch (e) {
+            console.error('Stop scrape error:', e);
+            showToast('Failed to stop scrape', 'error');
+        }
+    }
 
-            const lastScrapeCount = Number(w.last_scrape_count || 0);
+    function _actuallyStartScrape(websiteId, websiteName, btn) {
+        const card = document.getElementById(`website-card-${websiteId}`);
+        const progressContainer = document.getElementById(`progress-${websiteId}`);
+        const progressBar = progressContainer.querySelector('.progress-bar');
+        const progressText = progressContainer.querySelector('.progress-text');
+        const statusText = progressContainer.querySelector('.scrape-status-text');
+        const spinner = progressContainer.querySelector('.spinner-border');
 
-            col.innerHTML = `
-            <div class="card card-website" id="website-card-${w.id}">
-                <div class="card-body">
+        // Turn into Stop button
+        btn.disabled = false;
+        btn.dataset.running = 'true';
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-danger');
+        btn.innerHTML = '<i class="fas fa-stop me-1"></i> Stop';
 
-                    <!-- ─── Row 1: Name + badges (left) | URL (right) ─── -->
-                    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
-                        <div>
-                            <h5 class="card-title fw-bold mb-2" style="font-size: 1.05rem;">
-                                ${name}
-                            </h5>
-                            <div class="d-flex gap-2 align-items-center">
-                                ${methodBadge}
-                                <span class="badge-status ${isActive ? 'badge-active' : 'badge-inactive'}">
-                                    ${isActive ? 'Active' : 'Inactive'}
-                                </span>
-                                ${description ? `<span class="text-muted small">·</span><span class="text-muted small">${description}</span>` : ''}
-                            </div>
-                        </div>
-                        <div class="text-muted small text-end" style="min-width: 200px;">
-                            <i class="fas fa-link me-1"></i>${baseUrl}
-                        </div>
-                    </div>
+        progressContainer.style.display = 'block';
+        progressBar.style.width = '0%';
+        progressText.textContent = '0%';
+        statusText.textContent = 'Connecting...';
+        if (spinner) spinner.style.display = 'inline-block';
 
-                    <!-- ─── Row 2: Selectors (left) | Stats (right) ─── -->
-                    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+        if (window.eventSource) window.eventSource.close();
 
-                        <!-- Selectors -->
-                        <div class="flex-grow-1" style="min-width: 300px;">
-                            <div class="selector-line"><span class="label">listing</span>${listingSelector || '—'}</div>
-                            <div class="selector-line"><span class="label">link</span>${linkSelector || '—'}</div>
-                            <div class="selector-line"><span class="label">detail</span>${detailSelector || '—'}</div>
-                        </div>
+        const url = `/api/v1/scrape/${websiteId}/stream/`;
+        console.log('Connecting to SSE:', url);
 
-                        <!-- Stats pills -->
-                        <div class="d-flex gap-2 flex-wrap">
-                            <div class="stat-pill">
-                                <div class="number">${totalScraped}</div>
-                                <div class="label">Total</div>
-                            </div>
-                            <div class="stat-pill">
-                                <div class="number">${lastScrapeCount}</div>
-                                <div class="label">Last Run</div>
-                            </div>
-                            <div class="stat-pill">
-                                <div class="number">${maxPagesText}</div>
-                                <div class="label">Max Pages</div>
-                            </div>
-                            <div class="stat-pill">
-                                <div class="number" style="font-size: 0.78rem;">${lastScraped}</div>
-                                <div class="label">Last Scrape</div>
-                            </div>
-                        </div>
-                    </div>
+        const eventSource = new EventSource(url);
+        window.eventSource = eventSource;
+        let isComplete = false;
 
-                    <!-- Scrape Progress Bar -->
-                    <div class="progress-container" id="progress-${w.id}" style="display:none;">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="spinner-border spinner-border-sm text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <div class="progress flex-grow-1">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:0%;"></div>
-                            </div>
-                            <small class="text-muted progress-text">0%</small>
-                        </div>
-                        <div class="scrape-status-text">Initializing...</div>
-                    </div>
+        eventSource.onopen = function() {
+            statusText.textContent = 'Connected...';
+            progressBar.style.width = '5%';
+            progressText.textContent = '5%';
+        };
 
-                    <!-- Match Progress Bar -->
-                    <div class="match-progress-container" id="match-progress-${w.id}" style="display:none;">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="spinner-border spinner-border-sm text-success" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <div class="progress flex-grow-1">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width:0%;"></div>
-                            </div>
-                            <small class="text-muted match-progress-text">0%</small>
-                        </div>
-                        <div class="match-status-text">Initializing...</div>
-                    </div>
-                </div>
+        eventSource.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                switch (data.type) {
+                    case 'start':
+                        statusText.textContent = data.message;
+                        progressBar.style.width = '10%';
+                        progressText.textContent = '10%';
+                        break;
+                    case 'progress':
+                        statusText.textContent = data.message;
+                        progressBar.style.width = `${data.percentage}%`;
+                        progressText.textContent = `${data.percentage}%`;
+                        break;
+                    case 'position_saved':
+                        {
+                            const total = data.saved + data.skipped + data.failed;
+                            const pct = Math.min(10 + (total * 0.5), 90);
+                            progressBar.style.width = `${pct}%`;
+                            progressText.textContent = `${Math.round(pct)}%`;
+                            statusText.textContent = `✅ Saved: ${data.title.substring(0, 50)}... (Saved: ${data.saved}, Skipped: ${data.skipped})`;
+                        }
+                        break;
+                    case 'position_skipped':
+                        {
+                            const total = data.saved + data.skipped + data.failed;
+                            const pct = Math.min(10 + (total * 0.5), 90);
+                            progressBar.style.width = `${pct}%`;
+                            progressText.textContent = `${Math.round(pct)}%`;
+                            statusText.textContent = `⏭️ Skipped: ${data.title.substring(0, 50)}... (Saved: ${data.saved}, Skipped: ${data.skipped})`;
+                        }
+                        break;
+                    case 'position_failed':
+                        statusText.textContent = `❌ Failed: ${data.title.substring(0, 50)}... - ${data.error}`;
+                        break;
+                    case 'complete':
+                        isComplete = true;
+                        progressBar.style.width = '100%';
+                        progressText.textContent = '100%';
+                        progressBar.classList.remove('progress-bar-animated');
+                        progressBar.classList.add('bg-success');
+                        if (spinner) spinner.style.display = 'none';
+                        if (data.cancelled) {
+                            statusText.textContent = data.summary || '⏹️ Cancelled';
+                            showToast('Scrape cancelled', 'info');
+                        } else if (data.saved === 0 && data.skipped === 0) {
+                            statusText.textContent = `ℹ️ No new positions found (already have ${data.total} positions)`;
+                            showToast('No new positions found', 'info');
+                        } else {
+                            statusText.textContent = `✅ Done! Saved ${data.saved} new positions (${data.skipped} skipped, ${data.failed || 0} failed)`;
+                            showToast(`Scrape complete — ${data.saved} new positions`, 'success');
+                        }
+                        btn.dataset.running = 'false';
+                        btn.classList.remove('btn-danger');
+                        btn.classList.add('btn-primary');
+                        btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
+                        setTimeout(() => { eventSource.close(); fetchWebsites(); }, 3000);
+                        break;
+                    case 'error':
+                        progressBar.style.width = '100%';
+                        progressText.textContent = 'Error';
+                        progressBar.classList.remove('progress-bar-animated');
+                        progressBar.classList.add('bg-danger');
+                        if (spinner) spinner.style.display = 'none';
+                        statusText.textContent = `❌ ${data.message}`;
+                        showToast(`Scrape error: ${data.message}`, 'error');
+                        btn.dataset.running = 'false';
+                        btn.classList.remove('btn-danger');
+                        btn.classList.add('btn-primary');
+                        btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
+                        eventSource.close();
+                        break;
+                }
+            } catch (e) {
+                console.error('Parse error:', e);
+            }
+        };
 
-                <!-- ─── Footer: action buttons ─── -->
-                <div class="card-footer d-flex justify-content-between align-items-center">
-                    <small class="text-muted">
-                        <i class="fas fa-clock me-1"></i>
-                        ${w.last_scraped_at ? formatDate(w.last_scraped_at) : 'Never scraped'}
-                    </small>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-secondary btn-sm action-btn" onclick="editWebsite(${Number(w.id)})" title="Edit">
-                            <i class="fas fa-pen me-1"></i> Edit
-                        </button>
-                        <button class="btn btn-outline-danger btn-sm action-btn" onclick="confirmDelete(${Number(w.id)}, '${escapeJsString(w.name || '')}')" title="Delete">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                        <button class="btn btn-primary btn-sm action-btn scrape-btn" data-id="${w.id}" data-name="${escapeJsString(w.name)}">
-                            <i class="fas fa-play me-1"></i> Scrape
-                        </button>
-                        <button class="btn btn-success btn-sm action-btn match-btn" data-id="${w.id}" data-name="${escapeJsString(w.name)}" onclick="openMatchModal(${w.id})">
-                            <i class="fas fa-brain me-1"></i> Match
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-            grid.appendChild(col);
-            // ─── Check if a scrape is in-flight for this website ───
-            checkScrapeStatus(w.id);
-        });
-
-        // Attach scrape event listeners
-        document.querySelectorAll('.scrape-btn').forEach(btn => {
-            btn.removeEventListener('click', handleScrapeClick);
-            btn.addEventListener('click', handleScrapeClick);
-        });
+        eventSource.onerror = function() {
+            if (isComplete) return;
+            if (eventSource.readyState === EventSource.CLOSED) return;
+            if (spinner) spinner.style.display = 'none';
+            statusText.textContent = '⚠️ Connection lost. Check server logs.';
+            progressBar.classList.add('bg-warning');
+            btn.dataset.running = 'false';
+            btn.classList.remove('btn-danger');
+            btn.classList.add('btn-primary');
+            btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
+            eventSource.close();
+        };
     }
 
     // =========================================================
-    // MATCH FUNCTION (SSE)  — UNCHANGED (positions app preserved)
+    // MATCH FUNCTION (SSE) — with CV persistence + Stop
     // =========================================================
+
+    document.querySelectorAll('#cvSourceTabs .nav-link').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('#cvSourceTabs .nav-link').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const source = this.dataset.source;
+            document.querySelectorAll('.cv-source-pane').forEach(p => p.style.display = 'none');
+            document.getElementById('source' + source.charAt(0).toUpperCase() + source.slice(1)).style.display = 'block';
+        });
+    });
+
+    async function loadExistingCVs() {
+        try {
+            const res = await fetch('/api/v1/cvs/');
+            if (!res.ok) throw new Error('Failed to load CVs');
+            const data = await res.json();
+            const cvs = Array.isArray(data) ? data : (data.results || []);
+            const select = document.getElementById('existingCvSelect');
+            const preview = document.getElementById('existingCvPreview');
+
+            if (cvs.length === 0) {
+                select.innerHTML = '<option value="">No CVs saved yet — paste or upload one</option>';
+                preview.textContent = 'No saved CVs. Use the "Paste Text" or "Upload File" tab.';
+                selectedCvId = null;
+                return;
+            }
+
+            select.innerHTML = cvs.map(cv =>
+                `<option value="${cv.id}">${escapeHtml(cv.name)} (${cv.language}) — ${formatDate(cv.created_at)}</option>`
+            ).join('');
+
+            select.selectedIndex = 0;
+            selectedCvId = cvs[0].id;
+            preview.textContent = cvs[0].text_preview || '(no preview available)';
+
+            select.onchange = function() {
+                selectedCvId = this.value || null;
+                const selected = cvs.find(c => String(c.id) === String(selectedCvId));
+                preview.textContent = selected ? (selected.text_preview || '(no preview)') : 'Select a CV';
+            };
+        } catch (e) {
+            console.error('loadExistingCVs error:', e);
+            showToast('Failed to load CVs', 'error');
+        }
+    }
 
     function openMatchModal(websiteId) {
         document.getElementById('matchWebsiteId').value = websiteId;
-        document.getElementById('cvText').value = '';
-        document.getElementById('matchLanguage').value = 'English';
+        loadExistingCVs();
+        document.querySelector('#cvSourceTabs .nav-link[data-source="existing"]').click();
         const modal = new bootstrap.Modal(document.getElementById('cvModal'));
         modal.show();
     }
 
-    document.getElementById('startMatchBtn').addEventListener('click', function() {
-        const websiteId = document.getElementById('matchWebsiteId').value;
-        const cv = document.getElementById('cvText').value.trim();
-        const language = document.getElementById('matchLanguage').value.trim() || 'English';
+    document.getElementById('startMatchBtn').addEventListener('click', async function() {
+        const activeSource = document.querySelector('#cvSourceTabs .nav-link.active').dataset.source;
+        const language = document.getElementById('matchLanguage').value;
+        let cvId = null;
 
-        if (!cv) {
-            alert('Please paste your CV text.');
-            return;
+        if (activeSource === 'existing') {
+            cvId = selectedCvId;
+            if (!cvId) { showToast('Please select a CV.', 'warning'); return; }
+        } else if (activeSource === 'paste') {
+            const text = document.getElementById('pasteCvText').value.trim();
+            if (!text) { showToast('Please paste your CV text.', 'warning'); return; }
+            const name = document.getElementById('pasteCvName').value.trim() || `CV ${new Date().toLocaleDateString()}`;
+            const res = await fetch('/api/v1/cvs/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN},
+                body: JSON.stringify({
+                    name: name, content: text, file_type: 'paste',
+                    language: language, is_active: true,
+                })
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                showToast('Failed to save CV: ' + JSON.stringify(err), 'error');
+                return;
+            }
+            const cvData = await res.json();
+            cvId = cvData.id;
+        } else if (activeSource === 'upload') {
+            const fileInput = document.getElementById('uploadCvFile');
+            const file = fileInput.files[0];
+            if (!file) { showToast('Please select a file.', 'warning'); return; }
+            const name = document.getElementById('uploadCvName').value.trim() || file.name;
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('file', file);
+            formData.append('file_type', file.name.endsWith('.pdf') ? 'pdf' : 'txt');
+            formData.append('language', language);
+            formData.append('is_active', 'true');
+            const res = await fetch('/api/v1/cvs/', {
+                method: 'POST',
+                headers: {'X-CSRFToken': CSRF_TOKEN},
+                body: formData
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                showToast('Failed to upload CV: ' + JSON.stringify(err), 'error');
+                return;
+            }
+            const cvData = await res.json();
+            cvId = cvData.id;
         }
 
-        // Close modal
         bootstrap.Modal.getInstance(document.getElementById('cvModal')).hide();
 
-        // Start matching
-        startMatching(websiteId, cv, language);
+        const websiteId = document.getElementById('matchWebsiteId').value;
+
+        try {
+            const startRes = await fetch('/api/v1/match/start/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN},
+                body: JSON.stringify({cv_id: cvId, language: language})
+            });
+            if (!startRes.ok) throw new Error('Failed to start match');
+            const startData = await startRes.json();
+            const sessionKey = startData.session_key;
+
+            localStorage.setItem('activeMatchSession', sessionKey);
+            localStorage.setItem('activeMatchWebsiteId', websiteId);
+
+            startMatching(sessionKey, websiteId);
+
+            const matchBtn = document.querySelector(`.match-btn[data-id="${websiteId}"]`);
+            if (matchBtn) {
+                matchBtn.dataset.sessionKey = sessionKey;
+                matchBtn.dataset.running = 'true';
+                matchBtn.classList.remove('btn-success');
+                matchBtn.classList.add('btn-danger');
+                matchBtn.innerHTML = '<i class="fas fa-stop me-1"></i> Stop';
+                matchBtn.onclick = function() { stopMatch(sessionKey, matchBtn, websiteId); };
+            }
+            showToast('Match started', 'success');
+        } catch (e) {
+            showToast('Failed to start matching: ' + e.message, 'error');
+        }
     });
 
-    function startMatching(websiteId, cv, language) {
+    function startMatching(sessionKey, websiteId) {
         const card = document.getElementById(`website-card-${websiteId}`);
+        if (!card) return;
         const matchContainer = document.getElementById(`match-progress-${websiteId}`);
         const progressBar = matchContainer.querySelector('.progress-bar');
         const progressText = matchContainer.querySelector('.match-progress-text');
         const statusText = matchContainer.querySelector('.match-status-text');
         const spinner = matchContainer.querySelector('.spinner-border');
 
-        // Show match progress
         matchContainer.style.display = 'block';
         progressBar.style.width = '0%';
         progressText.textContent = '0%';
         statusText.textContent = 'Connecting to matcher...';
-        if (spinner) {
-            spinner.style.display = 'inline-block';
-        }
+        if (spinner) spinner.style.display = 'inline-block';
 
-        // Close any existing event source
-        if (window.matchEventSource) {
-            window.matchEventSource.close();
-        }
+        if (window.matchEventSource) window.matchEventSource.close();
 
-        // Start SSE connection
-        const url = `/api/v1/match/stream/`;
-        console.log('🔗 Connecting to match SSE:', url);
-
-        const eventSource = new EventSource(url);
-        window.matchEventSource = eventSource;
-
-        // Send CV via POST (EventSource doesn't support POST, so we need to use fetch)
-        // We'll use fetch to send the CV and get the stream
+        const url = `/api/v1/match/${sessionKey}/stream/`;
         fetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ cv: cv, language: language })
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN},
+            body: JSON.stringify({session_key: sessionKey})
         }).then(response => {
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let buffer = '';
-
             function readStream() {
-                reader.read().then(({ done, value }) => {
-                    if (done) {
-                        console.log('Stream complete');
-                        return;
-                    }
-
-                    buffer += decoder.decode(value, { stream: true });
+                reader.read().then(({done, value}) => {
+                    if (done) return;
+                    buffer += decoder.decode(value, {stream: true});
                     const lines = buffer.split('\n\n');
                     buffer = lines.pop() || '';
-
                     lines.forEach(line => {
                         if (line.startsWith('data: ')) {
                             try {
@@ -1135,297 +1750,212 @@
                             }
                         }
                     });
-
                     readStream();
                 });
             }
-
             readStream();
         }).catch(error => {
             console.error('Fetch error:', error);
             statusText.textContent = '❌ Connection error: ' + error.message;
             progressBar.classList.add('bg-danger');
-            if (spinner) {
-                spinner.style.display = 'none';
-            }
+            if (spinner) spinner.style.display = 'none';
+            showToast('Match connection error', 'error');
         });
     }
 
-    function handleMatchEvent(data, card, matchContainer, progressBar, progressText, statusText, spinner) {
-        console.log('📨 Match event:', data.type, data);
+    async function stopMatch(sessionKey, btn, websiteId) {
+        if (!confirm('Stop matching?')) return;
+        try {
+            const res = await fetch(`/api/v1/match/${sessionKey}/cancel/`, {
+                method: 'POST',
+                headers: {'X-CSRFToken': CSRF_TOKEN},
+            });
+            if (res.ok) {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Stopping...';
+            }
+        } catch (e) {
+            console.error('Stop match error:', e);
+            showToast('Failed to stop match', 'error');
+        }
+    }
 
+    function handleMatchEvent(data, card, matchContainer, progressBar, progressText, statusText, spinner) {
         switch(data.type) {
             case 'start':
                 statusText.textContent = data.message;
-                progressBar.style.width = '5%';
-                progressText.textContent = '5%';
+                if (data.total_positions !== undefined) {
+                    const startTotal = (data.saved || 0) + (data.skipped || 0) + (data.failed || 0);
+                    const startPct = data.total_positions > 0
+                        ? Math.min(5 + (startTotal / data.total_positions) * 90, 95)
+                        : 5;
+                    progressBar.style.width = `${startPct}%`;
+                    progressText.textContent = `${Math.round(startPct)}%`;
+                    if (startTotal > 0) {
+                        statusText.textContent = `🔄 Reconnected — Saved: ${data.saved}, Skipped: ${data.skipped}, Failed: ${data.failed}`;
+                    }
+                } else {
+                    progressBar.style.width = '5%';
+                    progressText.textContent = '5%';
+                }
                 break;
-
             case 'progress':
                 statusText.textContent = data.message;
                 progressBar.style.width = `${data.percentage}%`;
                 progressText.textContent = `${data.percentage}%`;
                 break;
-
             case 'position_matched':
-                const score = data.score || 0;
-                const category = data.category || 'unknown';
-                const emoji = score >= 70 ? '🌟' : score >= 50 ? '✅' : '📌';
-                statusText.textContent = `${emoji} ${data.title.substring(0, 40)}... → ${score}% (${category})`;
+                {
+                    const score = data.score || 0;
+                    const category = data.category || 'unknown';
+                    const emoji = score >= 70 ? '🌟' : score >= 50 ? '✅' : '📌';
+                    statusText.textContent = `${emoji} ${data.title.substring(0, 40)}... → ${score}% (${category})`;
+                }
                 break;
-
             case 'position_failed':
                 statusText.textContent = `❌ ${data.title.substring(0, 40)}... → ${data.error}`;
                 break;
-
             case 'complete':
                 progressBar.style.width = '100%';
                 progressText.textContent = '100%';
                 progressBar.classList.remove('progress-bar-animated');
                 progressBar.classList.add('bg-success');
-                if (spinner) {
-                    spinner.style.display = 'none';
+                if (spinner) spinner.style.display = 'none';
+                if (data.cancelled) {
+                    statusText.textContent = data.summary || '⏹️ Cancelled';
+                    showToast('Match cancelled', 'info');
+                } else {
+                    statusText.textContent = data.summary || '✅ Match analysis complete!';
+                    showToast(`Match complete — ${data.saved} positions analyzed`, 'success');
                 }
-                statusText.textContent = data.summary || '✅ Match analysis complete!';
+                localStorage.removeItem('activeMatchSession');
+                localStorage.removeItem('activeMatchWebsiteId');
 
-                // Update stats on card
-                const statsSpan = card.querySelector('.text-muted.d-flex.justify-content-between');
-                if (statsSpan) {
-                    statsSpan.innerHTML = `
-                        <span><i class="fas fa-file-alt me-1"></i>✅ Matched</span>
-                        <span>${new Date().toLocaleDateString()}</span>
-                        <span><i class="fas fa-clock me-1"></i>Just now</span>
-                    `;
+                const websiteId = document.getElementById('matchWebsiteId').value;
+                const matchBtn = document.querySelector(`.match-btn[data-id="${websiteId}"]`);
+                if (matchBtn) {
+                    matchBtn.dataset.running = 'false';
+                    matchBtn.classList.remove('btn-danger');
+                    matchBtn.classList.add('btn-success');
+                    matchBtn.innerHTML = '<i class="fas fa-brain me-1"></i> Match';
+                    matchBtn.onclick = function() { openMatchModal(websiteId); };
                 }
+                setTimeout(() => { if (window.location.pathname === '/') window.location.reload(); }, 2000);
                 break;
-
             case 'error':
                 progressBar.style.width = '100%';
                 progressText.textContent = 'Error';
                 progressBar.classList.remove('progress-bar-animated');
                 progressBar.classList.add('bg-danger');
-                if (spinner) {
-                    spinner.style.display = 'none';
-                }
+                if (spinner) spinner.style.display = 'none';
                 statusText.textContent = `❌ ${data.message}`;
+                showToast(`Match error: ${data.message}`, 'error');
+                localStorage.removeItem('activeMatchSession');
+                localStorage.removeItem('activeMatchWebsiteId');
+                {
+                    const websiteId = document.getElementById('matchWebsiteId').value;
+                    const matchBtn = document.querySelector(`.match-btn[data-id="${websiteId}"]`);
+                    if (matchBtn) {
+                        matchBtn.dataset.running = 'false';
+                        matchBtn.classList.remove('btn-danger');
+                        matchBtn.classList.add('btn-success');
+                        matchBtn.innerHTML = '<i class="fas fa-brain me-1"></i> Match';
+                        matchBtn.onclick = function() { openMatchModal(websiteId); };
+                    }
+                }
                 break;
         }
     }
 
     // =========================================================
-    // SCRAPE FUNCTION (SSE) — FIXED: declared failedCount, cleaned up
+    // RECONNECT MATCH ON PAGE LOAD
     // =========================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchWebsites();
+        const activeSession = localStorage.getItem('activeMatchSession');
+        const matchWebsiteId = localStorage.getItem('activeMatchWebsiteId');
+        if (activeSession && matchWebsiteId) {
+            waitForCardAndReconnectMatch(activeSession, matchWebsiteId);
+        }
+    });
 
-    function handleScrapeClick(e) {
-        const btn = e.currentTarget;
-        const id = btn.dataset.id;
-        const name = btn.dataset.name;
-        startScrape(id, name, btn);
-    }
-
-    function startScrape(websiteId, websiteName, btn) {
-        // ─── Don't start if a scrape is already in-flight ───
-        if (window.eventSource && window.eventSource.readyState === EventSource.OPEN) {
-            // Could be a different website's scrape; check the active registry
-            // For simplicity, just check via the status endpoint:
-            fetch(`/api/v1/scrape/${websiteId}/status/`)
-                .then(r => r.json())
-                .then(data => {
-                    if (data.in_progress) {
-                        // Just reconnect instead of starting a new scrape
-                        reconnectScrapeSSE(websiteId, btn);
+    async function waitForCardAndReconnectMatch(sessionKey, websiteId) {
+        let attempts = 0;
+        while (attempts < 50) {
+            const card = document.getElementById(`website-card-${websiteId}`);
+            if (card) {
+                try {
+                    const res = await fetch(`/api/v1/match/${sessionKey}/status/`);
+                    if (!res.ok) {
+                        localStorage.removeItem('activeMatchSession');
+                        localStorage.removeItem('activeMatchWebsiteId');
                         return;
                     }
-                    // No in-flight scrape — proceed normally
-                    _actuallyStartScrape(websiteId, websiteName, btn);
-                })
-                .catch(() => _actuallyStartScrape(websiteId, websiteName, btn));
-            return;
-        }
-        _actuallyStartScrape(websiteId, websiteName, btn);
-    }
-    
-    function _actuallyStartScrape(websiteId, websiteName, btn) {
-        const card = document.getElementById(`website-card-${websiteId}`);
-        const progressContainer = document.getElementById(`progress-${websiteId}`);
-        const progressBar = progressContainer.querySelector('.progress-bar');
-        const progressText = progressContainer.querySelector('.progress-text');
-        const statusText = progressContainer.querySelector('.scrape-status-text');
-        const spinner = progressContainer.querySelector('.spinner-border');
+                    const data = await res.json();
 
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Scraping...';
-        progressContainer.style.display = 'block';
-        progressBar.style.width = '0%';
-        progressText.textContent = '0%';
-        statusText.textContent = 'Connecting...';
-        if (spinner) {
-            spinner.style.display = 'inline-block';
-        }
+                    const matchContainer = document.getElementById(`match-progress-${websiteId}`);
+                    const btn = card.querySelector('.match-btn');
+                    const progressBar = matchContainer?.querySelector('.progress-bar');
+                    const progressText = matchContainer?.querySelector('.match-progress-text');
+                    const statusText = matchContainer?.querySelector('.match-status-text');
+                    const spinner = matchContainer?.querySelector('.spinner-border');
 
-        if (window.eventSource) {
-            window.eventSource.close();
-        }
-
-        const url = `/api/v1/scrape/${websiteId}/stream/`;
-        console.log('🔗 Connecting to SSE:', url);
-
-        const eventSource = new EventSource(url);
-        window.eventSource = eventSource;
-
-        let savedCount = 0;
-        let skippedCount = 0;
-        let failedCount = 0;  // FIXED: declared the variable
-        let isComplete = false;
-
-        eventSource.onopen = function() {
-            console.log('✅ SSE connection opened');
-            statusText.textContent = 'Connected...';
-            progressBar.style.width = '5%';
-            progressText.textContent = '5%';
-        };
-
-        eventSource.onmessage = function(event) {
-            try {
-                const data = JSON.parse(event.data);
-                console.log('📨 Received event:', data.type, data);
-
-                switch(data.type) {
-                    case 'start':
-                        statusText.textContent = data.message;
-                        progressBar.style.width = '10%';
-                        progressText.textContent = '10%';
-                        break;
-
-                    case 'progress':
-                        statusText.textContent = data.message;
-                        progressBar.style.width = `${data.percentage}%`;
-                        progressText.textContent = `${data.percentage}%`;
-                        break;
-
-                    case 'position_saved':
-                        savedCount = data.saved;
-                        skippedCount = data.skipped;
-                        failedCount = data.failed;
-                        {
-                            const total = savedCount + skippedCount + failedCount;
-                            const percentage = Math.min(10 + (total * 0.5), 90);
-                            progressBar.style.width = `${percentage}%`;
-                            progressText.textContent = `${Math.round(percentage)}%`;
-                            statusText.textContent = `✅ Saved: ${data.title.substring(0, 50)}... (Saved: ${data.saved}, Skipped: ${data.skipped})`;
-                        }
-                        break;
-
-                    case 'position_skipped':
-                        savedCount = data.saved;
-                        skippedCount = data.skipped;
-                        failedCount = data.failed;
-                        {
-                            const total = savedCount + skippedCount + failedCount;
-                            const percentage = Math.min(10 + (total * 0.5), 90);
-                            progressBar.style.width = `${percentage}%`;
-                            progressText.textContent = `${Math.round(percentage)}%`;
-                            statusText.textContent = `⏭️ Skipped (already exists): ${data.title.substring(0, 50)}... (Saved: ${data.saved}, Skipped: ${data.skipped})`;
-                        }
-                        break;
-
-                    case 'position_failed':
-                        savedCount = data.saved;
-                        skippedCount = data.skipped;
-                        failedCount = data.failed;
-                        statusText.textContent = `❌ Failed: ${data.title.substring(0, 50)}... - ${data.error}`;
-                        break;
-
-                    case 'complete':
-                        isComplete = true;
-                        progressBar.style.width = '100%';
-                        progressText.textContent = '100%';
-                        progressBar.classList.remove('progress-bar-animated');
-                        progressBar.classList.add('bg-success');
-
-                        if (spinner) {
-                            spinner.style.display = 'none';
-                        }
-
-                        if (data.saved === 0 && data.skipped === 0) {
-                            statusText.textContent = `ℹ️ No new positions found (already have ${data.total} positions)`;
-                        } else {
-                            statusText.textContent = `✅ Done! Saved ${data.saved} new positions (${data.skipped} skipped, ${data.failed || 0} failed)`;
-                        }
-
-                        const statsSpan = card.querySelector('.text-muted.d-flex.justify-content-between');
-                        if (statsSpan) {
-                            statsSpan.innerHTML = `
-                                <span><i class="fas fa-file-alt me-1"></i>${data.total}</span>
-                                <span>${new Date().toLocaleDateString()}</span>
-                                <span><i class="fas fa-clock me-1"></i>Just now</span>
-                            `;
-                        }
-
-                        // Enable match button after scrape
-                        const matchBtn = card.querySelector('.match-btn');
-                        if (matchBtn && data.total > 0) {
-                            matchBtn.disabled = false;
-                            matchBtn.innerHTML = '<i class="fas fa-brain me-1"></i> Match';
-                        }
-
-                        setTimeout(() => {
+                    if (data.in_progress) {
+                        if (matchContainer) matchContainer.style.display = 'block';
+                        if (btn) {
                             btn.disabled = false;
-                            btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
-                            eventSource.close();
-                            // Refresh the website list to show updated stats
-                            fetchWebsites();
-                        }, 3000);
-                        break;
-
-                    case 'error':
-                        progressBar.style.width = '100%';
-                        progressText.textContent = 'Error';
-                        progressBar.classList.remove('progress-bar-animated');
-                        progressBar.classList.add('bg-danger');
-                        if (spinner) {
-                            spinner.style.display = 'none';
+                            btn.dataset.running = 'true';
+                            btn.dataset.sessionKey = sessionKey;
+                            btn.classList.remove('btn-success');
+                            btn.classList.add('btn-danger');
+                            btn.innerHTML = '<i class="fas fa-stop me-1"></i> Stop';
+                            btn.onclick = function() { stopMatch(sessionKey, btn, websiteId); };
                         }
-                        statusText.textContent = `❌ ${data.message}`;
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
-                        eventSource.close();
-                        break;
+                        if (spinner) spinner.style.display = 'inline-block';
+
+                        const failedCount = data.failed_count || 0;
+                        const total = (data.saved || 0) + (data.skipped || 0) + failedCount;
+                        const pct = data.total_positions > 0
+                            ? Math.min(5 + (total / data.total_positions) * 90, 95)
+                            : 5;
+                        if (progressBar) progressBar.style.width = `${pct}%`;
+                        if (progressText) progressText.textContent = `${Math.round(pct)}%`;
+                        if (statusText) statusText.textContent = `🔄 Reconnected — Saved: ${data.saved}, Skipped: ${data.skipped}, Failed: ${failedCount}`;
+
+                        document.getElementById('matchWebsiteId').value = websiteId;
+                        startMatching(sessionKey, websiteId);
+                    } else if (data.completed) {
+                        if (matchContainer) {
+                            matchContainer.style.display = 'block';
+                            if (progressBar) {
+                                progressBar.style.width = '100%';
+                                progressBar.classList.add('bg-success');
+                                progressBar.classList.remove('progress-bar-animated');
+                            }
+                            if (progressText) progressText.textContent = '100%';
+                            if (statusText) statusText.textContent = `✅ Completed — Saved: ${data.saved}, Failed: ${data.failed_count || 0}`;
+                            setTimeout(() => { matchContainer.style.display = 'none'; }, 5000);
+                        }
+                        localStorage.removeItem('activeMatchSession');
+                        localStorage.removeItem('activeMatchWebsiteId');
+                    } else {
+                        localStorage.removeItem('activeMatchSession');
+                        localStorage.removeItem('activeMatchWebsiteId');
+                    }
+                } catch (e) {
+                    console.warn('Match status check failed:', e);
+                    localStorage.removeItem('activeMatchSession');
+                    localStorage.removeItem('activeMatchWebsiteId');
                 }
-            } catch (e) {
-                console.error('❌ Parse error:', e);
-            }
-        };
-
-        eventSource.onerror = function(event) {
-            console.error('❌ SSE error:', event);
-            console.log('📊 EventSource readyState:', eventSource.readyState);
-
-            if (isComplete) {
-                console.log('ℹ️ SSE closed normally after completion');
                 return;
             }
-
-            if (eventSource.readyState === EventSource.CLOSED) {
-                console.log('ℹ️ SSE connection closed');
-                return;
-            }
-
-            if (spinner) {
-                spinner.style.display = 'none';
-            }
-            statusText.textContent = '⚠️ Connection lost. Check server logs.';
-            progressBar.classList.add('bg-warning');
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-play me-1"></i> Scrape';
-            eventSource.close();
-        };
+            await new Promise(r => setTimeout(r, 200));
+            attempts++;
+        }
     }
 
     // =========================================================
     // PREPARE ADD
     // =========================================================
-
     function prepareAddWebsite() {
         editingId = null;
         document.getElementById('editId').value = '';
@@ -1444,7 +1974,6 @@
         document.getElementById('detail_source').value = 'html';
         document.getElementById('user_agent').value = '';
 
-        // Toggle field visibility
         toggleScrapingMethodFields();
         toggleDetailSourceFields();
     }
@@ -1452,7 +1981,6 @@
     // =========================================================
     // EDIT WEBSITE
     // =========================================================
-
     async function editWebsite(id) {
         editingId = id;
         document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit me-2"></i>Edit Website';
@@ -1463,11 +1991,7 @@
                 method: 'GET',
                 headers: { 'Accept': 'application/json' }
             });
-
-            if (!res.ok) {
-                throw new Error(`Failed to load website (${res.status})`);
-            }
-
+            if (!res.ok) throw new Error(`Failed to load website (${res.status})`);
             const data = await res.json();
 
             document.getElementById('editId').value = data.id || '';
@@ -1489,7 +2013,6 @@
             document.getElementById('user_agent').value = data.user_agent || '';
             document.getElementById('description').value = data.description || '';
 
-            // API fields
             document.getElementById('scraping_method').value = data.scraping_method || 'html';
             document.getElementById('api_endpoint').value = data.api_endpoint || '';
             document.getElementById('api_pagination_param').value = data.api_pagination_param || 'page';
@@ -1501,14 +2024,12 @@
             document.getElementById('api_item_title_key').value = data.api_item_title_key || '';
             document.getElementById('api_item_company_key').value = data.api_item_company_key || '';
             document.getElementById('api_item_description_key').value = data.api_item_description_key || '';
-            // api_auth_token is write_only — won't be in the response, so leave blank
             document.getElementById('api_auth_token').value = '';
             document.getElementById('api_extra_params').value = data.api_extra_params ? JSON.stringify(data.api_extra_params) : '';
             document.getElementById('detail_source').value = data.detail_source || 'html';
             document.getElementById('api_detail_key').value = data.api_detail_key || '';
             document.getElementById('detail_api_endpoint').value = data.detail_api_endpoint || '';
 
-            // Toggle field visibility based on current values
             toggleScrapingMethodFields();
             toggleDetailSourceFields();
 
@@ -1516,14 +2037,13 @@
             modal.show();
         } catch (error) {
             console.error('editWebsite error:', error);
-            alert('Error loading website: ' + error.message);
+            showToast('Error loading website: ' + error.message, 'error');
         }
     }
 
     // =========================================================
     // SAVE WEBSITE
     // =========================================================
-
     document.getElementById('saveWebsiteBtn').addEventListener('click', async function() {
         const form = document.getElementById('websiteForm');
         if (!form.checkValidity()) {
@@ -1535,14 +2055,13 @@
         const method = id ? 'PUT' : 'POST';
         const url = id ? `${API_URL}${id}/` : API_URL;
 
-        // FIXED: safe JSON parse with try/catch
         let extraParams = {};
         const extraParamsStr = document.getElementById('api_extra_params').value.trim();
         if (extraParamsStr) {
             try {
                 extraParams = JSON.parse(extraParamsStr);
             } catch (e) {
-                alert('Invalid JSON in Extra Parameters:\n' + e.message);
+                showToast('Invalid JSON in Extra Parameters: ' + e.message, 'error');
                 return;
             }
         }
@@ -1585,7 +2104,6 @@
 
         const saveButton = document.getElementById('saveWebsiteBtn');
         const originalButton = saveButton.innerHTML;
-
         saveButton.disabled = true;
         saveButton.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>Saving...`;
 
@@ -1599,7 +2117,6 @@
                 },
                 body: JSON.stringify(payload)
             });
-
             if (!res.ok) {
                 let errorMessage = `Save failed (${res.status})`;
                 try {
@@ -1611,15 +2128,14 @@
                 }
                 throw new Error(errorMessage);
             }
-
             const modal = bootstrap.Modal.getInstance(document.getElementById('websiteModal'));
             if (modal) modal.hide();
-
             prepareAddWebsite();
             await fetchWebsites();
+            showToast(`Website ${id ? 'updated' : 'created'} successfully`, 'success');
         } catch (error) {
             console.error('Save error:', error);
-            alert('Error saving website:\n\n' + error.message);
+            showToast('Error saving website: ' + error.message, 'error');
         } finally {
             saveButton.disabled = false;
             saveButton.innerHTML = originalButton;
@@ -1627,9 +2143,8 @@
     });
 
     // =========================================================
-    // DELETE CONFIRMATION
+    // DELETE
     // =========================================================
-
     function confirmDelete(id, name) {
         document.getElementById('deleteId').value = id;
         document.getElementById('deleteName').textContent = name;
@@ -1637,36 +2152,28 @@
         modal.show();
     }
 
-    // =========================================================
-    // DELETE WEBSITE
-    // =========================================================
-
     document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
         const id = document.getElementById('deleteId').value;
         if (!id) return;
-
         const button = document.getElementById('confirmDeleteBtn');
         button.disabled = true;
         button.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>Deleting...`;
-
         try {
             const res = await fetch(`${API_URL}${id}/`, {
                 method: 'DELETE',
                 headers: { 'Accept': 'application/json', 'X-CSRFToken': CSRF_TOKEN }
             });
-
             if (!res.ok) {
                 const text = await res.text();
                 throw new Error(text || `Delete failed (${res.status})`);
             }
-
             const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
             if (modal) modal.hide();
-
             await fetchWebsites();
+            showToast('Website deleted', 'success');
         } catch (error) {
             console.error('Delete error:', error);
-            alert('Error deleting website:\n\n' + error.message);
+            showToast('Error deleting website: ' + error.message, 'error');
         } finally {
             button.disabled = false;
             button.innerHTML = '<i class="fas fa-trash me-1"></i>Delete';
@@ -1674,28 +2181,20 @@
     });
 
     // =========================================================
-    // FORMAT DATE
+    // HELPERS
     // =========================================================
-
     function formatDate(dateString) {
         try {
             const date = new Date(dateString);
             if (isNaN(date.getTime())) return 'Unknown';
             return date.toLocaleString(undefined, {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
+                year: 'numeric', month: 'short', day: 'numeric',
+                hour: '2-digit', minute: '2-digit'
             });
         } catch (error) {
             return 'Unknown';
         }
     }
-
-    // =========================================================
-    // ESCAPE HTML
-    // =========================================================
 
     function escapeHtml(text) {
         if (text === null || text === undefined) return '';
@@ -1703,10 +2202,6 @@
         div.textContent = String(text);
         return div.innerHTML;
     }
-
-    // =========================================================
-    // ESCAPE JAVASCRIPT STRING
-    // =========================================================
 
     function escapeJsString(text) {
         if (text === null || text === undefined) return '';
@@ -1717,15 +2212,6 @@
             .replace(/\r/g, '\\r')
             .replace(/\n/g, '\\n');
     }
-
-    // =========================================================
-    // INITIAL LOAD
-    // =========================================================
-
-    document.addEventListener('DOMContentLoaded', function() {
-        fetchWebsites();
-    });
-
 </script>
 
 </body>

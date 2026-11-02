@@ -21,7 +21,7 @@ from typing import Optional, Dict
 
 from django.http import StreamingHttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_http_methods
 from rest_framework import viewsets, permissions
 
 from .models import Website
@@ -40,6 +40,7 @@ class ScrapeState:
     the `queue` module in `field(default_factory=queue.Queue)`.
     """
     item_queue: queue.Queue = field(default_factory=queue.Queue)
+    cancel_event: threading.Event = field(default_factory=threading.Event)
     saved: int = 0
     skipped: int = 0
     failed: int = 0
@@ -133,6 +134,14 @@ async def _scrape_async(website_id, max_pages, state, error_holder):
 
         # Single async loop (no duplicate nesting)
         async for position in scraper.iter_positions():
+            if state.cancel_event.is_set():
+                state.item_queue.put(('progress', {
+                    'message': 'Cancellation requested — stopping...',
+                    'percentage': 100,
+                }))
+                logger.info("Scrape cancelled by user for website_id=%s", website_id)
+                break
+
             try:
                 ok = await pipeline.process(position)
                 status = 'saved' if ok else 'skipped'
@@ -340,8 +349,20 @@ def scrape_website_stream(request, website_id):
                 logger.error("Failed to update scrape stats: %s", e)
 
         # 8. Send completion or error event (read error from shared state)
+        was_cancelled = state.cancel_event.is_set() if state else False
         scrape_error = state.error if state else error_holder.get('error')
-        if scrape_error:
+        if was_cancelled:
+            yield _sse({
+                'type': 'complete',
+                'saved': saved,
+                'skipped': skipped,
+                'failed': failed,
+                'total_processed': total_processed,
+                'total': saved,  # don't re-fetch website
+                'summary': f'⏹️ Cancelled by user — Saved: {saved}, Skipped: {skipped}, Failed: {failed}',
+                'cancelled': True,
+            })
+        elif scrape_error:
             yield _sse({
                 'type': 'error',
                 'message': f'Scrape error: {scrape_error}',
@@ -399,3 +420,14 @@ def scrape_status(request, website_id):
         'started_at': state.started_at,
         'error': state.error,
     })
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def scrape_cancel(request, website_id):
+    """Cancel an in-flight scrape."""
+    state = _active_scrapes.get(website_id)
+    if state and not state.completed:
+        state.cancel_event.set()
+        logger.info("Cancel requested for website_id=%s", website_id)
+        return JsonResponse({'status': 'cancelling', 'website_id': website_id})
+    return JsonResponse({'status': 'not_running'}, status=404)

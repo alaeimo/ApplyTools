@@ -18,6 +18,8 @@ CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS')
 CORS_ALLOWED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS')
 CORS_ALLOW_ALL_ORIGINS = DEBUG
 
+DEEPSEEK_INTER_CALL_DELAY = env.float("DEEPSEEK_INTER_CALL_DELAY")
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -32,6 +34,7 @@ INSTALLED_APPS = [
     'rest_framework', 
     'rest_framework_simplejwt.token_blacklist',
     'djoser',
+    'apps.cvs',
     'apps.scraper',
     'apps.ai',
     'apps.api',

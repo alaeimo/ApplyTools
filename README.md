@@ -6,14 +6,32 @@
 
 ## 🚀 Features
 
-- **Multi‑source scraping** – Supports both HTML and JSON API sources with flexible selectors and authentication.
-- **AI‑powered matching** – Extracts position details and matches them against your CV using DeepSeek's models.
+### Scraping & matching
+- **Multi-source scraping** – Supports both HTML and JSON API sources with flexible selectors and authentication.
+- **Async, pluggable scraper architecture** – `curl_cffi` (TLS/JA3 impersonation) + Playwright (browser fallback for JS-rendered / bot-challenged sites) + `extruct` (zero-config JSON-LD `JobPosting` extraction) + `jmespath` (declarative JSON APIs) + `selectolax` (fast HTML) + `trafilatura` (boilerplate-stripping) + `pydantic` (data contracts) + `tenacity` (retries).
+- **AI-powered matching** – Extracts position details and matches them against your CV using DeepSeek's models, with chat continuity across positions (one conversation per match run).
 - **Application workflow** – Track positions from PENDING → SHORTLISTED → APPLIED → INTERVIEWING → OFFERED/REJECTED.
-- **Real‑time progress** – Server‑sent events (SSE) for scraping and matching progress.
-- **Full‑text CV matching** – Paste your CV and get detailed match scores, category, and recommendations.
+- **Real-time progress (SSE)** – Server-Sent Events for scraping and matching progress, with **reconnect-after-refresh**: progress survives page reloads.
+- **Stop buttons** – Cancel an in-flight scrape or match at any time; the background thread stops cleanly at the next safe point.
+
+### CV management
+- **Save CVs** – Paste text, upload a PDF, or upload a TXT file. Extracted text is stored for reuse.
+- **Select existing CV** – Default selection is your most recent CV; pick any saved CV from the dropdown.
+- **Multi-language matching** – Responses available in English, Persian (Farsi), German, French, Spanish, Arabic, and Chinese.
+
+### UI / UX
+- **Unified design system** – Indigo-navy gradient header, slate backgrounds, Inter + Vazir + JetBrains Mono fonts.
+- **Bento-grid stats strip** – Clickable cards (Total / Active / Inactive / Positions Scraped) that filter the list.
+- **Sticky filter bar** – Stays visible while scrolling; client-side search on the websites page.
+- **Score rings with glow** – Semantic colors (emerald/indigo/amber/rose) for match quality at a glance.
+- **Toast notifications** – Non-blocking feedback for every action (replaces `alert()`).
+- **RTL detail panel** – AI output in Persian/Arabic renders right-to-left correctly.
+- **Custom scrollbar + focus-visible accessibility + fade-up entrance animations.**
+
+### Platform
 - **REST API** – All operations available via a clean REST API with pagination.
-- **Admin‑friendly** – Web UI to add/edit websites and manage positions.
-- **Initial data fixtures** – Pre‑configured websites and AI prompts for a quick start.
+- **Admin-friendly** – Web UI to add/edit websites and manage positions; full Django admin for power users.
+- **Initial data fixtures** – Pre-configured websites and AI prompts for a quick start.
 
 ---
 
@@ -33,18 +51,19 @@ More screenshots will be added as the project evolves.
 
 This project would not be possible without the excellent work of **sums001** and contributors on:
 
-**[Deepseek-API](https://github.com/sums001/Deepseek-API)** – A free LLM API powered by DeepSeek that turns the free chat at chat.deepseek.com into an OpenAI‑compatible API. No API key, no credits, no paid plan.
+**[Deepseek-API](https://github.com/sums001/Deepseek-API)** – A free LLM API powered by DeepSeek that turns the free chat at chat.deepseek.com into an OpenAI-compatible API. No API key, no credits, no paid plan.
 
-We are deeply grateful for this open‑source contribution that makes AI‑powered matching accessible to everyone.
+We are deeply grateful for this open-source contribution that makes AI-powered matching accessible to everyone.
 
 ---
 
 ## 📋 Requirements
 
-- Python **3.9+**
+- Python **3.10+** (3.13 recommended)
 - Git
-- Playwright (for browser automation)
+- Playwright (for browser automation and bot-challenge fallback)
 - A DeepSeek account (free tier works perfectly)
+- `pdfplumber` (for PDF CV extraction — installed via `requirements.txt`)
 - A modern browser (for the admin UI)
 
 ---
@@ -96,7 +115,7 @@ pip install -r requirements.txt
 
 ### 5. Install Playwright and Chromium
 
-Playwright is used for headless browser automation during scraping and authentication.
+Playwright is used for headless browser automation during scraping and authentication, and as a fallback for Cloudflare/Datadome-protected sites.
 
 ```bash
 playwright install chromium
@@ -104,7 +123,7 @@ playwright install chromium
 
 ### 6. Authenticate with DeepSeek
 
-Run the authentication script to sign in once. A browser will open – log into your DeepSeek account and solve the human‑check. Your session will be cached for future use.
+Run the authentication script to sign in once. A browser will open — log into your DeepSeek account and solve the human-check. Your session will be cached for future use.
 
 ```bash
 python -m apps.ai.deepseek.auth
@@ -120,12 +139,12 @@ python manage.py migrate
 
 ### 8. Load initial fixtures (optional but recommended)
 
-> **🔍 Field of Study Note**  
-> The provided website fixtures are pre‑configured for **Computer Science** positions (e.g., PhD, postdoc, and faculty positions in CS, AI, and related fields). If you are in a different field, you have two options:
+> **🔍 Field of Study Note**
+> The provided website fixtures are pre-configured for **Computer Science** positions (e.g., PhD, postdoc, and faculty positions in CS, AI, and related fields). If you are in a different field, you have two options:
 > 1. **Before loading**: Edit `fixtures/websites.json` manually to adjust search URLs, API endpoints, and filters to match your discipline.
 > 2. **After loading**: Use the web UI to modify the website settings (e.g., change the `pagination_url_pattern` to include your field's keywords).
 >
-> The fixtures are meant as a starting point – customize them to fit your research area!
+> The fixtures are meant as a starting point — customize them to fit your research area!
 
 This imports a starter set of website configurations and AI prompt templates, so you can start scraping and matching immediately.
 
@@ -159,21 +178,31 @@ Visit http://127.0.0.1:8000 to start using ApplyTools.
 - Configure **HTML selectors** (for HTML scraping) or **API endpoints** with JSON key paths (for API scraping).
 - Set authentication tokens and pagination parameters.
 - Choose whether to fetch position details via HTML or from the API response using the **Detail Source** selector.
+- New scraper options: `needs_js` (force Playwright), `max_concurrency` (parallel detail fetches), `use_browser_fallback` (auto-switch to browser on bot challenge).
+- For modern sites with schema.org `JobPosting` JSON-LD, you can leave the selectors blank — the scraper auto-detects structured data.
 
 ### 2. Scrape Positions
 - Click **"Scrape"** on a website card.
-- Real‑time progress is streamed via Server‑Sent Events (SSE).
+- Real-time progress is streamed via Server-Sent Events (SSE).
+- The button toggles to a red **"Stop"** button while running — click it to cancel cleanly.
+- Refreshing the page no longer loses progress: the SSE stream reconnects and picks up from the current state.
 - New positions are saved to the database and can be matched later.
 
 ### 3. Match Positions Against Your CV
 - Click **"Match"** on a website card.
-- Paste your CV text and choose the language.
+- The CV modal opens with three tabs:
+  - **Select Existing CV** – defaults to your most recent CV.
+  - **Paste Text** – paste CV text and optionally save it for future use.
+  - **Upload File** – upload a PDF or TXT file (text is extracted automatically).
+- Choose the response language (English, Persian/Farsi, German, French, Spanish, Arabic, Chinese).
 - The system:
   1. Extracts the position summary and requirements.
   2. Analyzes your CV.
   3. Calculates detailed match scores across multiple dimensions (eligibility, academic fit, research fit, etc.).
   4. Provides a final verdict and recommendation (Strongly Recommended, Recommended, Possible but Risky, Not Recommended).
+- The DeepSeek `conversation_id` is persisted per match run, so all positions in a single run share one chat session (cheaper, faster, more consistent). On failure, the conversation resets and the next position starts a fresh chat.
 - Results are saved with the position for future reference.
+- As with scraping, the Match button toggles to **"Stop"** and progress survives page refreshes.
 
 ### 4. Application Workflow
 - **Pending Review** – Newly scraped or matched positions.
@@ -189,10 +218,24 @@ Visit http://127.0.0.1:8000 to start using ApplyTools.
 |----------|--------|-------------|
 | `/api/v1/websites/` | GET/POST | List or create websites |
 | `/api/v1/websites/{id}/` | GET/PUT/DELETE | Manage a single website |
-| `/api/v1/positions/` | GET | List positions (paginated) |
-| `/api/v1/positions/dashboard/` | GET | Dashboard with filtering |
 | `/api/v1/scrape/{website_id}/stream/` | GET | Scrape positions (SSE) |
-| `/api/v1/match/stream/` | POST | Match CV against positions (SSE) |
+| `/api/v1/scrape/{website_id}/status/` | GET | Check in-flight scrape state (for reconnect-after-refresh) |
+| `/api/v1/scrape/{website_id}/cancel/` | POST | Cancel an in-flight scrape |
+| `/api/v1/cvs/` | GET/POST | List or create CVs (paste text or upload PDF/TXT) |
+| `/api/v1/cvs/{id}/` | GET/PUT/DELETE | Manage a single CV |
+| `/api/v1/match/start/` | POST | Start a match session (creates `MatchSession` with `conversation_id`) |
+| `/api/v1/match/{session_key}/stream/` | POST | Stream match progress (SSE) |
+| `/api/v1/match/{session_key}/status/` | GET | Check in-flight match state (for reconnect-after-refresh) |
+| `/api/v1/match/{session_key}/cancel/` | POST | Cancel an in-flight match |
+| `/api/v1/positions/` | GET | List positions (paginated) |
+| `/api/v1/positions/dashboard/` | GET | Dashboard with filtering (view, status, app_status) |
+| `/api/v1/positions/counts/` | GET | Counts for the three main views |
+| `/api/v1/positions/{id}/shortlist/` | POST | Move position to SHORTLISTED |
+| `/api/v1/positions/{id}/apply/` | POST | Mark position as APPLIED |
+| `/api/v1/positions/{id}/accept/` | POST | Mark position as ACCEPTED |
+| `/api/v1/positions/{id}/reject/` | POST | Mark position as REJECTED |
+| `/api/v1/positions/{id}/not-interested/` | POST | Mark position as NOT_INTERESTED |
+| `/api/v1/positions/check-deadlines/` | POST | Bulk-update positions whose deadlines passed |
 | `/api/v1/admin/` | – | Django admin interface (if enabled) |
 
 All API endpoints are versioned and respond with JSON.
@@ -205,13 +248,21 @@ All API endpoints are versioned and respond with JSON.
 applytools/
 ├── apps/
 │   ├── ai/                 # AI matching logic + DeepSeek integration
-│   ├── websites/           # Website models and scraping services
-│   ├── positions/          # Position models and serializers
+│   │   ├── deepseek/       # Pure-HTTP DeepSeek chat client (PoW, SSE, conversation resume)
+│   │   ├── services/       # PositionMatcher, match_and_save
+│   │   ├── models.py       # PromptTemplate
+│   │   └── constants.py    # MATCH_JSON_STRUCTURE, DEFAULT_MATCH_RESPONSE
+│   ├── websites/           # Website model, SSE scrape view, site_config_provider
+│   ├── positions/           # Position + PositionMatch models, serializers, dashboard view
+│   ├── cvs/                # CV + MatchSession models, match orchestration views
+│   ├── scraper/            # Async scraper package (fetchers, extractors, pagination, pipeline)
+│   ├── api/                # URL routing + shared templates (dashboard.html, websites.html)
 │   └── core/               # Shared utilities
 ├── fixtures/               # Initial data (websites, prompts)
 ├── .env-template           # Environment variables template
 ├── manage.py
 ├── requirements.txt
+├── LICENSE                 # MIT License
 └── README.md
 ```
 
@@ -223,20 +274,35 @@ You can test a website configuration without saving positions using the Django s
 
 ```python
 from apps.websites.models import Website
-from apps.websites.services import PositionScraper
-import asyncio
+from apps.websites.services import ScrapeOrchestrator
 
 website = Website.objects.get(id=1)
-scraper = PositionScraper(website)
+orchestrator = ScrapeOrchestrator(website)
+
+for position in orchestrator.scrape(max_pages=2):
+    print(f"{position.title} – {position.url}")
+    print(f"  Extractor: {position.extractor_used}")
+    print(f"  Confidence: {position.confidence}")
+```
+
+This prints scraped positions without persisting them. For the async API directly:
+
+```python
+import asyncio
+from apps.scraper.orchestrator.scraper import PositionScraper
+from apps.scraper.services.site_config_provider import website_to_config
+from apps.websites.models import Website
+
+website = Website.objects.get(id=1)
+config = website_to_config(website)
+scraper = PositionScraper(config=config, pipeline=None)
 
 async def test():
-    async for pos in scraper.scrape(max_pages=2):
-        print(f"{pos['title']} – {pos['url']}")
+    async for pos in scraper.iter_positions():
+        print(f"{pos.title} – {pos.url}")
 
 asyncio.run(test())
 ```
-
-This prints scraped positions without persisting them.
 
 ---
 
@@ -246,8 +312,8 @@ The `.env` file controls runtime behavior. Below are the available variables wit
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SECRET_KEY` | (auto‑generated) | Django secret key. |
-| `ALLOWED_HOSTS` | `*` | Comma‑separated list of allowed hosts. |
+| `SECRET_KEY` | (auto-generated) | Django secret key. |
+| `ALLOWED_HOSTS` | `*` | Comma-separated list of allowed hosts. |
 | `CSRF_TRUSTED_ORIGINS` | `http://localhost:3030` | Origins for CSRF trust. |
 | `DEBUG` | `True` | Enable debug mode. Set to `False` in production. |
 | `ENABLE_DJANGO_ADMIN_PANEL` | `True` | Show/hide the Django admin interface. |
@@ -255,10 +321,11 @@ The `.env` file controls runtime behavior. Below are the available variables wit
 | `MEDIA_HOST` | `http://127.0.0.1:8000` | Base URL for media files. |
 | `API_VERSION` | `v1` | API version prefix. |
 | `TIMEZONE` | `UTC` | Server timezone. |
+| `DEEPSEEK_INTER_CALL_DELAY` | `0` | Optional delay (seconds) between DeepSeek calls to avoid rate-limiting. |
 
 **Example `.env`** (provided in `.env-template`):
 ```bash
-SECRET_KEY="django-insecure-^ko#8&3jd+u@fdh9-qb*36+xl11p3ms45ryrgg34t5yy4557i&%"
+SECRET_KEY="django-insecure-^x45fdh9-#8&3jl11p3ms55rgg34t5ryko7i&%qb*36+d+u@yy4"
 ALLOWED_HOSTS=*
 CSRF_TRUSTED_ORIGINS=http://localhost:3030
 DEBUG=True
@@ -267,6 +334,7 @@ ENABLE_HTTPS=False
 MEDIA_HOST=http://127.0.0.1:8000
 API_VERSION='v1'
 TIMEZONE=UTC
+DEEPSEEK_INTER_CALL_DELAY=0
 ```
 
 ---
@@ -275,12 +343,12 @@ TIMEZONE=UTC
 
 Two fixture files are provided for a quick start:
 
-- **`fixtures/websites.json`** – Pre‑configured websites (e.g., Academic Positions, DAAD, etc.) with working selectors/API endpoints.
+- **`fixtures/websites.json`** – Pre-configured websites (e.g., Academic Positions, DAAD, etc.) with working selectors/API endpoints.
 - **`fixtures/prompts.json`** – AI prompt templates for matching.
 
-> **🔍 Important Note**  
-> The websites in `fixtures/websites.json` are configured specifically for **Computer Science** research positions. The search URLs, API endpoints, and filters are tailored to CS-related keywords (e.g., "computer-science", "AI", "PhD").  
-> 
+> **🔍 Important Note**
+> The websites in `fixtures/websites.json` are configured specifically for **Computer Science** research positions. The search URLs, API endpoints, and filters are tailored to CS-related keywords (e.g., "computer-science", "AI", "PhD").
+>
 > If your research area is different, you should:
 > - **Option A (Recommended)**: Load the fixtures, then use the web UI to edit each website's settings (e.g., change `pagination_url_pattern` from `/jobs/position/phd/field/computer-science` to `/jobs/position/phd/field/your-field`).
 > - **Option B**: Edit `fixtures/websites.json` directly (it's a JSON file) before loading it, adjusting the fields to match your discipline.
@@ -290,6 +358,23 @@ To load them after migration:
 ```bash
 python manage.py loaddata fixtures/websites.json
 python manage.py loaddata fixtures/prompts.json
+```
+
+---
+
+## 🧪 Running the Tests
+
+The project ships with unit tests for the scraper package (no network required) and Django tests for the websites app.
+
+```bash
+# Scraper package tests (pure Python — no Django needed)
+pytest apps/scraper/tests/ -v
+
+# Django app tests (model validation, serializer security)
+python manage.py test apps.websites
+
+# Or with pytest-django
+pytest apps/websites/tests.py -v
 ```
 
 ---
@@ -312,10 +397,17 @@ We actively encourage improvements to scraping support, matching accuracy, and U
 
 ## 📄 License
 
-**MIT License** – Free to use, modify, and distribute.  
-**Not for commercial resale or use as the foundation of a proprietary SAAS product without express permission.**
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
-Copyright (c) 2026 **Mohammad Alaei** – [alaeimo.ir](https://alaeimo.ir)
+Copyright (c) 2026 **Mohammad Alaei**
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+**Not for commercial resale or use as the foundation of a proprietary SAAS product without express permission.**
 
 ---
 
@@ -327,7 +419,7 @@ Copyright (c) 2026 **Mohammad Alaei** – [alaeimo.ir](https://alaeimo.ir)
 
 ## 🙌 Special Thanks
 
-- **[Deepseek-API](https://github.com/sums001/Deepseek-API)** – For providing a free, open‑source bridge to DeepSeek's chat models.
+- **[Deepseek-API](https://github.com/sums001/Deepseek-API)** – For providing a free, open-source bridge to DeepSeek's chat models.
 - **DeepSeek** – For their powerful AI models made available to everyone.
 
 ---

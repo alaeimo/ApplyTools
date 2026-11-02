@@ -5,6 +5,7 @@ from typing import Dict, Any, Optional
 from datetime import datetime
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
 
 from apps.ai.deepseek import DeepSeekClient
 from apps.ai.models import PromptTemplate
@@ -361,7 +362,9 @@ def match_and_save(
         Exception: For other errors (with detailed logging)
     """
     from apps.positions.models import Position, PositionMatch
-    time.sleep(1.5)
+    delay = float(getattr(settings, 'DEEPSEEK_INTER_CALL_DELAY', '0'))
+    if delay > 0:
+        time.sleep(delay)
     try:
         # ─── Step 1: Get Position ────────────────────────────────────
         try:

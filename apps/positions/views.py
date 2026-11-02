@@ -142,67 +142,67 @@ class PositionViewSet(viewsets.ReadOnlyModelViewSet):
             'message': f'Updated {count} positions to DEADLINE_MISSED'
         })
     
-@csrf_exempt
-@require_http_methods(["POST"])
-def match_positions_stream(request):
-    try:
-        body = json.loads(request.body)
-        cv = body.get('cv')
-        language = body.get('language', 'English')
+# @csrf_exempt
+# @require_http_methods(["POST"])
+# def match_positions_stream(request):
+#     try:
+#         body = json.loads(request.body)
+#         cv = body.get('cv')
+#         language = body.get('language', 'English')
         
-        if not cv:
-            return StreamingHttpResponse(
-                f"data: {json.dumps({'type': 'error', 'message': 'CV text is required'})}\n\n",
-                content_type='text/event-stream'
-            )
-    except json.JSONDecodeError as e:
-        return StreamingHttpResponse(
-            f"data: {json.dumps({'type': 'error', 'message': f'Invalid JSON: {str(e)}'})}\n\n",
-            content_type='text/event-stream'
-        )
+#         if not cv:
+#             return StreamingHttpResponse(
+#                 f"data: {json.dumps({'type': 'error', 'message': 'CV text is required'})}\n\n",
+#                 content_type='text/event-stream'
+#             )
+#     except json.JSONDecodeError as e:
+#         return StreamingHttpResponse(
+#             f"data: {json.dumps({'type': 'error', 'message': f'Invalid JSON: {str(e)}'})}\n\n",
+#             content_type='text/event-stream'
+#         )
     
-    def event_stream():
-        try:
-            positions = Position.objects.filter(status='SCRAPED', match__isnull=True).order_by('scraped_at')
-            total = positions.count()
+#     def event_stream():
+#         try:
+#             positions = Position.objects.filter(status='SCRAPED', match__isnull=True).order_by('scraped_at')
+#             total = positions.count()
             
-            if total == 0:
-                yield f"data: {json.dumps({'type': 'complete', 'total': 0, 'saved': 0, 'skipped': 0, 'failed': 0, 'message': 'No positions to match'})}\n\n"
-                return
+#             if total == 0:
+#                 yield f"data: {json.dumps({'type': 'complete', 'total': 0, 'saved': 0, 'skipped': 0, 'failed': 0, 'message': 'No positions to match'})}\n\n"
+#                 return
             
-            yield f"data: {json.dumps({'type': 'start', 'message': f'Starting match analysis for {total} positions...', 'total': total})}\n\n"
+#             yield f"data: {json.dumps({'type': 'start', 'message': f'Starting match analysis for {total} positions...', 'total': total})}\n\n"
             
-            saved = skipped = failed = 0
-            conversation_id = None  # Store conversation ID for continuity
+#             saved = skipped = failed = 0
+#             conversation_id = None  # Store conversation ID for continuity
             
-            for idx, position in enumerate(positions, 1):
-                yield f"data: {json.dumps({'type': 'progress', 'message': f'Processing {idx}/{total}: {position.title[:50]}...', 'percentage': int((idx/total)*100), 'current': idx, 'total': total})}\n\n"
+#             for idx, position in enumerate(positions, 1):
+#                 yield f"data: {json.dumps({'type': 'progress', 'message': f'Processing {idx}/{total}: {position.title[:50]}...', 'percentage': int((idx/total)*100), 'current': idx, 'total': total})}\n\n"
                 
-                try:
-                    # Pass conversation_id if available
-                    result = match_and_save(cv, position.id, language, conversation_id=conversation_id)
+#                 try:
+#                     # Pass conversation_id if available
+#                     result = match_and_save(cv, position.id, language, conversation_id=conversation_id)
                     
-                    # Extract conversation_id from result for next iteration
-                    if result and '_metadata' in result and 'conversation_id' in result['_metadata']:
-                        conversation_id = result['_metadata']['conversation_id']
-                        logger.info(f"🔄 Using conversation_id: {conversation_id}")
+#                     # Extract conversation_id from result for next iteration
+#                     if result and '_metadata' in result and 'conversation_id' in result['_metadata']:
+#                         conversation_id = result['_metadata']['conversation_id']
+#                         logger.info(f"🔄 Using conversation_id: {conversation_id}")
                     
-                    if 'error' in result:
-                        failed += 1
-                        yield f"data: {json.dumps({'type': 'position_failed', 'position_id': position.id, 'title': position.title, 'error': result.get('error', 'Unknown error'), 'saved': saved, 'skipped': skipped, 'failed': failed})}\n\n"
-                    else:
-                        saved += 1
-                        yield f"data: {json.dumps({'type': 'position_matched', 'position_id': position.id, 'title': position.title, 'score': result.get('matching_score', {}).get('overall_score', 0), 'category': result.get('final_verdict', {}).get('match_category', 'unknown'), 'match_id': result.get('_metadata', {}).get('match_id'), 'saved': saved, 'skipped': skipped, 'failed': failed})}\n\n"
-                except Exception as e:
-                    failed += 1
-                    yield f"data: {json.dumps({'type': 'position_failed', 'position_id': position.id, 'title': position.title, 'error': str(e), 'saved': saved, 'skipped': skipped, 'failed': failed})}\n\n"
+#                     if 'error' in result:
+#                         failed += 1
+#                         yield f"data: {json.dumps({'type': 'position_failed', 'position_id': position.id, 'title': position.title, 'error': result.get('error', 'Unknown error'), 'saved': saved, 'skipped': skipped, 'failed': failed})}\n\n"
+#                     else:
+#                         saved += 1
+#                         yield f"data: {json.dumps({'type': 'position_matched', 'position_id': position.id, 'title': position.title, 'score': result.get('matching_score', {}).get('overall_score', 0), 'category': result.get('final_verdict', {}).get('match_category', 'unknown'), 'match_id': result.get('_metadata', {}).get('match_id'), 'saved': saved, 'skipped': skipped, 'failed': failed})}\n\n"
+#                 except Exception as e:
+#                     failed += 1
+#                     yield f"data: {json.dumps({'type': 'position_failed', 'position_id': position.id, 'title': position.title, 'error': str(e), 'saved': saved, 'skipped': skipped, 'failed': failed})}\n\n"
             
-            yield f"data: {json.dumps({'type': 'complete', 'total': total, 'saved': saved, 'skipped': skipped, 'failed': failed, 'summary': f'✅ {saved} matched, ⏭️ {skipped} skipped, ❌ {failed} failed (out of {total})'})}\n\n"
+#             yield f"data: {json.dumps({'type': 'complete', 'total': total, 'saved': saved, 'skipped': skipped, 'failed': failed, 'summary': f'✅ {saved} matched, ⏭️ {skipped} skipped, ❌ {failed} failed (out of {total})'})}\n\n"
             
-        except Exception as e:
-            yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
+#         except Exception as e:
+#             yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
     
-    response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
-    response['Cache-Control'] = 'no-cache'
-    response['X-Accel-Buffering'] = 'no'
-    return response
+#     response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+#     response['Cache-Control'] = 'no-cache'
+#     response['X-Accel-Buffering'] = 'no'
+#     return response
