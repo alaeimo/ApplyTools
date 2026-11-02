@@ -1,7 +1,3 @@
-Here's the updated README with the field-of-study note added to the Fixtures section:
-
----
-
 # 🔬 ApplyTools – Smart Academic Position Matcher
 
 **ApplyTools** is a Django-based application that scrapes academic and research positions from various sources, matches them against your CV using AI, and helps you manage your job applications. It leverages DeepSeek's free chat API (via the [Deepseek-API](https://github.com/sums001/Deepseek-API) library) for intelligent CV–job matching.
