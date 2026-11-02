@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Jobs</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@type": "JobPosting",
+          "title": "PhD Position in Quantum Computing",
+          "url": "https://example.com/jobs/qc-1",
+          "hiringOrganization": {
+            "@type": "Organization",
+            "name": "ETH Zurich"
+          },
+          "datePosted": "2025-09-15",
+          "description": "<p>Exciting opportunity to work on quantum error correction.</p>",
+          "jobLocation": {
+            "@type": "Place",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Zurich",
+              "addressCountry": "CH"
+            }
+          }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "item": {
+          "@type": "JobPosting",
+          "title": "PhD in Computational Biology",
+          "url": "https://example.com/jobs/cb-2",
+          "hiringOrganization": {"@type": "Organization", "name": "EMBL Heidelberg"},
+          "description": "Join our team working on protein structure prediction."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <main>
+    <div class="job-card"><a href="/jobs/qc-1">PhD Position in Quantum Computing</a></div>
+    <div class="job-card"><a href="/jobs/cb-2">PhD in Computational Biology</a></div>
+  </main>
+</body>
+</html>

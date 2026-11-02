@@ -1,0 +1,12 @@
+{
+  "data": {
+    "job": {
+      "id": 1,
+      "title": "PhD in Machine Learning",
+      "company": {"name": "MIT CSAIL"},
+      "description": "<h2>About</h2><p>Work on large language models and reasoning.</p><h2>Requirements</h2><ul><li>Python</li><li>PyTorch</li></ul>",
+      "requirements": ["Python", "PyTorch", "Transformers"],
+      "posted_at": "2025-10-01T10:00:00Z"
+    }
+  }
+}

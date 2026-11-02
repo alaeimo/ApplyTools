@@ -1,0 +1,22 @@
+# PhD Position Scraper — dependencies
+# Install with: pip install -r requirements-scraper.txt
+# Then: playwright install chromium
+
+# Async I/O + TLS impersonation
+curl_cffi>=0.7.0
+playwright>=1.45.0
+
+# Extraction
+extruct>=0.16.0
+jmespath>=1.0.1
+selectolax>=1.0.0
+trafilatura>=1.12.0
+
+# Data validation + resilience
+pydantic>=2.7.0
+tenacity>=8.5.0
+asgiref>=3.8.0
+
+# Testing
+pytest>=8.3.0
+pytest-asyncio>=0.23.0
