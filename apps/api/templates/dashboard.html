@@ -1067,6 +1067,10 @@
         async function updateStatus(positionId, action, reason = null) {
             const url = `/api/v1/positions/${positionId}/${action}/`;
             const payload = reason ? { reason } : {};
+
+            // Save scroll position so we can restore it after re-fetch
+            const savedScrollY = window.scrollY;
+
             try {
                 const response = await fetch(url, {
                     method: 'POST',
@@ -1078,8 +1082,29 @@
                 });
                 const data = await response.json();
                 showToast(`Position ${action.replace('-', ' ')}`, 'success');
-                fetchPositions(currentPage);
                 fetchCounts();
+
+                // Remove just the affected card from the DOM (smooth UX — no full reload)
+                const card = document.querySelector(`[onclick*="${positionId}"]`)?.closest('.position-row');
+                if (card) {
+                    card.style.transition = 'opacity 0.3s, transform 0.3s';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateX(20px)';
+                    setTimeout(() => {
+                        card.remove();
+                        // If the page is now empty (and we're not on page 1), go back one page
+                        const remaining = container.querySelectorAll('.position-row').length;
+                        if (remaining === 0 && currentPage > 1) {
+                            currentPage--;
+                            fetchPositions(currentPage);
+                        }
+                    }, 300);
+                } else {
+                    // Fallback: re-fetch the current page
+                    fetchPositions(currentPage).then(() => {
+                        window.scrollTo(0, savedScrollY);
+                    });
+                }
             } catch (error) {
                 console.error('Error updating status:', error);
                 showToast('Failed to update status', 'error');
@@ -1354,7 +1379,7 @@
         }
         window.toggleRow = toggleRow;
 
-        // ─── Render All ──────────────────────────────────────────
+        // ─── Render All ──────────────────────────────────────────────
         function renderCards(positions) {
             container.innerHTML = '';
             if (!positions || positions.length === 0) {
@@ -1362,14 +1387,15 @@
                 return;
             }
             noResults.classList.add('d-none');
+
             positions.forEach(pos => {
                 const row = renderRow(pos);
                 if (row) container.appendChild(row);
             });
         }
 
-        // ─── Pagination ──────────────────────────────────────────
-        function renderPagination(count, currentPage) {
+        // ─── Pagination ──────────────────────────────────────────────
+        function renderPagination(count, activePage) {
             const totalPages = Math.ceil(count / PAGE_SIZE);
             if (totalPages <= 1) {
                 paginationNav.classList.add('d-none');
@@ -1388,24 +1414,24 @@
                 a.dataset.page = page;
                 a.addEventListener('click', (e) => {
                     e.preventDefault();
-                    currentPage = page;
+                    currentPage = page;        // updates the OUTER variable
                     fetchPositions(currentPage);
                 });
                 li.appendChild(a);
                 return li;
             }
 
-            if (currentPage > 1) paginationList.appendChild(createPageLink(1, 'First'));
-            if (currentPage > 1) paginationList.appendChild(createPageLink(currentPage - 1, '«'));
+            if (activePage > 1) paginationList.appendChild(createPageLink(1, 'First'));
+            if (activePage > 1) paginationList.appendChild(createPageLink(activePage - 1, '«'));
 
-            const start = Math.max(1, currentPage - 2);
-            const end = Math.min(totalPages, currentPage + 2);
+            const start = Math.max(1, activePage - 2);
+            const end = Math.min(totalPages, activePage + 2);
             for (let i = start; i <= end; i++) {
-                paginationList.appendChild(createPageLink(i, i, i === currentPage));
+                paginationList.appendChild(createPageLink(i, i, i === activePage));
             }
 
-            if (currentPage < totalPages) paginationList.appendChild(createPageLink(currentPage + 1, '»'));
-            if (currentPage < totalPages) paginationList.appendChild(createPageLink(totalPages, 'Last'));
+            if (activePage < totalPages) paginationList.appendChild(createPageLink(activePage + 1, '»'));
+            if (activePage < totalPages) paginationList.appendChild(createPageLink(totalPages, 'Last'));
         }
 
         // ─── Fetch positions ─────────────────────────────────────

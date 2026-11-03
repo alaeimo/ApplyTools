@@ -100,17 +100,33 @@ class PositionScraper:
     ) -> AsyncIterator[PositionExtracted]:
         """Fetch detail pages concurrently while preserving source order.
 
-        If no detail config is set (no detail_jmespath / detail_container_css /
-        detail_api_endpoint), the listing item is yielded as-is.
+        Skips detail fetch for positions that are already in the pipeline's
+        dedup set (if a pipeline is attached).
         """
         if not (self.config.detail_jmespath or self.config.detail_container_css
                 or self.config.detail_api_endpoint):
+            # No detail config — yield listing items as-is
             for item in items:
                 yield item
             return
 
+        # If we have a pipeline, filter out known duplicates BEFORE fetching
+        if self.pipeline and hasattr(self.pipeline, '_seen'):
+            new_items = []
+            skipped = 0
+            for item in items:
+                if item.normalized_url in self.pipeline._seen:
+                    skipped += 1
+                else:
+                    new_items.append(item)
+            if skipped > 0:
+                log.info("Skipping %d duplicate positions (already in DB) before detail fetch", skipped)
+            if not new_items:
+                return  # all were duplicates
+            items = new_items
+
         async def _enrich(item: PositionExtracted) -> PositionExtracted:
-            async with self.rate_limiter():
+            async with self.rate_limiter:
                 res = await self.fetcher.fetch(item.url, self.config)
             if not res:
                 return item
@@ -122,7 +138,6 @@ class PositionScraper:
                 item.extractor_used = f"{item.extractor_used}+{detail.extractor_used}"
             return item
 
-        # Concurrent gather; rate limiter inside _enrich bounds concurrency
         results = await asyncio.gather(
             *[_enrich(i) for i in items], return_exceptions=False,
         )

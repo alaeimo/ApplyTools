@@ -57,6 +57,7 @@ class SiteConfig(BaseModel):
     api_endpoint: Optional[HttpUrl] = None
     api_method: str = "GET"
     api_headers: dict[str, str] = Field(default_factory=dict)
+    api_extra_params: dict[str, Any] = Field(default_factory=dict)
     api_body_template: Optional[str] = None
     api_auth_token: Optional[str] = None
     api_results_jmespath: Optional[str] = None  # e.g. "jobs[*]"

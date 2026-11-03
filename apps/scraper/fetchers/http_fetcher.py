@@ -67,13 +67,18 @@ class HttpFetcher:
             merged_headers["Authorization"] = token
 
         start = time.perf_counter()
+        # Build query params: merge api_extra_params with any per-request body params
+        query_params = dict(config.api_extra_params) if config.api_extra_params else {}
+        if method == "GET" and body:
+            query_params.update(body)
+
         try:
             resp = await session.request(
                 method=method,
                 url=url,
                 headers=merged_headers,
                 json=body if method in ("POST", "PUT", "PATCH") else None,
-                params=body if method == "GET" else None,
+                params=query_params or None,    # FIXED: merge api_extra_params
                 timeout=config.request_timeout,
                 allow_redirects=True,
             )

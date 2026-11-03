@@ -363,6 +363,7 @@ def match_and_save(
     """
     from apps.positions.models import Position, PositionMatch
     delay = float(getattr(settings, 'DEEPSEEK_INTER_CALL_DELAY', '0'))
+    print("*"*100, delay, "*"*100)
     if delay > 0:
         time.sleep(delay)
     try:
