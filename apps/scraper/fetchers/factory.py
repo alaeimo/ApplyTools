@@ -41,11 +41,13 @@ class AutoFetcher:
         body: Optional[dict[str, Any]] = None,
         use_browser: bool = False,
     ) -> Optional[FetchResult]:
-        # If the site needs JS, skip HTTP entirely
+        # If the site config explicitly says needs_js, skip HTTP entirely
         if config.needs_js or use_browser:
-            return await self.browser.fetch(
-                url, config, method=method, headers=headers, body=body, use_browser=True,
-            )
+            result = await self._try_browser(url, config, method, headers, body)
+            if result:
+                return result
+            # Fall through to nodriver if Playwright failed
+            return await self._try_nodriver(url, config, method, headers, body)
 
         # Try HTTP first; on persistent failure, fall back to browser
         try:
@@ -53,21 +55,51 @@ class AutoFetcher:
                 url, config, method=method, headers=headers, body=body,
             )
         except Exception as http_exc:
-            log.warning("HTTP fetch raised %s on %s — trying browser fallback",
-                        type(http_exc).__name__, url)
+            log.warning(
+                "HTTP fetch raised %s on %s — trying browser fallback",
+                type(http_exc).__name__, url,
+            )
             if config.use_browser_fallback:
-                return await self.browser.fetch(
-                    url, config, method=method, headers=headers, body=body, use_browser=True,
-                )
+                result = await self._try_browser(url, config, method, headers, body)
+                if result:
+                    return result
+                return await self._try_nodriver(url, config, method, headers, body)
             raise
 
-        # Detect challenge responses (403/429/503 with Cloudflare/Datadome body)
+        # Detect challenge responses and retry with browser
         if result and _looks_like_challenge(result) and config.use_browser_fallback:
             log.info("Detected bot challenge on %s — retrying with browser", url)
+            result = await self._try_browser(url, config, method, headers, body)
+            if result:
+                return result
+            return await self._try_nodriver(url, config, method, headers, body)
+        return result
+
+    async def _try_browser(
+        self, url, config, method, headers, body
+    ) -> Optional[FetchResult]:
+        """Try Playwright browser fetch. Returns None on failure."""
+        try:
             return await self.browser.fetch(
                 url, config, method=method, headers=headers, body=body, use_browser=True,
             )
-        return result
+        except Exception as e:
+            log.warning("Playwright browser failed on %s: %s", url, e)
+            return None
+
+    async def _try_nodriver(
+        self, url, config, method, headers, body
+    ) -> Optional[FetchResult]:
+        """Last-resort: nodriver (raw CDP). Returns None on failure."""
+        try:
+            from .nodriver_fetcher import NodriverFetcher
+            nd = NodriverFetcher(headless=False)
+            return await nd.fetch(
+                url, config, method=method, headers=headers, body=body, use_browser=True,
+            )
+        except Exception as e:
+            log.warning("nodriver fallback failed on %s: %s", url, e)
+            return None
 
     async def close(self) -> None:
         await self.http.close()
