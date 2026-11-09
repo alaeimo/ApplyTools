@@ -129,11 +129,13 @@ class PositionSerializer(serializers.ModelSerializer):
     match = PositionMatchSerializer(read_only=True)
     status_label = serializers.SerializerMethodField()
     application_status_label = serializers.SerializerMethodField()
+    website_name = serializers.CharField(source='website.name', read_only=True)
 
     class Meta:
         model = Position
         fields = [
             'id',
+            'website_name',
             'title',
             'company',
             'status',

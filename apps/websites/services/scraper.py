@@ -159,8 +159,6 @@ class APILinkExtractor:
 
             url_value = join_url(self.website.detail_api_endpoint, url_value)
 
-            print("*"*100 + f"\n {url_value} \n" + "*"*100)
-
             results.append({
                 "url": url_value,
                 "title": title or "Unknown Title",

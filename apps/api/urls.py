@@ -6,4 +6,5 @@ urlpatterns = [
     path('', include('apps.websites.urls')),
     path('', include('apps.positions.urls')),
     path('', include('apps.cvs.urls')),  
+    path('', include('apps.extension.urls')),
 ]

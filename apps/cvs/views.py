@@ -72,6 +72,7 @@ async def _match_async(session_key):
     from apps.positions.models import Position
     from apps.ai.services.matcher import match_and_save
     from asgiref.sync import sync_to_async
+    from django.conf import settings
 
     @sync_to_async
     def _load_session():
@@ -81,7 +82,7 @@ async def _match_async(session_key):
     def _get_pending_positions(session):
         qs = Position.objects.filter(
             status='SCRAPED', match__isnull=True
-        ).order_by('scraped_at')
+        ).order_by('-scraped_at')
         if session.last_position_id:
             qs = qs.filter(id__gt=session.last_position_id)
         return list(qs)
@@ -137,6 +138,10 @@ async def _match_async(session_key):
     conversation_id = session.conversation_id or None
 
     positions = await _get_pending_positions(session)
+   
+    # Rotate the conversation every N positions to keep context fresh and
+    # avoid DeepSeek's growing token cost / context overflow on long batches.
+    ROTATE_EVERY = float(getattr(settings, 'DEEPSEEK_ROTATE_EVERY', '15'))
 
     for idx, position in enumerate(positions, session.total_processed + 1):
          # ─── Check for cancellation ───
@@ -147,6 +152,29 @@ async def _match_async(session_key):
             }))
             logger.info("Match cancelled by user for session=%s", session_key)
             break
+
+        # ─── Rotate conversation every ROTATE_EVERY positions ───
+        # When (idx - session.total_processed) is a multiple of ROTATE_EVERY
+        # (and not the very first position of this session), clear the
+        # conversation_id so match_and_save starts a fresh chat for the next
+        # position. The previous positions already used this conversation_id;
+        # the new one will accumulate context for the next batch of 15.
+        positions_in_this_run = idx - session.total_processed
+        if positions_in_this_run > 1 and (positions_in_this_run - 1) % ROTATE_EVERY == 0:
+            if conversation_id:
+                old_cid = conversation_id
+                conversation_id = None
+                session.conversation_id = ''
+                await _save_session(session, ['conversation_id'])
+                logger.info(
+                    "Rotated conversation after %d positions (old_cid=%s) — next position starts a new chat",
+                    ROTATE_EVERY, old_cid,
+                )
+                item_queue.put(('progress', {
+                    'message': f'Starting fresh chat (after {ROTATE_EVERY} positions)...',
+                    'percentage': min(pct if 'pct' in dir() else 0, 95),
+                }))
+
         # Send progress
         pct = int((idx / max(total, 1)) * 100) if total else 100
         item_queue.put(('progress', {
@@ -155,7 +183,9 @@ async def _match_async(session_key):
         }))
 
         try:
-            # match_and_save is a sync blocking function — run it in a worker thread
+            # match_and_save is a sync blocking function — run it in a worker thread.
+            # If conversation_id is None, match_and_save should start a new chat
+            # and return the new conversation_id in result._metadata.conversation_id.
             result = await sync_to_async(match_and_save)(
                 cv_text, position.id,
                 session.language,

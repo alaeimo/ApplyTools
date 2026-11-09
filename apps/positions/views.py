@@ -12,10 +12,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from apps.ai.services.matcher import match_and_save
 from django.utils import timezone
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
 
 logger = logging.getLogger(__name__)
 
-class PositionViewSet(viewsets.ReadOnlyModelViewSet):
+class PositionViewSet(viewsets.ModelViewSet):
     """ViewSet for Position data with a dashboard action."""
     queryset = Position.objects.select_related('match').all()
     serializer_class = PositionSerializer
@@ -24,6 +26,11 @@ class PositionViewSet(viewsets.ReadOnlyModelViewSet):
     page_size_query_param = 'page_size'
     max_page_size = 100
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
     @action(detail=False, methods=['get'], url_path='dashboard')
     def dashboard(self, request):
         view = request.query_params.get('view', 'pending')
@@ -142,6 +149,99 @@ class PositionViewSet(viewsets.ReadOnlyModelViewSet):
             'message': f'Updated {count} positions to DEADLINE_MISSED'
         })
     
+@csrf_exempt
+@require_http_methods(["POST"])
+def match_single_position(request, position_id):
+    """Trigger DeepSeek match for a single position.
+
+    POST /api/v1/positions/{id}/match/
+    Body: { "cv_id": 1, "language": "English" }
+    """
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Authentication required'}, status=401)
+
+    try:
+        body = json.loads(request.body or "{}")
+        cv_id = body.get('cv_id')
+        language = body.get('language', 'English')
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+    if not cv_id:
+        return JsonResponse({'error': 'cv_id is required'}, status=422)
+
+    try:
+        from apps.positions.models import Position
+        from apps.cvs.models import CV
+        from apps.ai.services.matcher import match_and_save
+
+        position = Position.objects.get(id=position_id)
+        cv = CV.objects.get(id=cv_id, is_active=True)
+        cv_text = cv.get_text()
+
+        if not cv_text:
+            return JsonResponse({'error': 'CV has no text content'}, status=400)
+
+        result = match_and_save(cv_text, position.id, language)
+
+        return JsonResponse({
+            'status': 'ok',
+            'saved': result.get('_metadata', {}).get('status') == 'success',
+            'match_score': result.get('matching_score', {}).get('overall_score', 0),
+            'match_category': result.get('final_verdict', {}).get('match_category', 'unknown'),
+            'summary': result.get('final_verdict', {}).get('summary', ''),
+            'error': result.get('error'),
+        })
+
+    except Position.DoesNotExist:
+        return JsonResponse({'error': 'Position not found'}, status=404)
+    except CV.DoesNotExist:
+        return JsonResponse({'error': 'CV not found'}, status=404)
+    except Exception as e:
+        logger.exception("Single position match failed")
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["DELETE", "POST"])
+def delete_position_match(request, position_id):
+    """Delete the match result for a position so it can be re-matched.
+
+    DELETE /api/v1/positions/{id}/match/
+    """
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Authentication required'}, status=401)
+
+    try:
+        from apps.positions.models import Position, PositionMatch
+
+        position = Position.objects.get(id=position_id)
+
+        if hasattr(position, 'match') and position.match:
+            position.match.delete()
+            position.status = 'SCRAPED'
+            position.save(update_fields=['status'])
+            return JsonResponse({'status': 'ok', 'message': 'Match deleted. Position ready for re-matching.'})
+        else:
+            return JsonResponse({'status': 'ok', 'message': 'No match to delete.'})
+
+    except Position.DoesNotExist:
+        return JsonResponse({'error': 'Position not found'}, status=404)
+    except Exception as e:
+        logger.exception("Delete match failed")
+        return JsonResponse({'error': str(e)}, status=500)
+
+def position_detail_view(request, position_id):
+    """Render a full-page view of a single position and its match details."""
+    position = get_object_or_404(Position, id=position_id)
+    match = getattr(position, 'match', None)
+    
+    context = {
+        'position': position,
+        'match': match,
+    }
+    return render(request, 'position_detail.html', context)
+      
 # @csrf_exempt
 # @require_http_methods(["POST"])
 # def match_positions_stream(request):

@@ -18,7 +18,32 @@ CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS')
 CORS_ALLOWED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS')
 CORS_ALLOW_ALL_ORIGINS = DEBUG
 
-DEEPSEEK_INTER_CALL_DELAY = env.float("DEEPSEEK_INTER_CALL_DELAY")
+# ─── AI Provider settings ─────────────────────────────────────
+# Switch provider: 'gemini' (Google AI Studio, free tier, 1M context)
+# or 'deepseek' (paid, 128K context). Default: 'gemini'.
+APPLYTOOLS_AI_PROVIDER = os.environ.get('APPLYTOOLS_AI_PROVIDER', 'gemini').lower().strip()
+
+# ─── Gemini (Google AI Studio) settings ───────────────────────
+# Get a free key at https://aistudio.google.com/apikey
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', os.environ.get('GOOGLE_API_KEY', ''))
+# Default model: Gemini 2.0 Flash (fast, 1M context, free-tier eligible)
+GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-3.1-flash-lite')
+GEMINI_TEMPERATURE = float(os.environ.get('GEMINI_TEMPERATURE', '0.7') or '0.7')
+GEMINI_MAX_OUTPUT_TOKENS = int(os.environ.get('GEMINI_MAX_OUTPUT_TOKENS', '8192') or '8192')
+GEMINI_TIMEOUT = int(os.environ.get('GEMINI_TIMEOUT', '120') or '120')
+
+# Retry configuration for transient network errors
+GEMINI_MAX_RETRIES = int(os.environ.get('GEMINI_MAX_RETRIES', '3') or '3')
+GEMINI_RETRY_BASE_DELAY = float(os.environ.get('GEMINI_RETRY_BASE_DELAY', '2.0') or '2.0')
+
+# ─── Matcher tuning (shared by both providers) ────────────────
+# Delay (seconds) between match calls — protects against rate limits.
+DEEPSEEK_INTER_CALL_DELAY = float(os.environ.get('DEEPSEEK_INTER_CALL_DELAY', '0') or '0')
+# Rotate conversation every N positions to avoid context overflow.
+# Kept the legacy name so views.py and matcher.py don't need changes.
+DEEPSEEK_ROTATE_EVERY = float(os.environ.get('DEEPSEEK_ROTATE_EVERY', '15') or '15')
+
+AI_FALLBACK_MODELS = os.environ.get('AI_FALLBACK_MODELS', '')
 
 # Application definition
 
@@ -38,6 +63,7 @@ INSTALLED_APPS = [
     'apps.scraper',
     'apps.ai',
     'apps.api',
+    'apps.extension',
     'apps.websites',
     'apps.positions',
 ]
@@ -135,6 +161,14 @@ MAILERS = {
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 12,
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'apps.extension.authentication.ExtensionTokenAuthentication',  
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 }
 
 

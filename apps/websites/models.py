@@ -35,11 +35,11 @@ class Website(models.Model):
 
     # ─── URL Configuration ───────────────────────────────────
     base_url = models.URLField(
-        max_length=500, blank=True, validators=[URLValidator()],
+        max_length=2500, blank=True, validators=[URLValidator()],
         help_text="Base URL of the website"
     )
     pagination_url_pattern = models.CharField(
-        max_length=500, blank=True,
+        max_length=2500, blank=True,
         help_text="URL pattern with {page} placeholder (used by HTML mode)"
     )
 
@@ -189,41 +189,61 @@ class Website(models.Model):
 
     def __str__(self):
         return self.name
-
+    
     def clean(self):
-        """Validate field consistency based on scraping_method."""
+        """Validate minimal fields only. Selectors are optional —
+        they can be set later via the browser extension picker."""
         super().clean()
         errors = {}
 
-        if self.scraping_method == 'html':
-            if not self.base_url:
-                errors['base_url'] = "Base URL is required for HTML scraping."
-            if not self.pagination_url_pattern and not self.base_url:
-                errors['pagination_url_pattern'] = (
-                    "Either pagination_url_pattern or base_url must be set for HTML scraping."
-                )
-        elif self.scraping_method == 'api':
-            if not self.api_endpoint:
-                errors['api_endpoint'] = "API endpoint is required for API scraping."
-            if not self.api_results_key:
-                errors['api_results_key'] = "Results key path is required for API scraping."
+        # Only require base_url if scraping_method is HTML AND no extension selectors
+        # (extension sets selectors separately, so we relax this)
+        if self.scraping_method == 'html' and not self.base_url and not self.api_endpoint:
+            errors['base_url'] = "Base URL or API endpoint is required."
 
-        if self.detail_source == 'html' and not self.detail_container_selector:
-            errors['detail_container_selector'] = (
-                "Detail container selector is required when detail_source is HTML."
-            )
-        if self.detail_source == 'api':
-            if not self.detail_api_endpoint:
-                errors['detail_api_endpoint'] = (
-                    "Detail API endpoint is required when detail_source is API."
-                )
-            if not self.api_detail_key:
-                errors['api_detail_key'] = (
-                    "API detail key is required when detail_source is API."
-                )
+        if self.scraping_method == 'api' and not self.api_endpoint:
+            # Allow saving without api_endpoint — extension can set it later
+            pass
+
+        # NO validation for selectors — they're all optional now
 
         if errors:
             raise ValidationError(errors)
+        
+    # def clean(self):
+    #     """Validate field consistency based on scraping_method."""
+    #     super().clean()
+    #     errors = {}
+
+    #     if self.scraping_method == 'html':
+    #         if not self.base_url:
+    #             errors['base_url'] = "Base URL is required for HTML scraping."
+    #         if not self.pagination_url_pattern and not self.base_url:
+    #             errors['pagination_url_pattern'] = (
+    #                 "Either pagination_url_pattern or base_url must be set for HTML scraping."
+    #             )
+    #     elif self.scraping_method == 'api':
+    #         if not self.api_endpoint:
+    #             errors['api_endpoint'] = "API endpoint is required for API scraping."
+    #         if not self.api_results_key:
+    #             errors['api_results_key'] = "Results key path is required for API scraping."
+
+    #     if self.detail_source == 'html' and not self.detail_container_selector:
+    #         errors['detail_container_selector'] = (
+    #             "Detail container selector is required when detail_source is HTML."
+    #         )
+    #     if self.detail_source == 'api':
+    #         if not self.detail_api_endpoint:
+    #             errors['detail_api_endpoint'] = (
+    #                 "Detail API endpoint is required when detail_source is API."
+    #             )
+    #         if not self.api_detail_key:
+    #             errors['api_detail_key'] = (
+    #                 "API detail key is required when detail_source is API."
+    #             )
+
+    #     if errors:
+    #         raise ValidationError(errors)
 
     def get_pagination_url(self, page: int) -> str:
         """Build the pagination URL for a specific page (legacy method)."""

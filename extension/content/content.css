@@ -1,0 +1,6 @@
+/* ApplyTools Extension — Content CSS (Phase 1) */
+/* Most styling is inside Shadow DOM (overlay.js). This file is minimal. */
+
+#applytools-overlay-host {
+    all: initial;
+}

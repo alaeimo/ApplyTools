@@ -1,0 +1,22 @@
+{
+    "manifest_version": 3,
+    "name": "ApplyTools Connector",
+    "version": "2.0.0",
+    "description": "Step-by-step selector wizard + multi-page extraction + match badges for ApplyTools.",
+    "permissions": ["storage", "notifications", "activeTab", "scripting", "alarms"],
+    "host_permissions": ["<all_urls>"],
+    "externally_connectable": { "matches": ["http://localhost:8000/*", "http://127.0.0.1:8000/*"] },
+    "background": { "service_worker": "background.js" },
+    "action": {
+        "default_popup": "popup/popup.html",
+        "default_icon": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" }
+    },
+    "content_scripts": [{
+        "matches": ["<all_urls>"],
+        "js": ["content/picker.js", "content/extractor.js", "content/pagination.js",
+               "content/badge.js", "content/overlay.js", "content/content.js"],
+        "css": ["content/content.css"],
+        "run_at": "document_idle"
+    }],
+    "icons": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" }
+}

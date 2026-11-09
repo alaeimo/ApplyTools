@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ position.title }} — ApplyTools</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
+    <style>
+        :root { --bg-app:#F8FAFC; --bg-card:#FFFFFF; --bg-subtle:#F1F5F9; --text-primary:#0F172A; --text-body:#334155; --text-muted:#64748B; --border:#E2E8F0; --brand:#4F46E5; --brand-soft:#EEF2FF; --success:#10B981; --success-soft:#D1FAE5; --warning:#F59E0B; --danger:#F43F5E; --r-md:10px; --r-lg:14px; }
+        * { font-family:'Vazir','Inter',sans-serif; box-sizing:border-box; }
+        body { background:var(--bg-app); color:var(--text-body); }
+        .header-bar { background:linear-gradient(135deg,#0F172A,#312E81); color:white; padding:1.5rem 0; margin-bottom:2rem; }
+        .card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--r-lg); padding:1.5rem; margin-bottom:1.5rem; }
+        .score-circle { width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:700; color:white; }
+        .tag { display:inline-block; background:var(--bg-subtle); padding:4px 12px; border-radius:999px; font-size:0.8rem; margin:2px; }
+        .detail-label { font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:4px; }
+        .detail-value { font-size:0.95rem; color:var(--text-primary); line-height:1.6; margin-bottom:1rem; }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="container">
+            <a href="/" class="btn btn-sm btn-outline-light mb-3"><i class="fas fa-arrow-left me-1"></i> Back to Dashboard</a>
+            <h1 class="mb-0">{{ position.title }}</h1>
+            <p class="mb-0 mt-1 opacity-75">{{ position.company }}</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    {% if match %}
+                        <div class="score-circle mx-auto mb-3" style="background: {% if match.overall_score >= 80 %}var(--success){% elif match.overall_score >= 60 %}var(--brand){% elif match.overall_score >= 40 %}var(--warning){% else %}var(--danger){% endif %};">
+                            {{ match.overall_score|floatformat:0 }}
+                        </div>
+                        <h3 class="h5">{{ match.get_match_category_display }}</h3>
+                        <p class="text-muted small">{{ match.get_application_recommendation_display }}</p>
+                    {% else %}
+                        <div class="score-circle mx-auto mb-3" style="background:#94A3B8;">—</div>
+                        <h3 class="h5">Not Matched</h3>
+                        <p class="text-muted small">Use the extension to re-match</p>
+                    {% endif %}
+                </div>
+
+                {% if match %}
+                <div class="card">
+                    <h5 class="mb-3">Detailed Scores</h5>
+                    <div class="mb-2"><div class="detail-label">Eligibility</div><div class="progress"><div class="progress-bar" style="width:{{ match.eligibility_score }}%; background:var(--brand);"></div></div></div>
+                    <div class="mb-2"><div class="detail-label">Academic Fit</div><div class="progress"><div class="progress-bar" style="width:{{ match.academic_fit_score }}%; background:var(--brand);"></div></div></div>
+                    <div class="mb-2"><div class="detail-label">Research Fit</div><div class="progress"><div class="progress-bar" style="width:{{ match.research_fit_score }}%; background:var(--brand);"></div></div></div>
+                    <div class="mb-2"><div class="detail-label">Technical Fit</div><div class="progress"><div class="progress-bar" style="width:{{ match.technical_methodological_fit_score }}%; background:var(--brand);"></div></div></div>
+                    <div class="mb-2"><div class="detail-label">Domain Fit</div><div class="progress"><div class="progress-bar" style="width:{{ match.domain_fit_score }}%; background:var(--brand);"></div></div></div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-8">
+                {% if match %}
+                <div class="card">
+                    <h5 class="mb-3">AI Summary</h5>
+                    <p>{{ match.summary }}</p>
+                    {% if match.main_reason %}
+                    <div class="detail-label mt-3">Main Reason</div>
+                    <p class="text-muted">{{ match.main_reason }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="card">
+                    <h5 class="mb-3">Position Description</h5>
+                    <div class="detail-value">{{ position.cleaned_text|linebreaksbr }}</div>
+                </div>
+
+                {% if match %}
+                <div class="card">
+                    <h5 class="mb-3">Required Skills</h5>
+                    {% if match.required_skills.mandatory %}
+                        {% for skill in match.required_skills.mandatory %}<span class="tag" style="background:#FFE4E6;color:#9F1239;">{{ skill }}</span>{% endfor %}
+                    {% endif %}
+                    {% if match.required_skills.core %}
+                        {% for skill in match.required_skills.core %}<span class="tag" style="background:#FEF3C7;color:#92400E;">{{ skill }}</span>{% endfor %}
+                    {% endif %}
+                    {% if match.required_skills.preferred %}
+                        {% for skill in match.required_skills.preferred %}<span class="tag" style="background:#D1FAE5;color:#065F46;">{{ skill }}</span>{% endfor %}
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

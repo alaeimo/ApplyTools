@@ -7,7 +7,9 @@ from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 
-from apps.ai.deepseek import DeepSeekClient
+# Provider is selected via APPLYTOOLS_AI_PROVIDER in .env / settings.py.
+# Supported: 'gemini' (default, Google AI Studio free tier) or 'deepseek'.
+from apps.ai.gemini_client import get_ai_client
 from apps.ai.models import PromptTemplate
 from apps.ai.constants import MATCH_JSON_STRUCTURE_STR, DEFAULT_MATCH_RESPONSE
 
@@ -22,7 +24,7 @@ class PositionMatcher:
     
     def __init__(
         self,
-        deepseek_client: Optional[DeepSeekClient] = None,
+        ai_client=None,
         prompt_id: Optional[int] = None,
         language: Optional[str] = None,
     ):
@@ -30,11 +32,16 @@ class PositionMatcher:
         Initialize the position matcher.
         
         Args:
-            deepseek_client: Existing DeepSeekClient instance (optional)
+            ai_client: Existing AI client instance (optional). If None,
+                uses get_ai_client() which returns GeminiClient or
+                DeepSeekClient based on APPLYTOOLS_AI_PROVIDER setting.
             prompt_id: Specific prompt ID to use (uses active if None)
             language: Response language (overrides prompt's default)
         """
-        self.client = deepseek_client or DeepSeekClient()
+        # Use the provided client, OR the singleton from get_ai_client().
+        # The singleton is created once per process — subsequent PositionMatcher
+        # instances reuse the same chat session (preserving conversation_id).
+        self.client = ai_client or get_ai_client()
         self.prompt_id = prompt_id
         self.language = language
         
@@ -363,7 +370,6 @@ def match_and_save(
     """
     from apps.positions.models import Position, PositionMatch
     delay = float(getattr(settings, 'DEEPSEEK_INTER_CALL_DELAY', '0'))
-    print("*"*100, delay, "*"*100)
     if delay > 0:
         time.sleep(delay)
     try:
