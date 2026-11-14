@@ -2,6 +2,25 @@
 
 **ApplyTools** is a Django-based application that captures academic and research positions from any website via a Chrome extension, matches them against your CV using AI, and helps you manage your job applications. It uses a **multi-provider AI fallback chain** — Google Gemini (free tier) as the primary provider, with DeepSeek's free web chat (via the [Deepseek-API](https://github.com/sums001/Deepseek-API) library) as a reliable fallback when Gemini is overloaded or rate-limited.
 
+[!IMPORTANT]
+**Personal Use Only — Commercial and Organizational Use Prohibited**
+
+ApplyTools is source-available software intended exclusively
+for individual personal and non-commercial use.
+
+- Individuals may download, install, run, and use the software
+  for their own personal purposes.
+- Commercial, corporate, organizational, professional, and
+  employment-related use is strictly prohibited without
+  prior written permission from the copyright holder.
+- Any monetization, resale, commercial deployment, or use
+  for clients or employers requires explicit written permission.
+- Individuals modifying the software must contribute their
+  modifications back to the official project repository
+  through a Pull Request.
+
+See [LICENSE](LICENSE) for the complete terms.
+
 ---
 
 ## 🚀 Features
@@ -315,7 +334,7 @@ applytools/
 ├── .env-template                 # Environment variables template
 ├── manage.py
 ├── requirements.txt
-├── LICENSE                       # MIT License
+├── LICENSE                       # Custom Personal Use License
 └── README.md
 ```
 
@@ -427,34 +446,65 @@ pytest apps/websites/tests.py -v
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request.
+Contributions from individuals are welcome!
 
-### Development Workflow
+ApplyTools is intended for personal, non-commercial use.
+We encourage individual developers to improve the project
+and contribute their modifications to the official repository.
 
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/amazing-feature`).
-3. Commit your changes (`git commit -m 'Add some amazing feature'`).
-4. Push to the branch (`git push origin feature/amazing-feature`).
-5. Open a Pull Request.
+### Contribution Rules
 
-We actively encourage improvements to matching accuracy, UI, and the Chrome extension.
+1. Fork the official repository solely for the purpose of
+   preparing and submitting contributions.
+2. Create a feature branch.
+3. Make your changes.
+4. Submit your changes through a Pull Request.
+5. Wait for review and approval from the project maintainer.
+
+### Important Contribution Conditions
+
+- Any modifications made to the software must be submitted
+  back to the official project repository through a Pull Request,
+  in accordance with the LICENSE terms.
+- Modified versions must not be independently sold,
+  commercially distributed, or used for organizational purposes.
+- Contributions may be rejected at the discretion of the maintainer.
+- By submitting a contribution, you agree to the contribution
+  terms established by the project.
+
+Commercial and organizational use of ApplyTools or its
+derivative works requires prior written permission from
+the copyright holder.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+ApplyTools is distributed under a custom **Personal Use License**.
 
-Copyright (c) 2026 **Mohammad Alaei**
+**Copyright (c) 2026 Mohammad Alaei**
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is granted exclusively to individual persons
+to download, install, run, and use this software for their
+own personal, private, and non-commercial purposes.
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+Commercial, corporate, organizational, professional,
+employment-related, and revenue-generating use is strictly
+prohibited without prior express written permission
+from the copyright holder.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Modifications are permitted only under the conditions
+specified in the LICENSE file. Any modifications must be
+contributed back to the official project repository.
 
-**Not for commercial resale or use as the foundation of a proprietary SAAS product without express permission.**
+Redistribution, resale, sublicensing, commercial deployment,
+and use as part of any commercial product or service
+are prohibited without prior written permission.
 
+For complete terms and conditions, see the [LICENSE](LICENSE) file.
+
+Third-party dependencies and components are subject
+to their respective licenses.
 ---
 
 ## 👨‍💻 Contributors

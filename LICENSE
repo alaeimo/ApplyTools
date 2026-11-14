@@ -1,29 +1,60 @@
-MIT License
+# Personal Use and Contribution License
 
 Copyright (c) 2026 Mohammad Alaei
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+## 1. Grant of Permission
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Permission is hereby granted to individual persons to download, access, install, run, and use this software solely for their own personal, private, and non-commercial purposes.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Permitted personal uses include learning, experimentation, research, testing, and personal hobby projects, provided that such use is not connected to any commercial activity, employment, business, client, or organization.
 
----
+## 2. Restrictions on Commercial and Organizational Use
 
-Additional Notice:
+Any commercial, business, corporate, organizational, or professional use of this software is strictly prohibited without prior express written permission from the copyright holder.
 
-This software is licensed under the MIT License, but is not for commercial
-resale or use as the foundation of a proprietary SAAS product without
-express written permission from the copyright holder.
+This restriction includes, but is not limited to:
+
+- Using the software for or on behalf of a company, employer, client, or organization.
+- Using the software in commercial or revenue-generating projects.
+- Selling, licensing, or monetizing the software or derivative works.
+- Using the software as the foundation of a proprietary product, SaaS platform, or commercial service.
+- Hosting, providing, or offering the software as a service to third parties.
+- Using the software in internal business operations or organizational workflows.
+
+Commercial permission must be obtained directly from the copyright holder.
+
+## 3. Modifications and Contributions
+
+Individuals may inspect and modify the source code solely for personal, non-commercial purposes.
+
+However, anyone who modifies the software and wishes to use a modified version must submit their modifications to the official project repository through a Pull Request or another contribution method approved by the project maintainer.
+
+Contributors must not independently publish, sell, distribute, or commercially exploit modified versions of the software.
+
+Submitting a contribution does not guarantee its acceptance or inclusion in the official project.
+
+All contributions must comply with the contribution requirements established by the project maintainer.
+
+## 4. Redistribution
+
+Redistribution, sublicensing, selling, renting, or publishing copies of this software, whether modified or unmodified, is prohibited without prior written permission from the copyright holder.
+
+The only exception is sharing a fork, patch, or contribution as reasonably necessary to submit changes to the official project repository.
+
+## 5. Copyright and Ownership
+
+The original software and all associated intellectual property rights remain the property of the copyright holder.
+
+Contributors retain ownership of their original contributions, subject to the rights granted to the project maintainer when submitting those contributions.
+
+No rights are granted beyond those explicitly stated in this license.
+
+## 6. Termination
+
+Any violation of the terms of this license automatically terminates the permissions granted to the violating party, to the extent permitted by applicable law.
+
+## 7. Disclaimer of Warranty
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE SOFTWARE OR ITS USE, TO THE EXTENT PERMITTED BY APPLICABLE LAW.
