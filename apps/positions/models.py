@@ -17,6 +17,7 @@ class Position(models.Model):
 
     APPLICATION_STATUS_CHOICES = [
         ('PENDING_REVIEW', 'Pending Review'),
+        ('BOOKMARKED', 'Bookmarked'), 
         ('SHORTLISTED', 'Shortlisted'),
         ('APPLIED', 'Applied'),
         ('INTERVIEWING', 'Interviewing'),
@@ -49,6 +50,8 @@ class Position(models.Model):
     applied_at = models.DateTimeField(null=True, blank=True)
     application_result = models.CharField(max_length=20, choices=[('ACCEPTED', 'Accepted'), ('REJECTED', 'Rejected'), ('OFFERED', 'Offered'), ('WITHDRAWN', 'Withdrawn')], null=True, blank=True, help_text="Final outcome")
     rejection_reason = models.CharField(max_length=20, choices=REJECTION_REASON_CHOICES, null=True, blank=True, help_text="Why rejected")
+    is_bookmarked = models.BooleanField(default=False, db_index=True)
+    bookmarked_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ['-scraped_at']
@@ -85,7 +88,14 @@ class Position(models.Model):
         self.application_status = 'NOT_INTERESTED'
         self.save(update_fields=['application_status', 'updated_at'])
 
-
+    def toggle_bookmark(self):
+        self.is_bookmarked = not self.is_bookmarked
+        if self.is_bookmarked:
+            self.bookmarked_at = timezone.now()
+        else:
+            self.bookmarked_at = None
+        self.save(update_fields=['is_bookmarked', 'bookmarked_at'])
+        
 class PositionMatch(models.Model):
     CONFIDENCE_CHOICES = [('low', 'Low'), ('medium', 'Medium'), ('high', 'High')]
     MATCH_CATEGORY_CHOICES = [

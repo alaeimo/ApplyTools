@@ -17,8 +17,9 @@ from django.shortcuts import get_object_or_404, render
 
 logger = logging.getLogger(__name__)
 
+
 class PositionViewSet(viewsets.ModelViewSet):
-    """ViewSet for Position data with a dashboard action."""
+    """ViewSet for Position data with dashboard + heatmap-stats actions."""
     queryset = Position.objects.select_related('match').all()
     serializer_class = PositionSerializer
     pagination_class = PageNumberPagination
@@ -30,30 +31,32 @@ class PositionViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
     @action(detail=False, methods=['get'], url_path='dashboard')
     def dashboard(self, request):
+        """List positions with view filter, optional discovery filters (search,
+        deadline_date, no_deadline, score_buckets), and sort override."""
         view = request.query_params.get('view', 'pending')
-        app_status = request.query_params.get('app_status')  
+        app_status = request.query_params.get('app_status')
+        search = request.query_params.get('search', '').strip()
+        deadline_date = request.query_params.get('deadline_date', '').strip()
+        no_deadline = request.query_params.get('no_deadline', '').strip().lower() == 'true'
+        score_buckets_param = request.query_params.get('score_buckets', '').strip()
+        sort = request.query_params.get('sort', '').strip()
 
-        # Base queryset
         positions = Position.objects.select_related('match')
 
-        # Apply view filter
+        # ── View filter (same as before) ──────────────────────
         if view == 'pending':
             positions = positions.filter(application_status='PENDING_REVIEW')
-            # Optional: apply original status filter (SCRAPED, MATCHED, etc.)
-            status = request.query_params.get('status')
-            if status:
-                positions = positions.filter(status=status)
-    
-            # Sorting
+            status_filter = request.query_params.get('status')
+            if status_filter:
+                positions = positions.filter(status=status_filter)
             positions = positions.order_by(
                 Case(When(match__isnull=False, then=F('match__overall_score')), default=0, output_field=FloatField()).desc(),
                 '-scraped_at'
             )
         elif view == 'shortlisted':
-            # Show all shortlisted and further statuses
             shortlisted_statuses = ['SHORTLISTED', 'APPLIED', 'INTERVIEWING', 'OFFERED', 'ACCEPTED', 'REJECTED', 'DEADLINE_MISSED']
             positions = positions.filter(application_status__in=shortlisted_statuses)
             if app_status:
@@ -61,12 +64,62 @@ class PositionViewSet(viewsets.ModelViewSet):
             positions = positions.order_by('match__application_deadline_iso', 'match__application_deadline', '-scraped_at')
         elif view == 'not_interested':
             positions = positions.filter(application_status='NOT_INTERESTED')
+        elif view == 'bookmarked': 
+            positions = positions.filter(is_bookmarked=True)
+            positions = positions.order_by('-bookmarked_at')
         else:
-            positions = positions.all()  # fallback
+            positions = positions.all()
 
-   
+        # ── Discovery filters (NEW) ──────────────────────────
+        if search:
+            positions = positions.filter(
+                Q(title__icontains=search) |
+                Q(company__icontains=search) |
+                Q(match__summary__icontains=search) |
+                Q(match__main_reason__icontains=search) |
+                Q(match__institution__icontains=search)
+            )
 
-        # Paginate
+        if deadline_date:
+            positions = positions.filter(
+                Q(match__application_deadline_iso__startswith=deadline_date)
+            )
+
+        if no_deadline:
+            positions = positions.filter(
+                Q(match__isnull=True) |
+                Q(match__application_deadline_iso__isnull=True) |
+                Q(match__application_deadline_iso='')
+            )
+
+        if score_buckets_param:
+            buckets = [b.strip() for b in score_buckets_param.split(',') if b.strip()]
+            score_q = Q()
+            for b in buckets:
+                if b == 'no-match':
+                    score_q |= Q(match__isnull=True)
+                elif b == '0-20':
+                    score_q |= Q(match__overall_score__gte=0, match__overall_score__lt=20)
+                elif b == '20-40':
+                    score_q |= Q(match__overall_score__gte=20, match__overall_score__lt=40)
+                elif b == '40-60':
+                    score_q |= Q(match__overall_score__gte=40, match__overall_score__lt=60)
+                elif b == '60-80':
+                    score_q |= Q(match__overall_score__gte=60, match__overall_score__lt=80)
+                elif b == '80-100':
+                    score_q |= Q(match__overall_score__gte=80)
+            positions = positions.filter(score_q)
+
+        # ── Sort override (NEW) ───────────────────────────────
+        if sort == 'score':
+            positions = positions.order_by(
+                Case(When(match__isnull=False, then=F('match__overall_score')), default=0, output_field=FloatField()).desc(),
+                '-scraped_at'
+            )
+        elif sort == 'deadline':
+            positions = positions.order_by('match__application_deadline_iso', 'match__application_deadline', '-scraped_at')
+
+        # ── Paginate ─────────────────────────────────────────
         page = self.paginate_queryset(positions)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -74,25 +127,90 @@ class PositionViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(positions, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['get'], url_path='heatmap-stats')
+    def heatmap_stats(self, request):
+        """Return aggregate counts for the heatmap and score distribution.
+        Computed over ALL positions in the current view (NOT paginated).
+        Used by the discovery panel on the dashboard."""
+        view = request.query_params.get('view', 'pending')
+        app_status = request.query_params.get('app_status')
+        status_filter = request.query_params.get('status')
+
+        positions = Position.objects.select_related('match')
+
+        # Apply same view filter as dashboard (so heatmap reflects current view)
+        if view == 'pending':
+            positions = positions.filter(application_status='PENDING_REVIEW')
+            if status_filter:
+                positions = positions.filter(status=status_filter)
+        elif view == 'shortlisted':
+            shortlisted_statuses = ['SHORTLISTED', 'APPLIED', 'INTERVIEWING', 'OFFERED', 'ACCEPTED', 'REJECTED', 'DEADLINE_MISSED']
+            positions = positions.filter(application_status__in=shortlisted_statuses)
+            if app_status:
+                positions = positions.filter(application_status=app_status)
+        elif view == 'not_interested':
+            positions = positions.filter(application_status='NOT_INTERESTED')
+        elif view == 'bookmarked':
+            positions = positions.filter(is_bookmarked=True)
+
+        deadline_counts = {}
+        no_deadline_count = 0
+        score_counts = {'0-20': 0, '20-40': 0, '40-60': 0, '60-80': 0, '80-100': 0, 'no-match': 0}
+
+        for pos in positions:
+            m = getattr(pos, 'match', None)
+            dl = None
+            if m:
+                if m.application_deadline_iso:
+                    dl = m.application_deadline_iso[:10]
+                elif getattr(m, 'application_deadline', None):
+                    dl = str(m.application_deadline)[:10]
+
+            if dl:
+                deadline_counts[dl] = deadline_counts.get(dl, 0) + 1
+            else:
+                no_deadline_count += 1
+
+            score = getattr(m, 'overall_score', None) if m else None
+            if score is None:
+                score_counts['no-match'] += 1
+            elif score < 20:
+                score_counts['0-20'] += 1
+            elif score < 40:
+                score_counts['20-40'] += 1
+            elif score < 60:
+                score_counts['40-60'] += 1
+            elif score < 80:
+                score_counts['60-80'] += 1
+            else:
+                score_counts['80-100'] += 1
+
+        return Response({
+            'deadline_counts': deadline_counts,
+            'no_deadline_count': no_deadline_count,
+            'score_counts': score_counts,
+            'total': sum(score_counts.values()),
+        })
+
     @action(detail=False, methods=['get'], url_path='counts')
     def counts(self, request):
-        """Return counts for the three main views."""
         counts = {
             'pending': Position.objects.filter(application_status='PENDING_REVIEW').count(),
             'shortlisted': Position.objects.filter(
                 application_status__in=['SHORTLISTED', 'APPLIED', 'INTERVIEWING', 'OFFERED', 'ACCEPTED', 'REJECTED', 'DEADLINE_MISSED']
             ).count(),
             'not_interested': Position.objects.filter(application_status='NOT_INTERESTED').count(),
+            'bookmarked': Position.objects.filter(is_bookmarked=True).count(),  # NEW
         }
         return Response(counts)
-    
+
     @action(detail=True, methods=['post'], url_path='pending-review')
     def pending_review(self, request, pk=None):
         position = self.get_object()
         position.application_status = 'PENDING_REVIEW'
         position.save(update_fields=['application_status', 'updated_at'])
         return Response({'status': 'pending_review'})
-        
+
     @action(detail=True, methods=['post'], url_path='shortlist')
     def shortlist(self, request, pk=None):
         position = self.get_object()
@@ -123,15 +241,21 @@ class PositionViewSet(viewsets.ModelViewSet):
         position = self.get_object()
         position.mark_not_interested()
         return Response({'status': 'not_interested'})
-
-
+    
+    @action(detail=True, methods=['post'], url_path='bookmark')
+    def bookmark(self, request, pk=None):
+        """Toggle the bookmark state of a position."""
+        position = self.get_object()
+        position.toggle_bookmark()
+        return Response({
+            'status': 'bookmarked' if position.is_bookmarked else 'unbookmarked',
+            'is_bookmarked': position.is_bookmarked
+        })
+    
     @action(detail=False, methods=['post'], url_path='check-deadlines')
     def check_deadlines(self, request):
-        """Bulk update positions whose deadlines have passed (using ISO field)."""
         today_str = timezone.now().date().isoformat()
-        
         active_statuses = ['PENDING_REVIEW', 'SHORTLISTED']
-        
         expired = Position.objects.select_related('match').filter(
             match__isnull=False,
             application_status__in=active_statuses
@@ -140,23 +264,17 @@ class PositionViewSet(viewsets.ModelViewSet):
             ~Q(match__application_deadline_iso='') &
             Q(match__application_deadline_iso__lt=today_str + 'T')
         )
-        
         count = expired.count()
         expired.update(application_status='DEADLINE_MISSED', updated_at=timezone.now())
-        
         return Response({
             'updated': count,
             'message': f'Updated {count} positions to DEADLINE_MISSED'
         })
-    
+
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def match_single_position(request, position_id):
-    """Trigger DeepSeek match for a single position.
-
-    POST /api/v1/positions/{id}/match/
-    Body: { "cv_id": 1, "language": "English" }
-    """
     if not request.user.is_authenticated:
         return JsonResponse({'error': 'Authentication required'}, status=401)
 
@@ -205,10 +323,6 @@ def match_single_position(request, position_id):
 @csrf_exempt
 @require_http_methods(["DELETE", "POST"])
 def delete_position_match(request, position_id):
-    """Delete the match result for a position so it can be re-matched.
-
-    DELETE /api/v1/positions/{id}/match/
-    """
     if not request.user.is_authenticated:
         return JsonResponse({'error': 'Authentication required'}, status=401)
 
@@ -231,78 +345,24 @@ def delete_position_match(request, position_id):
         logger.exception("Delete match failed")
         return JsonResponse({'error': str(e)}, status=500)
 
+
 def position_detail_view(request, position_id):
     """Render a full-page view of a single position and its match details."""
     position = get_object_or_404(Position, id=position_id)
     match = getattr(position, 'match', None)
+    
+    # Calculate days until deadline for the badge logic
+    if match and match.application_deadline_iso:
+        try:
+            from datetime import date
+            deadline_date = date.fromisoformat(match.application_deadline_iso[:10])
+            today = date.today()
+            match.days_until_deadline = (deadline_date - today).days
+        except (ValueError, TypeError):
+            match.days_until_deadline = None
     
     context = {
         'position': position,
         'match': match,
     }
     return render(request, 'position_detail.html', context)
-      
-# @csrf_exempt
-# @require_http_methods(["POST"])
-# def match_positions_stream(request):
-#     try:
-#         body = json.loads(request.body)
-#         cv = body.get('cv')
-#         language = body.get('language', 'English')
-        
-#         if not cv:
-#             return StreamingHttpResponse(
-#                 f"data: {json.dumps({'type': 'error', 'message': 'CV text is required'})}\n\n",
-#                 content_type='text/event-stream'
-#             )
-#     except json.JSONDecodeError as e:
-#         return StreamingHttpResponse(
-#             f"data: {json.dumps({'type': 'error', 'message': f'Invalid JSON: {str(e)}'})}\n\n",
-#             content_type='text/event-stream'
-#         )
-    
-#     def event_stream():
-#         try:
-#             positions = Position.objects.filter(status='SCRAPED', match__isnull=True).order_by('scraped_at')
-#             total = positions.count()
-            
-#             if total == 0:
-#                 yield f"data: {json.dumps({'type': 'complete', 'total': 0, 'saved': 0, 'skipped': 0, 'failed': 0, 'message': 'No positions to match'})}\n\n"
-#                 return
-            
-#             yield f"data: {json.dumps({'type': 'start', 'message': f'Starting match analysis for {total} positions...', 'total': total})}\n\n"
-            
-#             saved = skipped = failed = 0
-#             conversation_id = None  # Store conversation ID for continuity
-            
-#             for idx, position in enumerate(positions, 1):
-#                 yield f"data: {json.dumps({'type': 'progress', 'message': f'Processing {idx}/{total}: {position.title[:50]}...', 'percentage': int((idx/total)*100), 'current': idx, 'total': total})}\n\n"
-                
-#                 try:
-#                     # Pass conversation_id if available
-#                     result = match_and_save(cv, position.id, language, conversation_id=conversation_id)
-                    
-#                     # Extract conversation_id from result for next iteration
-#                     if result and '_metadata' in result and 'conversation_id' in result['_metadata']:
-#                         conversation_id = result['_metadata']['conversation_id']
-#                         logger.info(f"🔄 Using conversation_id: {conversation_id}")
-                    
-#                     if 'error' in result:
-#                         failed += 1
-#                         yield f"data: {json.dumps({'type': 'position_failed', 'position_id': position.id, 'title': position.title, 'error': result.get('error', 'Unknown error'), 'saved': saved, 'skipped': skipped, 'failed': failed})}\n\n"
-#                     else:
-#                         saved += 1
-#                         yield f"data: {json.dumps({'type': 'position_matched', 'position_id': position.id, 'title': position.title, 'score': result.get('matching_score', {}).get('overall_score', 0), 'category': result.get('final_verdict', {}).get('match_category', 'unknown'), 'match_id': result.get('_metadata', {}).get('match_id'), 'saved': saved, 'skipped': skipped, 'failed': failed})}\n\n"
-#                 except Exception as e:
-#                     failed += 1
-#                     yield f"data: {json.dumps({'type': 'position_failed', 'position_id': position.id, 'title': position.title, 'error': str(e), 'saved': saved, 'skipped': skipped, 'failed': failed})}\n\n"
-            
-#             yield f"data: {json.dumps({'type': 'complete', 'total': total, 'saved': saved, 'skipped': skipped, 'failed': failed, 'summary': f'✅ {saved} matched, ⏭️ {skipped} skipped, ❌ {failed} failed (out of {total})'})}\n\n"
-            
-#         except Exception as e:
-#             yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
-    
-#     response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
-#     response['Cache-Control'] = 'no-cache'
-#     response['X-Accel-Buffering'] = 'no'
-#     return response

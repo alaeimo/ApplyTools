@@ -130,6 +130,8 @@ class PositionSerializer(serializers.ModelSerializer):
     status_label = serializers.SerializerMethodField()
     application_status_label = serializers.SerializerMethodField()
     website_name = serializers.CharField(source='website.name', read_only=True)
+    is_bookmarked = serializers.BooleanField(read_only=True)
+    bookmarked_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Position
@@ -149,6 +151,8 @@ class PositionSerializer(serializers.ModelSerializer):
             'applied_at',
             'application_result',
             'rejection_reason',
+            'is_bookmarked',
+            'bookmarked_at'
         ]
 
     def get_status_label(self, obj):

@@ -133,7 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran' # Or 'UTC' or any other timezone you prefer
 
 USE_I18N = True
 

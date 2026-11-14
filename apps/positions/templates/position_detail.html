@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,92 +7,432 @@
     <title>{{ position.title }} — ApplyTools</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
     <style>
-        :root { --bg-app:#F8FAFC; --bg-card:#FFFFFF; --bg-subtle:#F1F5F9; --text-primary:#0F172A; --text-body:#334155; --text-muted:#64748B; --border:#E2E8F0; --brand:#4F46E5; --brand-soft:#EEF2FF; --success:#10B981; --success-soft:#D1FAE5; --warning:#F59E0B; --danger:#F43F5E; --r-md:10px; --r-lg:14px; }
-        * { font-family:'Vazir','Inter',sans-serif; box-sizing:border-box; }
-        body { background:var(--bg-app); color:var(--text-body); }
-        .header-bar { background:linear-gradient(135deg,#0F172A,#312E81); color:white; padding:1.5rem 0; margin-bottom:2rem; }
-        .card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--r-lg); padding:1.5rem; margin-bottom:1.5rem; }
-        .score-circle { width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:700; color:white; }
-        .tag { display:inline-block; background:var(--bg-subtle); padding:4px 12px; border-radius:999px; font-size:0.8rem; margin:2px; }
-        .detail-label { font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:4px; }
-        .detail-value { font-size:0.95rem; color:var(--text-primary); line-height:1.6; margin-bottom:1rem; }
+        :root { --bg-app:#F8FAFC; --bg-card:#FFFFFF; --bg-subtle:#F1F5F9; --bg-hover:#F8FAFC; --text-primary:#0F172A; --text-body:#334155; --text-muted:#64748B; --text-faint:#94A3B8; --border:#E2E8F0; --border-strong:#CBD5E1; --brand:#4F46E5; --brand-soft:#EEF2FF; --brand-hover:#4338CA; --success:#10B981; --success-soft:#D1FAE5; --warning:#F59E0B; --warning-soft:#FEF3C7; --danger:#F43F5E; --danger-soft:#FFE4E6; --info:#0EA5E9; --info-soft:#E0F2FE; --r-sm:6px; --r-md:10px; --r-lg:14px; --r-xl:20px; --r-full:9999px; --shadow-sm:0 1px 2px 0 rgb(15 23 42/0.05); --shadow-md:0 4px 6px -1px rgb(15 23 42/0.07),0 2px 4px -2px rgb(15 23 42/0.05); --shadow-lg:0 10px 15px -3px rgb(15 23 42/0.08),0 4px 6px -4px rgb(15 23 42/0.05); }
+        * { font-family:'Vazir','Inter',-apple-system,BlinkMacSystemFont,sans-serif; box-sizing:border-box; }
+        body { background:var(--bg-app); font-size:15px; line-height:1.6; color:var(--text-body); -webkit-font-smoothing:antialiased; }
+
+        /* Header */
+        .dashboard-header { background:radial-gradient(ellipse at top left,rgb(99 102 241/0.15),transparent 50%),radial-gradient(ellipse at bottom right,rgb(14 165 233/0.10),transparent 50%),linear-gradient(135deg,#0F172A 0%,#1E1B4B 50%,#312E81 100%); color:white; padding:2rem 0 1.5rem; margin-bottom:1.5rem; border-bottom:1px solid rgb(255 255 255/0.08); position:relative; overflow:hidden; }
+        .dashboard-header::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgb(255 255 255/0.03) 1px,transparent 1px),linear-gradient(90deg,rgb(255 255 255/0.03) 1px,transparent 1px); background-size:32px 32px; pointer-events:none; }
+        .dashboard-header > .container { position:relative; z-index:1; }
+        .header-action { background:rgb(255 255 255/0.08); backdrop-filter:blur(12px); border:1px solid rgb(255 255 255/0.12); color:white; padding:0.5rem 1rem; border-radius:var(--r-full); font-size:0.825rem; font-weight:500; transition:all 0.15s ease; text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem; cursor:pointer; }
+        .header-action:hover { background:rgb(255 255 255/0.16); color:white; transform:translateY(-1px); }
+
+        /* Score Ring */
+        .score-ring { width:100px; height:100px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:700; color:white; position:relative; transition:transform 0.2s ease; box-shadow:var(--shadow-md); }
+        .score-ring.excellent { background:linear-gradient(135deg,#10B981,#059669); } .score-ring.good { background:linear-gradient(135deg,#4F46E5,#7C3AED); } .score-ring.possible { background:linear-gradient(135deg,#F59E0B,#D97706); } .score-ring.weak { background:linear-gradient(135deg,#F43F5E,#BE123C); } .score-ring.none { background:linear-gradient(135deg,#94A3B8,#64748B); }
+        .score-ring .score-label { position:absolute; bottom:-26px; font-size:0.65rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; white-space:nowrap; }
+
+        /* Cards */
+        .card-ui { background:var(--bg-card); border-radius:var(--r-lg); border:1px solid var(--border); box-shadow:var(--shadow-sm); padding:1.5rem; margin-bottom:1.5rem; transition:all 0.2s ease; }
+        .card-ui:hover { box-shadow:var(--shadow-md); }
+
+        /* Detail items */
+        .detail-item { margin-bottom:1.2rem; }
+        .detail-item .label { font-size:0.68rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:0.4rem; display:flex; align-items:center; gap:0.4rem; }
+        .detail-item .value { font-size:0.92rem; color:var(--text-primary); line-height:1.7; }
+        .detail-item .value.text-muted { color:var(--text-muted); }
+
+        /* Tags */
+        .tag { display:inline-block; background:var(--bg-subtle); padding:0.25rem 0.75rem; border-radius:var(--r-full); font-size:0.75rem; margin:0.2rem; color:var(--text-body); border:1px solid var(--border); font-weight:500; }
+        .tag.mandatory { background:var(--danger-soft); color:#9F1239; border-color:var(--danger-soft); }
+        .tag.core { background:var(--warning-soft); color:#92400E; border-color:var(--warning-soft); }
+        .tag.preferred { background:var(--success-soft); color:#065F46; border-color:var(--success-soft); }
+        .tag.research { background:var(--brand-soft); color:var(--brand); border-color:var(--brand-soft); }
+
+        /* Evidence Tags */
+        .evidence-tag { display:inline-block; font-size:0.72rem; padding:0.25rem 0.7rem; border-radius:var(--r-full); margin:0.15rem; font-weight:500; border:1px solid transparent; }
+        .evidence-tag.direct { background:var(--success-soft); color:#065F46; border-color:var(--success-soft); }
+        .evidence-tag.transferable { background:var(--warning-soft); color:#92400E; border-color:var(--warning-soft); }
+        .evidence-tag.missing { background:var(--danger-soft); color:#9F1239; border-color:var(--danger-soft); }
+        .evidence-tag.unclear { background:var(--bg-subtle); color:var(--text-muted); border-color:var(--border); }
+
+        /* Score Bars */
+        .score-bar-wrap { display:flex; align-items:center; gap:0.75rem; margin-bottom:0.75rem; }
+        .score-bar-wrap .bar-label { font-size:0.8rem; font-weight:500; color:var(--text-body); min-width:110px; }
+        .score-bar-wrap .bar-track { flex:1; height:8px; background:var(--bg-subtle); border-radius:var(--r-full); overflow:hidden; }
+        .score-bar-wrap .bar-track .bar-fill { height:100%; border-radius:var(--r-full); transition:width 0.6s ease; }
+        .score-bar-wrap .bar-value { font-size:0.8rem; font-weight:600; min-width:30px; text-align:right; color:var(--text-primary); }
+
+        /* Weighted Dimensions Chips */
+        .wd-chip { display:inline-block; font-size:0.72rem; background:var(--bg-subtle); padding:0.3rem 0.7rem; border-radius:var(--r-md); margin:0.15rem; font-weight:500; color:var(--text-body); border:1px solid var(--border); }
+        .wd-chip strong { color:var(--text-primary); }
+
+        /* Recommendation Badge */
+        .rec-badge { font-size:0.72rem; font-weight:600; padding:0.3rem 0.85rem; border-radius:var(--r-full); text-transform:uppercase; letter-spacing:0.03em; display:inline-flex; align-items:center; gap:0.3rem; }
+        .rec-badge.strongly_recommended { background:var(--success); color:white; } .rec-badge.recommended { background:var(--brand); color:white; } .rec-badge.possible_but_risky { background:var(--warning); color:#422006; } .rec-badge.not_recommended { background:var(--danger); color:white; }
+
+        /* Badges */
+        .meta-badge { font-size:0.72rem; font-weight:600; padding:0.3rem 0.75rem; border-radius:var(--r-full); display:inline-flex; align-items:center; gap:0.3rem; }
+        .meta-badge.urgent { background:var(--warning-soft); color:#92400E; } .meta-badge.critical { background:var(--danger-soft); color:#9F1239; } .meta-badge.safe { background:var(--success-soft); color:#065F46; } .meta-badge.passed { background:var(--bg-subtle); color:var(--text-muted); }
+
+        /* Action Buttons */
+        .action-btn-group { display:flex; gap:0.5rem; flex-wrap:wrap; }
+        .btn-bookmark-toggle { color: var(--text-faint); transition: color 0.15s, transform 0.15s; border-color: var(--border); background: var(--bg-card); }
+        .btn-bookmark-toggle:hover { color: var(--brand); border-color: var(--brand); }
+        .btn-bookmark-toggle.active { color: var(--brand); border-color: var(--brand); background: var(--brand-soft); }
+        .btn-bookmark-toggle.active i { font-weight: 900; }
+
+        /* RTL Support */
+        .rtl-content { direction:rtl; text-align:right; }
+
+        /* Empty State */
+        .empty-state { text-align:center; padding:3rem 1rem; color:var(--text-muted); }
+        .empty-state .empty-icon { width:80px; height:80px; margin:0 auto 1rem; border-radius:50%; background:var(--bg-subtle); display:flex; align-items:center; justify-content:center; font-size:2rem; color:var(--text-faint); }
+
+        /* Sticky Action Bar */
+        .action-bar { position:sticky; top:0; z-index:50; background:rgb(255 255 255/0.95); backdrop-filter:blur(8px); padding:0.75rem 0; border-bottom:1px solid var(--border); margin-bottom:1.5rem; }
+
+        /* Toast */
+        .toast-container { position:fixed; top:20px; right:20px; z-index:9999; }
+        .toast-item { background:#0F172A; color:white; padding:0.85rem 1.25rem; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.15); font-size:0.875rem; font-weight:500; max-width:360px; display:flex; align-items:center; gap:0.5rem; transform:translateX(400px); transition:transform 0.3s; margin-bottom:0.5rem; }
+        .toast-item.show { transform:translateX(0); }
+
+        ::-webkit-scrollbar { width:10px; height:10px; } ::-webkit-scrollbar-track { background:var(--bg-subtle); } ::-webkit-scrollbar-thumb { background:var(--border-strong); border-radius:var(--r-full); border:2px solid var(--bg-subtle); }
+        button:focus-visible, a:focus-visible { outline:2px solid var(--brand); outline-offset:2px; }
     </style>
 </head>
 <body>
-    <div class="header-bar">
+    <div class="dashboard-header">
         <div class="container">
-            <a href="/" class="btn btn-sm btn-outline-light mb-3"><i class="fas fa-arrow-left me-1"></i> Back to Dashboard</a>
-            <h1 class="mb-0">{{ position.title }}</h1>
-            <p class="mb-0 mt-1 opacity-75">{{ position.company }}</p>
+            <a href="/" class="header-action mb-3"><i class="fas fa-arrow-left me-1"></i> Back to Dashboard</a>
+            <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mt-2">
+                <div>
+                    <h1 class="mb-0 fw-bold">{{ position.title }}</h1>
+                    <p class="mb-0 mt-1 opacity-75">
+                        <i class="fas fa-university me-1"></i>
+                        {% if match.institution %}{{ match.institution }}{% else %}{{ position.company }}{% endif %}
+                    </p>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    {% if position.application_deadline_iso %}
+                        <span class="meta-badge {% if match.days_until_deadline < 0 %}passed{% elif match.days_until_deadline <= 7 %}critical{% elif match.days_until_deadline <= 30 %}urgent{% else %}safe{% endif %}">
+                            <i class="far fa-calendar"></i> Deadline: {{ position.application_deadline_iso }}
+                        </span>
+                    {% endif %}
+                    <a href="{{ position.url }}" target="_blank" class="header-action"><i class="fas fa-external-link-alt me-1"></i> View Original</a>
+                </div>
+    </div>
+            </div>
         </div>
     </div>
 
     <div class="container">
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="action-btn-group" id="actionBtnGroup">
+                    <!-- Buttons populated by JS -->
+                </div>
+                <div class="text-muted small">
+                    <i class="fas fa-clock me-1"></i> Scraped: {{ position.scraped_at|date:"M d, Y" }}
+                </div>
+            </div>
+        </div>
+
         <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card text-center">
+            <!-- Left Column (Scores & Quick Info) -->
+            <div class="col-lg-4">
+                <!-- Score Card -->
+                <div class="card-ui text-center">
                     {% if match %}
-                        <div class="score-circle mx-auto mb-3" style="background: {% if match.overall_score >= 80 %}var(--success){% elif match.overall_score >= 60 %}var(--brand){% elif match.overall_score >= 40 %}var(--warning){% else %}var(--danger){% endif %};">
-                            {{ match.overall_score|floatformat:0 }}
+                        <div class="d-flex justify-content-center mb-4">
+                            <div class="score-ring {% if match.overall_score >= 80 %}excellent{% elif match.overall_score >= 60 %}good{% elif match.overall_score >= 40 %}possible{% else %}weak{% endif %}">
+                                {{ match.overall_score|floatformat:0 }}
+                                <span class="score-label">{{ match.get_match_category_display }}</span>
+                            </div>
                         </div>
-                        <h3 class="h5">{{ match.get_match_category_display }}</h3>
-                        <p class="text-muted small">{{ match.get_application_recommendation_display }}</p>
+                        {% if match.application_recommendation %}
+                        <div class="mb-3">
+                            <span class="rec-badge {% if match.application_recommendation == 'strongly_recommended' %}strongly_recommended{% elif match.application_recommendation == 'recommended' %}recommended{% elif match.application_recommendation == 'possible_but_risky' %}possible_but_risky{% else %}not_recommended{% endif %}">
+                                {{ match.get_application_recommendation_display }}
+                            </span>
+                        </div>
+                        {% endif %}
                     {% else %}
-                        <div class="score-circle mx-auto mb-3" style="background:#94A3B8;">—</div>
-                        <h3 class="h5">Not Matched</h3>
-                        <p class="text-muted small">Use the extension to re-match</p>
+                        <div class="d-flex justify-content-center mb-4">
+                            <div class="score-ring none">—<span class="score-label">No Match</span></div>
+                        </div>
+                        <p class="text-muted small mb-0">Run AI matcher to see scores</p>
                     {% endif %}
                 </div>
 
+                <!-- Quick Info -->
+                <div class="card-ui">
+                    <h6 class="fw-bold mb-3 text-uppercase text-muted small">Quick Info</h6>
+                    {% if match %}
+                        {% if match.position_type %}<div class="detail-item"><div class="label"><i class="fas fa-tag"></i> Position Type</div><div class="value">{{ match.position_type }}</div></div>{% endif %}
+                        {% if match.country %}<div class="detail-item"><div class="label"><i class="fas fa-map-pin"></i> Location</div><div class="value">{{ match.country }}{% if match.city %}, {{ match.city }}{% endif %}</div></div>{% endif %}
+                        {% if match.funding_and_duration %}<div class="detail-item"><div class="label"><i class="fas fa-coins"></i> Funding & Duration</div><div class="value small">{{ match.funding_and_duration }}</div></div>{% endif %}
+                        {% if match.start_date %}<div class="detail-item"><div class="label"><i class="fas fa-calendar-day"></i> Start Date</div><div class="value">{{ match.start_date }}</div></div>{% endif %}
+                        {% if match.application_url %}<div class="detail-item"><div class="label"><i class="fas fa-link"></i> Apply URL</div><div class="value"><a href="{{ match.application_url }}" target="_blank" class="text-decoration-none">{{ match.application_url|truncatechars:40 }}</a></div></div>{% endif %}
+                    {% endif %}
+                    <div class="detail-item">
+                        <div class="label"><i class="fas fa-info-circle"></i> Status</div>
+                        <div class="value">
+                            <span class="meta-badge safe">{{ position.get_application_status_display }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Scores -->
                 {% if match %}
-                <div class="card">
-                    <h5 class="mb-3">Detailed Scores</h5>
-                    <div class="mb-2"><div class="detail-label">Eligibility</div><div class="progress"><div class="progress-bar" style="width:{{ match.eligibility_score }}%; background:var(--brand);"></div></div></div>
-                    <div class="mb-2"><div class="detail-label">Academic Fit</div><div class="progress"><div class="progress-bar" style="width:{{ match.academic_fit_score }}%; background:var(--brand);"></div></div></div>
-                    <div class="mb-2"><div class="detail-label">Research Fit</div><div class="progress"><div class="progress-bar" style="width:{{ match.research_fit_score }}%; background:var(--brand);"></div></div></div>
-                    <div class="mb-2"><div class="detail-label">Technical Fit</div><div class="progress"><div class="progress-bar" style="width:{{ match.technical_methodological_fit_score }}%; background:var(--brand);"></div></div></div>
-                    <div class="mb-2"><div class="detail-label">Domain Fit</div><div class="progress"><div class="progress-bar" style="width:{{ match.domain_fit_score }}%; background:var(--brand);"></div></div></div>
+                <div class="card-ui">
+                    <h6 class="fw-bold mb-3 text-uppercase text-muted small">Detailed Scores</h6>
+                    <div class="score-bar-wrap"><span class="bar-label">Eligibility</span><div class="bar-track"><div class="bar-fill" style="width:{{ match.eligibility_score }}%; background:{% if match.eligibility_score >= 70 %}var(--success){% elif match.eligibility_score >= 50 %}var(--warning){% else %}var(--danger){% endif %};"></div></div><span class="bar-value">{{ match.eligibility_score|floatformat:0 }}</span></div>
+                    <div class="score-bar-wrap"><span class="bar-label">Academic Fit</span><div class="bar-track"><div class="bar-fill" style="width:{{ match.academic_fit_score }}%; background:{% if match.academic_fit_score >= 70 %}var(--success){% elif match.academic_fit_score >= 50 %}var(--warning){% else %}var(--danger){% endif %};"></div></div><span class="bar-value">{{ match.academic_fit_score|floatformat:0 }}</span></div>
+                    <div class="score-bar-wrap"><span class="bar-label">Research Fit</span><div class="bar-track"><div class="bar-fill" style="width:{{ match.research_fit_score }}%; background:{% if match.research_fit_score >= 70 %}var(--success){% elif match.research_fit_score >= 50 %}var(--warning){% else %}var(--danger){% endif %};"></div></div><span class="bar-value">{{ match.research_fit_score|floatformat:0 }}</span></div>
+                    <div class="score-bar-wrap"><span class="bar-label">Technical</span><div class="bar-track"><div class="bar-fill" style="width:{{ match.technical_methodological_fit_score }}%; background:{% if match.technical_methodological_fit_score >= 70 %}var(--success){% elif match.technical_methodological_fit_score >= 50 %}var(--warning){% else %}var(--danger){% endif %};"></div></div><span class="bar-value">{{ match.technical_methodological_fit_score|floatformat:0 }}</span></div>
+                    <div class="score-bar-wrap"><span class="bar-label">Domain Fit</span><div class="bar-track"><div class="bar-fill" style="width:{{ match.domain_fit_score }}%; background:{% if match.domain_fit_score >= 70 %}var(--success){% elif match.domain_fit_score >= 50 %}var(--warning){% else %}var(--danger){% endif %};"></div></div><span class="bar-value">{{ match.domain_fit_score|floatformat:0 }}</span></div>
+                    <div class="score-bar-wrap"><span class="bar-label">Research Exp.</span><div class="bar-track"><div class="bar-fill" style="width:{{ match.research_experience_score }}%; background:{% if match.research_experience_score >= 70 %}var(--success){% elif match.research_experience_score >= 50 %}var(--warning){% else %}var(--danger){% endif %};"></div></div><span class="bar-value">{{ match.research_experience_score|floatformat:0 }}</span></div>
+                    <div class="score-bar-wrap mb-0"><span class="bar-label">Competitive</span><div class="bar-track"><div class="bar-fill" style="width:{{ match.competitiveness_score }}%; background:{% if match.competitiveness_score >= 70 %}var(--success){% elif match.competitiveness_score >= 50 %}var(--warning){% else %}var(--danger){% endif %};"></div></div><span class="bar-value">{{ match.competitiveness_score|floatformat:0 }}</span></div>
+                </div>
+                {% endif %}
+
+                <!-- Weighted Dimensions -->
+                {% if match and match.weighted_dimensions %}
+                <div class="card-ui">
+                    <h6 class="fw-bold mb-3 text-uppercase text-muted small">Weighted Dimensions</h6>
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for k, v in match.weighted_dimensions.items %}
+                            {% if v is not None %}
+                                <span class="wd-chip">
+                                    {% if k == 'mandatory_requirements' %}Mandatory{% elif k == 'research_project_fit' %}Project Fit{% elif k == 'research_experience' %}Research Exp.{% elif k == 'technical_methodological_fit' %}Technical{% elif k == 'domain_application_fit' %}Domain{% elif k == 'education_academic_record' %}Education{% elif k == 'research_outputs' %}Outputs{% elif k == 'lab_supervisor_fit' %}Supervisor Fit{% elif k == 'preferred_requirements' %}Preferred{% else %}{{ k }}{% endif %}: <strong>{{ v }}%</strong>
+                                </span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
                 {% endif %}
             </div>
-            
-            <div class="col-md-8">
+
+            <!-- Right Column (Main Content) -->
+            <div class="col-lg-8">
+                <!-- AI Summary -->
                 {% if match %}
-                <div class="card">
-                    <h5 class="mb-3">AI Summary</h5>
-                    <p>{{ match.summary }}</p>
+                <div class="card-ui {% if match.summary %}rtl-content{% endif %}">
+                    <h6 class="fw-bold mb-3"><i class="fas fa-file-alt me-2"></i>AI Summary</h6>
+                    {% if match.project_narrative_description %}
+                        <p class="text-justify mb-3">{{ match.project_narrative_description|escape|linebreaksbr }}</p>
+                    {% endif %}
+                    {% if match.summary %}
+                        <p class="text-justify mb-0">{{ match.summary|escape|linebreaksbr }}</p>
+                    {% endif %}
                     {% if match.main_reason %}
-                    <div class="detail-label mt-3">Main Reason</div>
-                    <p class="text-muted">{{ match.main_reason }}</p>
+                        <div class="detail-item mt-4 mb-0">
+                            <div class="label"><i class="fas fa-bullseye"></i> Main Reason</div>
+                            <p class="text-muted text-justify mb-0">{{ match.main_reason|escape|linebreaksbr }}</p>
+                        </div>
                     {% endif %}
                 </div>
                 {% endif %}
 
-                <div class="card">
-                    <h5 class="mb-3">Position Description</h5>
-                    <div class="detail-value">{{ position.cleaned_text|linebreaksbr }}</div>
+                <!-- Research Areas & Skills -->
+                {% if match %}
+                <div class="card-ui">
+                    <h6 class="fw-bold mb-3"><i class="fas fa-microscope me-2"></i>Research Areas & Required Skills</h6>
+                    {% if match.research_area %}
+                    <div class="detail-item">
+                        <div class="label">Research Areas</div>
+                        <div>{% for area in match.research_area %}<span class="tag research">{{ area }}</span>{% endfor %}</div>
+                    </div>
+                    {% endif %}
+                    {% if match.required_skills %}
+                    <div class="detail-item mb-0">
+                        <div class="label">Required Skills</div>
+                        <div>
+                            {% if match.required_skills.mandatory %}
+                                {% for skill in match.required_skills.mandatory %}<span class="tag mandatory">{{ skill }}</span>{% endfor %}
+                            {% endif %}
+                            {% if match.required_skills.core %}
+                                {% for skill in match.required_skills.core %}<span class="tag core">{{ skill }}</span>{% endfor %}
+                            {% endif %}
+                            {% if match.required_skills.preferred %}
+                                {% for skill in match.required_skills.preferred %}<span class="tag preferred">{{ skill }}</span>{% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Evidence -->
+                {% if match and match.evidence %}
+                <div class="card-ui">
+                    <h6 class="fw-bold mb-3"><i class="fas fa-clipboard-check me-2"></i>Evidence</h6>
+                    {% if match.evidence.direct_matches %}
+                    <div class="detail-item">
+                        <div class="label">Direct Matches</div>
+                        <div>{% for item in match.evidence.direct_matches %}<span class="evidence-tag direct">{{ item }}</span>{% endfor %}</div>
+                    </div>
+                    {% endif %}
+                    {% if match.evidence.transferable_matches %}
+                    <div class="detail-item">
+                        <div class="label">Transferable Matches</div>
+                        <div>{% for item in match.evidence.transferable_matches %}<span class="evidence-tag transferable">{{ item }}</span>{% endfor %}</div>
+                    </div>
+                    {% endif %}
+                    {% if match.evidence.missing_requirements %}
+                    <div class="detail-item">
+                        <div class="label">Missing Requirements</div>
+                        <div>{% for item in match.evidence.missing_requirements %}<span class="evidence-tag missing">{{ item }}</span>{% endfor %}</div>
+                    </div>
+                    {% endif %}
+                    {% if match.evidence.unclear_requirements %}
+                    <div class="detail-item mb-0">
+                        <div class="label">Unclear Requirements</div>
+                        <div>{% for item in match.evidence.unclear_requirements %}<span class="evidence-tag unclear">{{ item }}</span>{% endfor %}</div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Position Description -->
+                <div class="card-ui">
+                    <h6 class="fw-bold mb-3"><i class="fas fa-align-left me-2"></i>Position Description</h6>
+                    <div class="detail-value text-justify">{{ position.cleaned_text|linebreaksbr }}</div>
                 </div>
 
+                <!-- Match Metadata -->
                 {% if match %}
-                <div class="card">
-                    <h5 class="mb-3">Required Skills</h5>
-                    {% if match.required_skills.mandatory %}
-                        {% for skill in match.required_skills.mandatory %}<span class="tag" style="background:#FFE4E6;color:#9F1239;">{{ skill }}</span>{% endfor %}
-                    {% endif %}
-                    {% if match.required_skills.core %}
-                        {% for skill in match.required_skills.core %}<span class="tag" style="background:#FEF3C7;color:#92400E;">{{ skill }}</span>{% endfor %}
-                    {% endif %}
-                    {% if match.required_skills.preferred %}
-                        {% for skill in match.required_skills.preferred %}<span class="tag" style="background:#D1FAE5;color:#065F46;">{{ skill }}</span>{% endfor %}
-                    {% endif %}
+                <div class="card-ui">
+                    <h6 class="fw-bold mb-3 text-uppercase text-muted small">Match Metadata</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="detail-item mb-0">
+                                <div class="label"><i class="fas fa-check-circle"></i> Confidence</div>
+                                <div class="value">{{ match.get_confidence_display|default:"N/A" }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item mb-0">
+                                <div class="label"><i class="far fa-clock"></i> Matched At</div>
+                                <div class="value">{% if match.matched_at %}{{ match.matched_at|date:"M d, Y H:i" }}{% else %}—{% endif %}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Empty State for No Match -->
+                {% if not match %}
+                <div class="card-ui empty-state">
+                    <div class="empty-icon"><i class="fas fa-robot"></i></div>
+                    <h5 class="fw-bold">Not Matched Yet</h5>
+                    <p class="small">Run the AI matcher from the dashboard to analyze this position against your CV.</p>
                 </div>
                 {% endif %}
             </div>
         </div>
     </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const POSITION_ID = {{ position.id }};
+        const APP_STATUS = '{{ position.application_status }}';
+        const IS_BOOKMARKED = {% if position.is_bookmarked %}true{% else %}false{% endif %};
+
+        function getCSRFToken() {
+            const c = document.cookie.split('; ').find(r => r.startsWith('csrftoken='));
+            return c ? c.split('=')[1] : '';
+        }
+
+        function showToast(m, t) {
+            t = t || 'success';
+            const colors = {success:'#10B981', error:'#F43F5E', info:'#4F46E5', warning:'#F59E0B'};
+            const icons = {success:'fa-check-circle', error:'fa-exclamation-circle', info:'fa-info-circle', warning:'fa-exclamation-triangle'};
+            const el = document.createElement('div');
+            el.className = 'toast-item';
+            el.style.background = colors[t] || colors.success;
+            el.innerHTML = '<i class="fas ' + (icons[t] || icons.success) + '"></i><span>' + m + '</span>';
+            document.getElementById('toastContainer').appendChild(el);
+            requestAnimationFrame(() => el.classList.add('show'));
+            setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3500);
+        }
+
+        function renderActionButtons() {
+            const container = document.getElementById('actionBtnGroup');
+            let html = '';
+
+            // Bookmark button
+            html += '<button class="btn btn-sm btn-outline-secondary btn-bookmark-toggle ' + (IS_BOOKMARKED ? 'active' : '') + '" onclick="toggleBookmark()" title="' + (IS_BOOKMARKED ? 'Remove bookmark' : 'Bookmark') + '"><i class="' + (IS_BOOKMARKED ? 'fas' : 'far') + ' fa-bookmark"></i></button>';
+
+            // Status-based buttons
+            if (APP_STATUS === 'PENDING_REVIEW') {
+                html += '<button class="btn btn-sm btn-outline-warning" onclick="updateStatus(\'shortlist\')" title="Shortlist"><i class="fas fa-star"></i> Shortlist</button>';
+                html += '<button class="btn btn-sm btn-outline-secondary" onclick="updateStatus(\'not-interested\')" title="Not Interested"><i class="fas fa-times"></i> Not Interested</button>';
+            } else if (APP_STATUS === 'SHORTLISTED') {
+                html += '<button class="btn btn-sm btn-outline-secondary" onclick="updateStatus(\'pending-review\')" title="Back to Pending"><i class="fas fa-undo"></i></button>';
+                html += '<button class="btn btn-sm btn-outline-success" onclick="updateStatus(\'apply\')" title="Mark Applied"><i class="fas fa-paper-plane"></i> Applied</button>';
+                html += '<button class="btn btn-sm btn-outline-danger" onclick="updateStatus(\'reject\')" title="Reject"><i class="fas fa-thumbs-down"></i> Reject</button>';
+            } else if (APP_STATUS === 'APPLIED' || APP_STATUS === 'INTERVIEWING') {
+                html += '<button class="btn btn-sm btn-outline-secondary" onclick="updateStatus(\'shortlist\')" title="Back to Shortlist"><i class="fas fa-undo"></i></button>';
+                html += '<button class="btn btn-sm btn-outline-primary" onclick="updateStatus(\'accept\')" title="Accept Offer"><i class="fas fa-check"></i> Accept</button>';
+                html += '<button class="btn btn-sm btn-outline-danger" onclick="updateStatus(\'reject\')" title="Reject"><i class="fas fa-times"></i> Reject</button>';
+            } else if (APP_STATUS === 'OFFERED') {
+                html += '<button class="btn btn-sm btn-outline-secondary" onclick="updateStatus(\'apply\')" title="Back to Applied"><i class="fas fa-undo"></i></button>';
+                html += '<button class="btn btn-sm btn-outline-success" onclick="updateStatus(\'accept\')" title="Accept Offer"><i class="fas fa-handshake"></i> Accept</button>';
+                html += '<button class="btn btn-sm btn-outline-danger" onclick="updateStatus(\'reject\')" title="Decline"><i class="fas fa-thumbs-down"></i> Decline</button>';
+            } else if (APP_STATUS === 'REJECTED' || APP_STATUS === 'DEADLINE_MISSED') {
+                html += '<button class="btn btn-sm btn-outline-secondary" onclick="updateStatus(\'shortlist\')" title="Move to Shortlist"><i class="fas fa-undo"></i> Reopen</button>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        async function updateStatus(action) {
+            try {
+                const r = await fetch('/api/v1/positions/' + POSITION_ID + '/' + action + '/', {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': getCSRFToken(), 'Content-Type': 'application/json' }
+                });
+                if (r.ok) {
+                    showToast('Status updated successfully', 'success');
+                    // Reload to update UI
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showToast('Failed to update status', 'error');
+                }
+            } catch (e) {
+                showToast('Error: ' + e.message, 'error');
+            }
+        }
+
+        async function toggleBookmark() {
+            try {
+                const r = await fetch('/api/v1/positions/' + POSITION_ID + '/bookmark/', {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': getCSRFToken() }
+                });
+                if (r.ok) {
+                    const d = await r.json();
+                    const btn = document.querySelector('.btn-bookmark-toggle');
+                    const icon = btn.querySelector('i');
+                    if (d.is_bookmarked) {
+                        btn.classList.add('active');
+                        btn.title = 'Remove bookmark';
+                        icon.className = 'fas fa-bookmark';
+                    } else {
+                        btn.classList.remove('active');
+                        btn.title = 'Bookmark';
+                        icon.className = 'far fa-bookmark';
+                    }
+                    showToast(d.is_bookmarked ? 'Position bookmarked' : 'Bookmark removed', 'success');
+                } else {
+                    showToast('Failed to toggle bookmark', 'error');
+                }
+            } catch (e) {
+                showToast('Error: ' + e.message, 'error');
+            }
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', renderActionButtons);
+    </script>
 </body>
 </html>

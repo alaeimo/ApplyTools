@@ -25,13 +25,86 @@
         .stat-card:hover { border-color:var(--border-strong); box-shadow:var(--shadow-md); transform:translateY(-2px); }
         .stat-card.active { border-color:var(--brand); background:linear-gradient(135deg,var(--brand-soft) 0%,var(--bg-card) 100%); }
         .stat-card .stat-icon { width:38px; height:38px; border-radius:var(--r-md); display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
-        .stat-card .stat-icon.pending { background:var(--info-soft); color:var(--info); } .stat-card .stat-icon.shortlist { background:var(--warning-soft); color:var(--warning); } .stat-card .stat-icon.rejected { background:var(--danger-soft); color:var(--danger); } .stat-card .stat-icon.deadline { background:var(--brand-soft); color:var(--brand); }
+        .stat-card .stat-icon.pending { background:var(--info-soft); color:var(--info); } .stat-card .stat-icon.shortlist { background:var(--warning-soft); color:var(--warning); } .stat-card .stat-icon.rejected { background:var(--danger-soft); color:var(--danger); } .stat-card .stat-icon.deadline { background:var(--brand-soft); color:var(--brand); } .stat-card .stat-icon.bookmark { background:var(--brand-soft); color:var(--brand); }
         .stat-card .stat-value { font-size:1.4rem; font-weight:700; color:var(--text-primary); line-height:1.1; } .stat-card .stat-label { font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; font-weight:500; margin-top:2px; }
-        .filter-bar { background:rgb(255 255 255/0.95); backdrop-filter:blur(8px); padding:0.65rem 1rem; border-radius:var(--r-lg); border:1px solid var(--border); box-shadow:var(--shadow-sm); margin-bottom:1.5rem; position:sticky; top:0; z-index:100; }
+        .filter-bar { background:rgb(255 255 255/0.95); backdrop-filter:blur(8px); padding:0.65rem 1rem; border-radius:var(--r-lg); border:1px solid var(--border); box-shadow:var(--shadow-sm); margin-bottom:1rem; position:sticky; top:0; z-index:100; }
         .seg-btn { border-radius:var(--r-full) !important; padding:0.35rem 0.95rem !important; font-size:0.8rem !important; font-weight:500 !important; border:1px solid var(--border) !important; color:var(--text-body) !important; background:var(--bg-card) !important; transition:all 0.15s ease !important; display:inline-flex; align-items:center; gap:0.35rem; }
         .seg-btn:hover { border-color:var(--border-strong) !important; background:var(--bg-subtle) !important; } .seg-btn.active { background:var(--text-primary) !important; color:white !important; border-color:var(--text-primary) !important; }
         .seg-btn .count-pill { background:rgb(255 255 255/0.2); color:inherit; font-size:0.68rem; padding:0.1rem 0.45rem; border-radius:var(--r-full); font-weight:600; } .seg-btn:not(.active) .count-pill { background:var(--bg-subtle); color:var(--text-muted); }
         .pill-btn { border-radius:var(--r-full) !important; padding:0.3rem 0.85rem !important; font-size:0.75rem !important; font-weight:500 !important; border:1px solid var(--border) !important; color:var(--text-body) !important; background:var(--bg-card) !important; } .pill-btn:hover { background:var(--bg-subtle) !important; } .pill-btn.active { background:var(--brand-soft) !important; color:var(--brand) !important; border-color:var(--brand) !important; }
+
+        /* ─── Discovery panel ─── */
+        .discovery-panel { background:var(--bg-card); border-radius:var(--r-lg); padding:0.85rem 1rem; border:1px solid var(--border); box-shadow:var(--shadow-sm); margin-bottom:1.5rem; }
+        .discovery-controls { display:flex; gap:0.65rem; align-items:center; flex-wrap:wrap; }
+        .search-box { flex:1; min-width:220px; position:relative; display:flex; align-items:center; }
+        .search-box i { position:absolute; left:12px; color:var(--text-faint); font-size:0.85rem; }
+        .search-box input { width:100%; padding:0.45rem 2rem 0.45rem 2.1rem; border:1px solid var(--border); border-radius:var(--r-md); font-size:0.85rem; }
+        .search-box input:focus { outline:none; border-color:var(--brand); box-shadow:0 0 0 3px rgba(79,70,229,0.1); }
+        .search-box .btn-clear { position:absolute; right:8px; background:none; border:none; color:var(--text-faint); cursor:pointer; font-size:1rem; padding:0.2rem; line-height:1; display:none; }
+        .search-box .btn-clear:hover { color:var(--danger); }
+        .sort-controls { display:flex; align-items:center; gap:0.45rem; }
+        .sort-controls select { padding:0.45rem 0.75rem; border:1px solid var(--border); border-radius:var(--r-md); font-size:0.85rem; background:var(--bg-card); cursor:pointer; }
+        .filter-status { display:none; align-items:center; gap:0.45rem; padding:0.35rem 0.75rem; background:var(--brand-soft); color:var(--brand); border-radius:var(--r-full); font-size:0.75rem; font-weight:500; }
+        .filter-status .btn-clear-filter { background:none; border:none; color:var(--brand); cursor:pointer; font-weight:bold; padding:0; line-height:1; font-size:1rem; }
+        .filter-status .btn-clear-filter:hover { color:var(--danger); }
+
+        /* ─── Heatmap (deadline calendar) ─── */
+        .heatmap-wrap { margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border); overflow:visible; }
+        .heatmap-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.65rem; flex-wrap:wrap; gap:0.5rem; }
+        .heatmap-title { font-size:0.8rem; font-weight:600; color:var(--text-muted); }
+        .heatmap-legend { display:flex; align-items:center; gap:0.4rem; font-size:0.7rem; color:var(--text-faint); flex-wrap:wrap; }
+        .heatmap-legend-cells { display:flex; gap:2px; }
+        .heatmap-legend-cells span { width:11px; height:11px; border-radius:2px; }
+        .heatmap-calendar { display:flex; gap:0.4rem; overflow:visible; padding:24px 0 28px; }
+        .heatmap-weekdays { display:grid; grid-template-rows:repeat(7,18px); gap:3px; font-size:0.58rem; color:var(--text-faint); min-width:26px; }
+        .heatmap-weekdays span { display:flex; align-items:center; justify-content:flex-end; height:54px; line-height:1; padding-right:4px; text-transform:uppercase; font-size:0.55rem; color:var(--text-faint); }
+        .heatmap-main { flex:1; min-width:0; }
+        .heatmap-months { display:flex; gap:3px; font-size:0.58rem; color:var(--text-faint); margin-bottom:4px; height:14px; align-items:center; }
+        .heatmap-months span { white-space:nowrap; text-align:left; }
+        .heatmap-grid { display:grid; grid-template-rows:repeat(7,18px); grid-auto-flow:column; grid-auto-columns:1fr; gap:3px; }
+        .heatmap-cell { width:100%; height:18px; min-width:12px; border-radius:3px; background:#f1f5f9; cursor:pointer; transition:transform 0.12s, outline 0.12s; position:relative; }
+        .heatmap-cell:hover { transform:scale(1.4); outline:2px solid var(--brand); outline-offset:1px; z-index:10; }
+        .heatmap-cell.today { outline:2px solid var(--brand); outline-offset:1px; }
+        .heatmap-cell.selected { outline:3px solid var(--brand); outline-offset:1px; transform:scale(1.2); z-index:5; }
+        .heatmap-cell.l1 { background:#D1FAE5; }
+        .heatmap-cell.l2 { background:#6EE7B7; }
+        .heatmap-cell.l3 { background:#34D399; }
+        .heatmap-cell.l4 { background:#059669; }
+        .heatmap-cell.past.l1 { background:#FECACA; }
+        .heatmap-cell.past.l2 { background:#F87171; }
+        .heatmap-cell.past.l3 { background:#DC2626; }
+        .heatmap-cell.past.l4 { background:#991B1B; }
+        .heatmap-cell.disabled { cursor:default; opacity:0.35; }
+        .heatmap-cell.disabled:hover { transform:none; outline:none; }
+        .heatmap-tooltip { position:absolute; top:calc(100% + 6px); left:50%; transform:translateX(-50%); background:#0F172A; color:#fff; padding:0.35rem 0.6rem; border-radius:4px; font-size:0.68rem; white-space:nowrap; pointer-events:none; opacity:0; transition:opacity 0.12s; z-index:9999; box-shadow:0 4px 12px rgba(0,0,0,0.35); }
+        .heatmap-cell:hover .heatmap-tooltip { opacity:1; }
+        .heatmap-no-deadline { margin-top:0.25rem; padding:0.55rem 0.75rem; background:var(--bg-subtle); border-radius:var(--r-md); display:flex; align-items:center; justify-content:space-between; cursor:pointer; font-size:0.8rem; transition:all 0.15s; }
+        .heatmap-no-deadline:hover { background:#E2E8F0; }
+        .heatmap-no-deadline.selected { background:var(--brand); color:#fff; }
+
+        /* ─── Score distribution ─── */
+        .score-dist-wrap { margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border); }
+        .score-dist-title { font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:0.65rem; }
+        .score-dist-buckets { display:flex; gap:0.5rem; flex-wrap:wrap; }
+        .score-bucket { flex:1; min-width:90px; padding:0.7rem; border-radius:var(--r-md); cursor:pointer; text-align:center; transition:transform 0.1s, box-shadow 0.1s; border:2px solid transparent; color:#fff; }
+        .score-bucket:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); }
+        .score-bucket.selected { border-color:var(--brand); box-shadow:0 0 0 3px rgba(79,70,229,0.25); }
+        .score-bucket-range { font-size:0.7rem; font-weight:600; opacity:0.9; margin-bottom:0.2rem; }
+        .score-bucket-count { font-size:1.2rem; font-weight:700; }
+        .score-bucket-label { font-size:0.65rem; opacity:0.8; margin-top:0.15rem; }
+        .score-bucket.s0-20 { background:#EF4444; }
+        .score-bucket.s20-40 { background:#F97316; }
+        .score-bucket.s40-60 { background:#EAB308; }
+        .score-bucket.s60-80 { background:#22C55E; }
+        .score-bucket.s80-100 { background:#15803D; }
+        .score-bucket.no-match { background:#94A3B8; }
+        @media (max-width:768px) {
+            .discovery-controls { flex-direction:column; align-items:stretch; }
+            .search-box { min-width:0; }
+            .score-bucket { min-width:75px; padding:0.5rem; }
+            .score-bucket-count { font-size:1rem; }
+        }
+
         .position-row { background:var(--bg-card); border-radius:var(--r-lg); margin-bottom:0.75rem; border:1px solid var(--border); transition:all 0.2s ease; overflow:hidden; }
         .position-row:hover { border-color:var(--border-strong); box-shadow:var(--shadow-md); } .position-row.expanded { border-color:var(--brand); box-shadow:var(--shadow-lg); }
         .row-header { display:flex; align-items:stretch; padding:0; cursor:pointer; transition:background 0.15s; min-height:88px; } .row-header:hover { background:var(--bg-hover); }
@@ -45,6 +118,10 @@
         .badge-deadline { font-size:0.68rem; font-weight:600; padding:0.2rem 0.65rem; border-radius:var(--r-full); display:inline-flex; align-items:center; gap:0.25rem; }
         .badge-deadline.urgent { background:var(--warning-soft); color:#92400E; } .badge-deadline.critical { background:var(--danger-soft); color:#9F1239; } .badge-deadline.safe { background:var(--success-soft); color:#065F46; } .badge-deadline.passed { background:var(--bg-subtle); color:var(--text-muted); }
         .action-btn-group { display:flex; gap:0.3rem; flex-wrap:wrap; margin-top:0.2rem; } .action-btn-group .btn-sm { padding:0.25rem 0.6rem; font-size:0.72rem; border-radius:var(--r-md); font-weight:500; }
+        .btn-bookmark-toggle { color: var(--text-faint); transition: color 0.15s, transform 0.15s; }
+        .btn-bookmark-toggle:hover { color: var(--brand); transform: scale(1.15); }
+        .btn-bookmark-toggle.active { color: var(--brand); }
+        .btn-bookmark-toggle.active i { font-weight: 900; } /* Solid icon */
         .right-col { display:flex; flex-direction:column; align-items:flex-end; justify-content:center; padding:0.85rem 1.25rem; flex-shrink:0; border-left:1px solid var(--border); background:var(--bg-subtle); min-width:140px; gap:0.4rem; }
         .badge-match-cat { font-size:0.68rem; font-weight:600; padding:0.3rem 0.75rem; border-radius:var(--r-full); text-transform:uppercase; letter-spacing:0.04em; display:inline-flex; align-items:center; gap:0.3rem; }
         .expand-icon { color:var(--text-faint); transition:transform 0.25s ease, color 0.15s; font-size:0.85rem; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:var(--bg-card); border:1px solid var(--border); }
@@ -102,25 +179,15 @@
             <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-success" id="startMatchBtn"><i class="fas fa-play me-1"></i> Start Matching</button></div>
         </div></div>
     </div>
-    <!-- Delete Position Modal -->
+
     <div class="modal fade" id="deletePositionModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title"><i class="fas fa-trash me-2"></i>Delete Position</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete this position? This action cannot be undone.</p>
-                    <input type="hidden" id="deletePosId">
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-danger" id="confirmDeletePosBtn"><i class="fas fa-trash me-1"></i> Delete</button>
-                </div>
-            </div>
-        </div>
+        <div class="modal-dialog modal-sm"><div class="modal-content">
+            <div class="modal-header bg-danger text-white"><h5 class="modal-title"><i class="fas fa-trash me-2"></i>Delete Position</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body"><p>Are you sure you want to delete this position? This action cannot be undone.</p><input type="hidden" id="deletePosId"></div>
+            <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-danger" id="confirmDeletePosBtn"><i class="fas fa-trash me-1"></i> Delete</button></div>
+        </div></div>
     </div>
+
     <div id="matchProgress" style="position:fixed;bottom:20px;right:20px;z-index:9999;display:none;">
         <div class="card shadow-lg" style="width:300px;"><div class="card-body">
             <div class="d-flex align-items-center gap-2 mb-2"><div class="spinner-border spinner-border-sm text-success"></div><span id="matchProgressText" class="small fw-medium">Matching...</span></div>
@@ -131,6 +198,7 @@
     <div class="container">
         <div class="stats-strip">
             <div class="stat-card active" data-view="pending" onclick="switchView('pending')"><div class="stat-icon pending"><i class="fas fa-clock"></i></div><div><div class="stat-value" id="statPending">0</div><div class="stat-label">Pending</div></div></div>
+            <div class="stat-card" data-view="bookmarked" onclick="switchView('bookmarked')"><div class="stat-icon bookmark"><i class="fas fa-bookmark"></i></div><div><div class="stat-value" id="statBookmarked">0</div><div class="stat-label">Bookmarked</div></div></div>
             <div class="stat-card" data-view="shortlisted" onclick="switchView('shortlisted')"><div class="stat-icon shortlist"><i class="fas fa-star"></i></div><div><div class="stat-value" id="statShortlisted">0</div><div class="stat-label">Shortlisted</div></div></div>
             <div class="stat-card" data-view="not_interested" onclick="switchView('not_interested')"><div class="stat-icon rejected"><i class="fas fa-times-circle"></i></div><div><div class="stat-value" id="statNotInterested">0</div><div class="stat-label">Not Interested</div></div></div>
             <div class="stat-card" onclick="checkDeadlines()"><div class="stat-icon deadline"><i class="fas fa-stopwatch"></i></div><div><div class="stat-value" style="font-size:0.95rem;">Check</div><div class="stat-label">Deadlines</div></div></div>
@@ -140,12 +208,37 @@
             <div class="d-flex flex-wrap align-items-center gap-2">
                 <div class="btn-group btn-group-sm" id="viewSelector">
                     <button class="btn seg-btn active" data-view="pending"><i class="fas fa-clock"></i><span>Pending</span><span class="count-pill" id="pendingCount">0</span></button>
+                    <button class="btn seg-btn" data-view="bookmarked"><i class="fas fa-bookmark"></i><span>Bookmarked</span><span class="count-pill" id="bookmarkedCount">0</span></button>
                     <button class="btn seg-btn" data-view="shortlisted"><i class="fas fa-star"></i><span>Shortlisted</span><span class="count-pill" id="shortlistedCount">0</span></button>
                     <button class="btn seg-btn" data-view="not_interested"><i class="fas fa-times-circle"></i><span>Not Interested</span><span class="count-pill" id="notInterestedCount">0</span></button>
                 </div>
                 <div id="statusFilterContainer" class="d-flex align-items-center gap-2"></div>
             </div>
-            <div class="d-flex align-items-center gap-2"><i class="fas fa-sort-amount-down text-muted small"></i><span class="text-muted small">Sorted by match score</span></div>
+        </div>
+
+        <!-- ─── Discovery Panel (search + sort + heatmap) ─── -->
+        <div class="discovery-panel">
+            <div class="discovery-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search title, institution, summary, research area...">
+                    <button class="btn-clear" id="clearSearchBtn" title="Clear search">×</button>
+                </div>
+                <div class="sort-controls">
+                    <i class="fas fa-sort-amount-down text-muted small"></i>
+                    <select id="sortSelect">
+                        <option value="default">Default</option>
+                        <option value="score">Sort by Score</option>
+                        <option value="deadline">Sort by Deadline</option>
+                    </select>
+                </div>
+                <div class="filter-status" id="filterStatus">
+                    <span id="filterStatusText"></span>
+                    <button class="btn-clear-filter" id="clearFilterBtn" title="Clear all filters">×</button>
+                </div>
+            </div>
+            <div class="heatmap-wrap" id="heatmapWrap" style="display:none;"></div>
+            <div class="score-dist-wrap" id="scoreDistWrap" style="display:none;"></div>
         </div>
 
         <div id="positionsContainer"></div>
@@ -157,13 +250,34 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const API_BASE = '/api/v1/positions/dashboard/';
+        const HEATMAP_API = '/api/v1/positions/heatmap-stats/';
         const PAGE_SIZE = 12;
-        let currentView = 'pending', currentPage = 1, currentStatus = '', totalCount = 0, selectedCvId = null;
-        const container = document.getElementById('positionsContainer'), spinner = document.getElementById('loadingSpinner'), noResults = document.getElementById('noResults'), totalSpan = document.getElementById('totalCount'), paginationNav = document.getElementById('paginationNav'), paginationList = document.getElementById('paginationList');
+        let currentView = 'pending', currentPage = 1, currentStatus = '', currentAppStatus = '', totalCount = 0, selectedCvId = null;
 
+        // ─── Discovery state ─────────────────────────────────
+        const Discovery = {
+            searchTerm: '',
+            sortBy: 'default',
+            selectedDate: null,           // YYYY-MM-DD or null
+            selectedNoDeadline: false,
+            selectedScoreBuckets: new Set(),
+            heatmapStats: null,           // cached backend stats
+        };
+
+        const container = document.getElementById('positionsContainer'),
+              spinner = document.getElementById('loadingSpinner'),
+              noResults = document.getElementById('noResults'),
+              totalSpan = document.getElementById('totalCount'),
+              paginationNav = document.getElementById('paginationNav'),
+              paginationList = document.getElementById('paginationList'),
+              heatmapWrap = document.getElementById('heatmapWrap'),
+              scoreDistWrap = document.getElementById('scoreDistWrap');
+
+        // ─── Helpers ─────────────────────────────────────────
         function getCSRFToken() { const c = document.cookie.split('; ').find(r => r.startsWith('csrftoken=')); return c ? c.split('=')[1] : ''; }
         function escapeHtml(t) { if (!t) return ''; const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
         function formatDate(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }); }
+        function formatDateStr(s) { if (!s) return ''; const d = new Date(s + 'T00:00:00'); return d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' }); }
         function getScoreClass(s) { if (s>=80) return 'excellent'; if (s>=60) return 'good'; if (s>=40) return 'possible'; return 'weak'; }
         function getDeadlineBadge(d) { if (d===null||d===undefined) return {cls:'safe',label:'No deadline',icon:'far fa-calendar'}; if (d<0) return {cls:'passed',label:'Passed',icon:'fas fa-exclamation-circle'}; if (d<=7) return {cls:'critical',label:d+'d left',icon:'fas fa-fire'}; if (d<=30) return {cls:'urgent',label:d+'d left',icon:'fas fa-clock'}; return {cls:'safe',label:d+'d left',icon:'far fa-calendar'}; }
         function getRecBadgeClass(r) { const m = {'strongly_recommended':'strongly_recommended','recommended':'recommended','possible_but_risky':'possible_but_risky','not_recommended':'not_recommended'}; return m[r] || 'recommended'; }
@@ -171,100 +285,559 @@
 
         function showToast(m, t) { t=t||'success'; const c={success:'#10B981',error:'#F43F5E',info:'#4F46E5',warning:'#F59E0B'}; const i={success:'fa-check-circle',error:'fa-exclamation-circle',info:'fa-info-circle',warning:'fa-exclamation-triangle'}; const el=document.createElement('div'); el.style.cssText='position:fixed;top:20px;right:20px;z-index:9999;background:'+(c[t]||c.success)+';color:white;padding:0.85rem 1.25rem;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,0.15);font-size:0.875rem;font-weight:500;max-width:360px;display:flex;align-items:center;gap:0.5rem;transform:translateX(400px);transition:transform 0.3s;'; el.innerHTML='<i class="fas '+(i[t]||i.success)+'"></i><span>'+escapeHtml(m)+'</span>'; document.body.appendChild(el); requestAnimationFrame(()=>{el.style.transform='translateX(0)';}); setTimeout(()=>{el.style.transform='translateX(400px)';setTimeout(()=>el.remove(),300);},3500); }
 
-        async function checkDeadlines() { try { const r=await fetch('/api/v1/positions/check-deadlines/',{method:'POST',headers:{'X-CSRFToken':getCSRFToken()}}); const d=await r.json(); showToast(d.message||'Checked'); fetchPositions(currentPage); fetchCounts(); } catch(e) { showToast('Failed','error'); } }
+        // ─── View switching ──────────────────────────────────
         function switchView(v) { const b=document.querySelector('#viewSelector [data-view="'+v+'"]'); if(b) b.click(); }
 
-        async function fetchCounts() { try { const r=await fetch('/api/v1/positions/counts/'); if(!r.ok) throw 0; const d=await r.json(); document.getElementById('pendingCount').textContent=d.pending; document.getElementById('shortlistedCount').textContent=d.shortlisted; document.getElementById('notInterestedCount').textContent=d.not_interested; document.getElementById('statPending').textContent=d.pending; document.getElementById('statShortlisted').textContent=d.shortlisted; document.getElementById('statNotInterested').textContent=d.not_interested; } catch(e){} }
+        async function fetchCounts() {
+            try {
+                const r = await fetch('/api/v1/positions/counts/');
+                if (!r.ok) throw 0;
+                const d = await r.json();
+                document.getElementById('pendingCount').textContent = d.pending;
+                document.getElementById('shortlistedCount').textContent = d.shortlisted;
+                document.getElementById('notInterestedCount').textContent = d.not_interested;
+                document.getElementById('bookmarkedCount').textContent = d.bookmarked; // NEW
+                document.getElementById('statPending').textContent = d.pending;
+                document.getElementById('statShortlisted').textContent = d.shortlisted;
+                document.getElementById('statNotInterested').textContent = d.not_interested;
+                document.getElementById('statBookmarked').textContent = d.bookmarked; // NEW
+            } catch(e) {}
+        }
 
         function buildStatusFilterButtons(v) {
-            const c=document.getElementById('statusFilterContainer'); let b='';
-            if(v==='pending'){b='<span class="fw-semibold small me-1 text-muted">Status:</span><div class="btn-group btn-group-sm" id="statusFilter"><button class="btn pill-btn active" data-status="">All</button><button class="btn pill-btn" data-status="MATCHED">Matched</button><button class="btn pill-btn" data-status="SCRAPED">Scraped</button><button class="btn pill-btn" data-status="FAILED">Failed</button></div>';}
-            else if(v==='shortlisted'){const s=[{value:'',label:'All'},{value:'SHORTLISTED',label:'⭐ Shortlisted'},{value:'APPLIED',label:'📤 Applied'},{value:'INTERVIEWING',label:'💬 Interviewing'},{value:'OFFERED',label:'💰 Offered'},{value:'ACCEPTED',label:'✅ Accepted'},{value:'REJECTED',label:'❌ Rejected'},{value:'DEADLINE_MISSED',label:'⏰ Missed'}];b='<span class="fw-semibold small me-1 text-muted">Application:</span><div class="btn-group btn-group-sm flex-wrap" id="appStatusFilter">'+s.map(x=>'<button class="btn pill-btn '+(x.value===''?'active':'')+'" data-appstatus="'+x.value+'">'+x.label+'</button>').join('')+'</div>';}
-            else{b='<span class="text-muted small">Showing Not Interested</span>';}
-            c.innerHTML=b;
-            if(v==='pending')document.getElementById('statusFilter')?.addEventListener('click',function(e){const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#statusFilter .btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentStatus=b.dataset.status;currentPage=1;fetchPositions(currentPage);});
-            else if(v==='shortlisted')document.getElementById('appStatusFilter')?.addEventListener('click',function(e){const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#appStatusFilter .btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentStatus=b.dataset.appstatus;currentPage=1;fetchPositions(currentPage);});
+            const c = document.getElementById('statusFilterContainer'); let b='';
+            if (v==='pending') {
+                b='<span class="fw-semibold small me-1 text-muted">Status:</span><div class="btn-group btn-group-sm" id="statusFilter"><button class="btn pill-btn active" data-status="">All</button><button class="btn pill-btn" data-status="MATCHED">Matched</button><button class="btn pill-btn" data-status="SCRAPED">Scraped</button><button class="btn pill-btn" data-status="FAILED">Failed</button></div>';
+            } else if (v==='shortlisted') {
+                const s = [{value:'',label:'All'},{value:'SHORTLISTED',label:'⭐ Shortlisted'},{value:'APPLIED',label:'📤 Applied'},{value:'INTERVIEWING',label:'💬 Interviewing'},{value:'OFFERED',label:'💰 Offered'},{value:'ACCEPTED',label:'✅ Accepted'},{value:'REJECTED',label:'❌ Rejected'},{value:'DEADLINE_MISSED',label:'⏰ Missed'}];
+                b='<span class="fw-semibold small me-1 text-muted">Application:</span><div class="btn-group btn-group-sm flex-wrap" id="appStatusFilter">'+s.map(x=>'<button class="btn pill-btn '+(x.value===''?'active':'')+'" data-appstatus="'+x.value+'">'+x.label+'</button>').join('')+'</div>';
+            } else if (v==='bookmarked') { // NEW
+                b='<span class="text-muted small">Showing Bookmarked Positions</span>';
+            } else {
+                b='<span class="text-muted small">Showing Not Interested</span>';
+            }
+            c.innerHTML = b;
+            if (v==='pending') {
+                document.getElementById('statusFilter')?.addEventListener('click', function(e) {
+                    const b = e.target.closest('button'); if (!b) return;
+                    document.querySelectorAll('#statusFilter .btn').forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                    currentStatus = b.dataset.status; currentAppStatus = '';
+                    currentPage = 1; resetDiscoveryFilters(); fetchPositions(currentPage); fetchHeatmapStats();
+                });
+            } else if (v==='shortlisted') {
+                document.getElementById('appStatusFilter')?.addEventListener('click', function(e) {
+                    const b = e.target.closest('button'); if (!b) return;
+                    document.querySelectorAll('#appStatusFilter .btn').forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                    currentAppStatus = b.dataset.appstatus; currentStatus = '';
+                    currentPage = 1; resetDiscoveryFilters(); fetchPositions(currentPage); fetchHeatmapStats();
+                });
+            }
         }
 
         document.getElementById('viewSelector').addEventListener('click', function(e) {
-            const b=e.target.closest('button'); if(!b) return;
-            document.querySelectorAll('#viewSelector .btn').forEach(x=>x.classList.remove('active')); b.classList.add('active');
-            currentView=b.dataset.view; currentPage=1; currentStatus='';
-            document.querySelectorAll('.stat-card[data-view]').forEach(c=>c.classList.toggle('active',c.dataset.view===currentView));
-            buildStatusFilterButtons(currentView); fetchPositions(currentPage);
+            const b = e.target.closest('button'); if (!b) return;
+            document.querySelectorAll('#viewSelector .btn').forEach(x => x.classList.remove('active'));
+            b.classList.add('active');
+            currentView = b.dataset.view; currentPage = 1; currentStatus = ''; currentAppStatus = '';
+            document.querySelectorAll('.stat-card[data-view]').forEach(c => c.classList.toggle('active', c.dataset.view === currentView));
+            buildStatusFilterButtons(currentView);
+            resetDiscoveryFilters();
+            fetchPositions(currentPage);
+            fetchHeatmapStats();
         });
 
+        // ─── Discovery panel wiring ──────────────────────────
+        let searchTimer;
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+        const sortSelect = document.getElementById('sortSelect');
+        const filterStatus = document.getElementById('filterStatus');
+        const filterStatusText = document.getElementById('filterStatusText');
+        const clearFilterBtn = document.getElementById('clearFilterBtn');
+
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimer);
+            const v = e.target.value.trim();
+            clearSearchBtn.style.display = v ? 'block' : 'none';
+            searchTimer = setTimeout(() => {
+                Discovery.searchTerm = v.toLowerCase();
+                currentPage = 1;
+                fetchPositions(currentPage);
+            }, 300);
+        });
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            Discovery.searchTerm = '';
+            clearSearchBtn.style.display = 'none';
+            currentPage = 1;
+            fetchPositions(currentPage);
+        });
+
+        sortSelect.addEventListener('change', (e) => {
+            Discovery.sortBy = e.target.value;
+            // Clear heatmap/score selections but preserve search
+            Discovery.selectedDate = null;
+            Discovery.selectedNoDeadline = false;
+            Discovery.selectedScoreBuckets.clear();
+            currentPage = 1;
+            renderDiscoveryPanel();
+            updateFilterStatus();
+            fetchPositions(currentPage);
+        });
+
+        clearFilterBtn.addEventListener('click', () => {
+            resetDiscoveryFilters(false); // false = keep search
+            renderDiscoveryPanel();
+            updateFilterStatus();
+            currentPage = 1;
+            fetchPositions(currentPage);
+        });
+
+        function resetDiscoveryFilters(includeSearch = true) {
+            if (includeSearch) {
+                Discovery.searchTerm = '';
+                searchInput.value = '';
+                clearSearchBtn.style.display = 'none';
+            }
+            Discovery.selectedDate = null;
+            Discovery.selectedNoDeadline = false;
+            Discovery.selectedScoreBuckets.clear();
+            renderDiscoveryPanel();
+            updateFilterStatus();
+        }
+
+        function updateFilterStatus() {
+            const parts = [];
+            if (Discovery.searchTerm) parts.push('"' + Discovery.searchTerm + '"');
+            if (Discovery.selectedDate) parts.push('Deadline: ' + formatDateStr(Discovery.selectedDate));
+            if (Discovery.selectedNoDeadline) parts.push('No deadline');
+            if (Discovery.selectedScoreBuckets.size > 0) parts.push('Scores: ' + [...Discovery.selectedScoreBuckets].join(', '));
+            if (parts.length > 0) {
+                filterStatusText.textContent = 'Filtering by: ' + parts.join(' | ');
+                filterStatus.style.display = 'flex';
+            } else {
+                filterStatus.style.display = 'none';
+            }
+        }
+
+        function renderDiscoveryPanel() {
+            if (Discovery.sortBy === 'deadline') {
+                heatmapWrap.style.display = 'block';
+                scoreDistWrap.style.display = 'none';
+                renderHeatmap();
+            } else if (Discovery.sortBy === 'score') {
+                heatmapWrap.style.display = 'none';
+                scoreDistWrap.style.display = 'block';
+                renderScoreDist();
+            } else {
+                heatmapWrap.style.display = 'none';
+                scoreDistWrap.style.display = 'none';
+            }
+        }
+
+        // ─── Heatmap (deadline calendar) ───────────────────
+        async function fetchHeatmapStats() {
+            const params = new URLSearchParams({ view: currentView });
+            if (currentView === 'pending' && currentStatus) params.append('status', currentStatus);
+            if (currentView === 'shortlisted' && currentAppStatus) params.append('app_status', currentAppStatus);
+            try {
+                const r = await fetch(HEATMAP_API + '?' + params.toString());
+                if (!r.ok) throw 0;
+                Discovery.heatmapStats = await r.json();
+                renderDiscoveryPanel();
+            } catch(e) { /* silent */ }
+        }
+
+        function renderHeatmap() {
+            const stats = Discovery.heatmapStats;
+            if (!stats) { heatmapWrap.innerHTML = '<div class="text-muted small">Loading heatmap…</div>'; return; }
+            const counts = stats.deadline_counts || {};
+            const noDeadlineCount = stats.no_deadline_count || 0;
+            const maxCount = Math.max(1, ...Object.values(counts));
+
+            // ─── TIMEZONE-SAFE DATE HELPERS ──────────────────
+            // Use local date parts (browser timezone) instead of toISOString (UTC)
+            function toLocalDateStr(date) {
+                const y = date.getFullYear();
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const d = String(date.getDate()).padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            }
+
+            function addDays(date, days) {
+                const d = new Date(date);
+                d.setDate(d.getDate() + days);
+                return d;
+            }
+
+            function toLocalDateStr(date) {
+                const y = date.getFullYear();
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const d = String(date.getDate()).padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            }
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Normalize to local midnight
+            const todayStr = toLocalDateStr(today);
+
+            // Start 8 weeks before today
+            let startDate = addDays(today, -56);
+            // Align to Monday (JS getDay: 0=Sun, 1=Mon, ..., 6=Sat)
+            while (startDate.getDay() !== 1) {
+                startDate = addDays(startDate, -1);
+            }
+
+            // 26 weeks total (≈6 months)
+            const totalWeeks = 26;
+            const totalDays = totalWeeks * 7;
+
+            // Build cells grouped by week (column)
+            const weeks = [];
+            const monthLabels = [];
+            let lastMonth = -1;
+
+            for (let w = 0; w < totalWeeks; w++) {
+                const weekCells = [];
+                for (let d = 0; d < 7; d++) {
+                    const cellDate = addDays(startDate, w * 7 + d);
+                    const ds = toLocalDateStr(cellDate);
+                    const count = counts[ds] || 0;
+                    const isPast = cellDate < today;
+                    const isToday = ds === todayStr;
+                    const isSelected = Discovery.selectedDate === ds;
+                    let level = 0;
+                    if (count > 0) level = Math.min(4, Math.ceil((count / maxCount) * 4));
+                    weekCells.push({ ds, count, isPast, isToday, isSelected, level });
+
+                    // Track month label position (first day of week)
+                    if (d === 0 && cellDate.getMonth() !== lastMonth) {
+                        monthLabels.push({ weekIndex: w, label: cellDate.toLocaleString('default', { month: 'short' }) });
+                        lastMonth = cellDate.getMonth();
+                    }
+                }
+                weeks.push(weekCells);
+            }
+
+            // Weekday labels: row 0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri, 5=Sat, 6=Sun
+            const weekdayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+            // Build month labels row — each label spans from its weekIndex to the next
+            const monthLabelsHtml = monthLabels.map((m, i) => {
+                const nextIdx = i < monthLabels.length - 1 ? monthLabels[i + 1].weekIndex : totalWeeks;
+                const span = nextIdx - m.weekIndex;
+                return '<span style="flex:' + span + ';">' + m.label + '</span>';
+            }).join('');
+
+            // Build cells HTML
+            const cellsHtml = weeks.map(week => {
+                return week.map(c => {
+                    const cls = ['heatmap-cell'];
+                    if (c.level > 0) cls.push('l' + c.level);
+                    if (c.isPast) cls.push('pass');
+                    if (c.isToday) cls.push('today');
+                    if (c.isSelected) cls.push('selected');
+                    if (c.count === 0) cls.push('disabled');
+                    const tip = c.count > 0
+                        ? formatDateStr(c.ds) + ' — ' + c.count + ' position(s) due'
+                        : formatDateStr(c.ds);
+                    return '<div class="' + cls.join(' ') + '" data-date="' + c.ds + '" data-count="' + c.count + '"><div class="heatmap-tooltip">' + tip + '</div></div>';
+                }).join('');
+            }).join('');
+
+            // Weekday labels HTML
+            const weekdaysHtml = weekdayLabels.map(l => '<span>' + l + '</span>').join('');
+
+            heatmapWrap.innerHTML =
+                '<div class="heatmap-header">' +
+                    '<div class="heatmap-title">📅 Deadline Heatmap — click a day to filter</div>' +
+                    '<div class="heatmap-legend">' +
+                        '<span>Less</span>' +
+                        '<div class="heatmap-legend-cells">' +
+                            '<span style="background:#f1f5f9"></span>' +
+                            '<span style="background:#D1FAE5"></span>' +
+                            '<span style="background:#6EE7B7"></span>' +
+                            '<span style="background:#34D399"></span>' +
+                            '<span style="background:#059669"></span>' +
+                        '</div>' +
+                        '<span>More</span>' +
+                        '<span style="margin-left:0.5rem;color:#ef4444;">■ Past (missed)</span>' +
+                        '<span style="color:var(--brand);">▢ Today</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="heatmap-calendar">' +
+                    '<div class="heatmap-weekdays">' + weekdaysHtml + '</div>' +
+                    '<div class="heatmap-main">' +
+                        '<div class="heatmap-months">' + monthLabelsHtml + '</div>' +
+                        '<div class="heatmap-grid">' + cellsHtml + '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="heatmap-no-deadline ' + (Discovery.selectedNoDeadline ? 'selected' : '') + '" id="noDeadlineCell">' +
+                    '<span>📋 No deadline specified</span>' +
+                    '<span><strong>' + noDeadlineCount + '</strong> position(s)</span>' +
+                '</div>';
+
+            // Wire up cell clicks
+            heatmapWrap.querySelectorAll('.heatmap-cell').forEach(cell => {
+                cell.addEventListener('click', () => {
+                    const count = parseInt(cell.dataset.count);
+                    if (count === 0) return;
+                    const date = cell.dataset.date;
+                    Discovery.selectedDate = (Discovery.selectedDate === date) ? null : date;
+                    if (Discovery.selectedDate) Discovery.selectedNoDeadline = false;
+                    currentPage = 1;
+                    renderHeatmap();
+                    updateFilterStatus();
+                    fetchPositions(currentPage);
+                    // Scroll selected cell into view
+                    setTimeout(() => {
+                        const sel = heatmapWrap.querySelector('.heatmap-cell.selected');
+                        if (sel) sel.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    }, 50);
+                });
+            });
+
+            // No-deadline cell click
+            const ndCell = document.getElementById('noDeadlineCell');
+            if (ndCell) {
+                ndCell.addEventListener('click', () => {
+                    Discovery.selectedNoDeadline = !Discovery.selectedNoDeadline;
+                    if (Discovery.selectedNoDeadline) Discovery.selectedDate = null;
+                    currentPage = 1;
+                    renderHeatmap();
+                    updateFilterStatus();
+                    fetchPositions(currentPage);
+                });
+            }
+        }
+
+        // ─── Score distribution ──────────────────────────────
+        function renderScoreDist() {
+            const stats = Discovery.heatmapStats;
+            if (!stats) { scoreDistWrap.innerHTML = '<div class="text-muted small">Loading…</div>'; return; }
+            const sc = stats.score_counts || {};
+            const buckets = [
+                { key: '0-20', label: 'Weak', cls: 's0-20' },
+                { key: '20-40', label: 'Possible', cls: 's20-40' },
+                { key: '40-60', label: 'Fair', cls: 's40-60' },
+                { key: '60-80', label: 'Good', cls: 's60-80' },
+                { key: '80-100', label: 'Strong', cls: 's80-100' },
+                { key: 'no-match', label: 'Not matched', cls: 'no-match' },
+            ];
+            const html = buckets.map(b => {
+                const count = sc[b.key] || 0;
+                const selected = Discovery.selectedScoreBuckets.has(b.key);
+                return '<div class="score-bucket ' + b.cls + (selected ? ' selected' : '') + '" data-bucket="' + b.key + '">' +
+                    '<div class="score-bucket-range">' + (b.key === 'no-match' ? 'N/A' : b.key) + '</div>' +
+                    '<div class="score-bucket-count">' + count + '</div>' +
+                    '<div class="score-bucket-label">' + b.label + '</div>' +
+                '</div>';
+            }).join('');
+            scoreDistWrap.innerHTML =
+                '<div class="score-dist-title">📊 Score Distribution — click a bucket to filter</div>' +
+                '<div class="score-dist-buckets">' + html + '</div>';
+
+            scoreDistWrap.querySelectorAll('.score-bucket').forEach(bucket => {
+                bucket.addEventListener('click', () => {
+                    const key = bucket.dataset.bucket;
+                    // Single-select: if clicking the same bucket, deselect; otherwise switch
+                    if (Discovery.selectedScoreBuckets.has(key) && Discovery.selectedScoreBuckets.size === 1) {
+                        Discovery.selectedScoreBuckets.clear();
+                    } else {
+                        Discovery.selectedScoreBuckets.clear();
+                        Discovery.selectedScoreBuckets.add(key);
+                    }
+                    currentPage = 1;
+                    renderScoreDist();
+                    updateFilterStatus();
+                    fetchPositions(currentPage);
+                });
+            });
+        }
+
+        // ─── Status updates ──────────────────────────────────
         async function updateStatus(id, action, reason) {
-            const url='/api/v1/positions/'+id+'/'+action+'/'; const p=reason?{reason}:{}; const sy=window.scrollY;
-            try { const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCSRFToken()},body:JSON.stringify(p)}); await r.json(); showToast('Position '+action.replace('-',' '),'success'); fetchCounts();
-                const card=document.querySelector('[onclick*="'+id+'"]')?.closest('.position-row');
-                if(card){card.style.transition='opacity 0.3s,transform 0.3s';card.style.opacity='0';card.style.transform='translateX(20px)';setTimeout(()=>{card.remove();if(container.querySelectorAll('.position-row').length===0&&currentPage>1){currentPage--;fetchPositions(currentPage);}},300);}
-                else{fetchPositions(currentPage).then(()=>window.scrollTo(0,sy));}
+            const url = '/api/v1/positions/' + id + '/' + action + '/';
+            const p = reason ? { reason } : {};
+            const sy = window.scrollY;
+            try {
+                const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken':getCSRFToken()}, body:JSON.stringify(p) });
+                await r.json();
+                showToast('Position ' + action.replace('-',' '), 'success');
+                fetchCounts();
+                fetchHeatmapStats();
+                const card = document.querySelector('[onclick*="' + id + '"]')?.closest('.position-row');
+                if (card) {
+                    card.style.transition = 'opacity 0.3s,transform 0.3s';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateX(20px)';
+                    setTimeout(() => {
+                        card.remove();
+                        if (container.querySelectorAll('.position-row').length === 0 && currentPage > 1) { currentPage--; fetchPositions(currentPage); }
+                    }, 300);
+                } else { fetchPositions(currentPage).then(() => window.scrollTo(0, sy)); }
             } catch(e) { showToast('Failed','error'); }
         }
 
+        async function toggleBookmark(id, btnEl) {
+            try {
+                const r = await fetch('/api/v1/positions/' + id + '/bookmark/', {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': getCSRFToken() }
+                });
+                if (!r.ok) throw 0;
+                const d = await r.json();
+                // Update the button's visual state
+                if (btnEl) {
+                    const icon = btnEl.querySelector('i');
+                    if (d.is_bookmarked) {
+                        btnEl.classList.add('active');
+                        btnEl.title = 'Remove bookmark';
+                        icon.className = 'fas fa-bookmark'; // solid icon
+                    } else {
+                        btnEl.classList.remove('active');
+                        btnEl.title = 'Bookmark';
+                        icon.className = 'far fa-bookmark'; // outline icon
+                    }
+                }
+                showToast(d.is_bookmarked ? 'Position bookmarked' : 'Bookmark removed', 'success');
+                fetchCounts(); // update the count in the stat card
+                // If we're currently in the bookmarked view, remove the card if unbookmarked
+                if (currentView === 'bookmarked' && !d.is_bookmarked) {
+                    const card = btnEl?.closest('.position-row');
+                    if (card) {
+                        card.style.transition = 'opacity 0.3s, transform 0.3s';
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateX(20px)';
+                        setTimeout(() => card.remove(), 300);
+                    }
+                }
+            } catch(e) {
+                showToast('Failed to toggle bookmark', 'error');
+            }
+        }
+        // ─── Row rendering ───────────────────────────────────
         function renderRow(pos) {
-            const m=pos.match, score=m?.overall_score??0, has=!!m; const as=pos.application_status||'PENDING_REVIEW';
-            let ab='';
-            if(as==='PENDING_REVIEW')ab='<button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();updateStatus('+pos.id+',\'shortlist\')"><i class="fas fa-star"></i></button><button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus('+pos.id+',\'not-interested\')"><i class="fas fa-times"></i></button>';
-            else if(as==='SHORTLISTED')ab='<button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus('+pos.id+',\'pending-review\')"><i class="fas fa-undo"></i></button><button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();updateStatus('+pos.id+',\'apply\')"><i class="fas fa-paper-plane"></i></button><button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation();updateStatus('+pos.id+',\'reject\')"><i class="fas fa-thumbs-down"></i></button>';
-            else if(as==='APPLIED'||as==='INTERVIEWING')ab='<button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus('+pos.id+',\'shortlist\')"><i class="fas fa-undo"></i></button><button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();updateStatus('+pos.id+',\'accept\')"><i class="fas fa-check"></i></button><button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation();updateStatus('+pos.id+',\'reject\')"><i class="fas fa-times"></i></button>';
-            else if(as==='OFFERED')ab='<button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus('+pos.id+',\'apply\')"><i class="fas fa-undo"></i></button><button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();updateStatus('+pos.id+',\'accept\')"><i class="fas fa-handshake"></i></button><button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation();updateStatus('+pos.id+',\'reject\')"><i class="fas fa-thumbs-down"></i></button>';
-            else if(as==='REJECTED'||as==='DEADLINE_MISSED')ab='<button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus('+pos.id+',\'shortlist\')"><i class="fas fa-undo"></i></button><span class="badge bg-secondary">'+as.replace('_',' ')+'</span>';
-            else if(as==='ACCEPTED')ab='<button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus('+pos.id+',\'apply\')"><i class="fas fa-undo"></i></button><span class="badge bg-success">✅ Accepted</span>';
-            else ab='<span class="badge bg-secondary">'+as.replace('_',' ')+'</span>';
+            const m = pos.match, score = m?.overall_score ?? 0, has = !!m;
+            const as = pos.application_status || 'PENDING_REVIEW';
+            // Bookmark toggle button (shown first, before status-based buttons)
+            const isBookmarked = pos.is_bookmarked;
+            const bookmarkBtn = '<button class="btn btn-sm btn-bookmark-toggle ' + (isBookmarked ? 'active' : '') + '" onclick="event.stopPropagation();toggleBookmark(' + pos.id + ', this)" title="' + (isBookmarked ? 'Remove bookmark' : 'Bookmark') + '"><i class="' + (isBookmarked ? 'fas' : 'far') + ' fa-bookmark"></i></button>';
+            
+            let ab = '';
+            if (as === 'PENDING_REVIEW') ab = '<button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();updateStatus(' + pos.id + ',\'shortlist\')"><i class="fas fa-star"></i></button><button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus(' + pos.id + ',\'not-interested\')"><i class="fas fa-times"></i></button>';
+            else if (as === 'SHORTLISTED') ab = '<button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus(' + pos.id + ',\'pending-review\')"><i class="fas fa-undo"></i></button><button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();updateStatus(' + pos.id + ',\'apply\')"><i class="fas fa-paper-plane"></i></button><button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation();updateStatus(' + pos.id + ',\'reject\')"><i class="fas fa-thumbs-down"></i></button>';
+            else if (as === 'APPLIED' || as === 'INTERVIEWING') ab = '<button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus(' + pos.id + ',\'shortlist\')"><i class="fas fa-undo"></i></button><button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();updateStatus(' + pos.id + ',\'accept\')"><i class="fas fa-check"></i></button><button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation();updateStatus(' + pos.id + ',\'reject\')"><i class="fas fa-times"></i></button>';
+            else if (as === 'OFFERED') ab = '<button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus(' + pos.id + ',\'apply\')"><i class="fas fa-undo"></i></button><button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();updateStatus(' + pos.id + ',\'accept\')"><i class="fas fa-handshake"></i></button><button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation();updateStatus(' + pos.id + ',\'reject\')"><i class="fas fa-thumbs-down"></i></button>';
+            else if (as === 'REJECTED' || as === 'DEADLINE_MISSED') ab = '<button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus(' + pos.id + ',\'shortlist\')"><i class="fas fa-undo"></i></button><span class="badge bg-secondary">' + as.replace('_',' ') + '</span>';
+            else if (as === 'ACCEPTED') ab = '<button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation();updateStatus(' + pos.id + ',\'apply\')"><i class="fas fa-undo"></i></button><span class="badge bg-success">✅ Accepted</span>';
+            else ab = '<span class="badge bg-secondary">' + as.replace('_',' ') + '</span>';
 
-            // FIX: Match buttons are now ACTIVE (not commented out)
-            if (has && m) {
-                ab += '<button class="btn btn-sm btn-outline-info" onclick="event.stopPropagation();deletePositionMatch('+pos.id+')" title="Delete Match"><i class="fas fa-redo"></i></button>';
-            } else if (pos.status === 'SCRAPED') {
-                ab += '<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();openMatchModal('+pos.id+')" title="Ask AI for Match"><i class="fas fa-brain"></i></button>';
+            if (has && m) ab += '<button class="btn btn-sm btn-outline-info" onclick="event.stopPropagation();deletePositionMatch(' + pos.id + ')" title="Delete Match"><i class="fas fa-redo"></i></button>';
+            else if (pos.status === 'SCRAPED') ab += '<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();openMatchModal(' + pos.id + ')" title="Ask AI for Match"><i class="fas fa-brain"></i></button>';
+
+            ab += '<button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation();confirmDeletePosition(' + pos.id + ')" title="Delete Position"><i class="fas fa-trash"></i></button>';
+            ab += '<a href="/api/v1/positions/' + pos.id + '/view/" target="_blank" class="btn btn-sm btn-outline-primary" title="View Details" onclick="event.stopPropagation()"><i class="fas fa-eye"></i></a>';
+
+            ab += bookmarkBtn;
+
+            if (!has) {
+                const row = document.createElement('div'); row.className = 'position-row';
+                row.innerHTML = '<div class="row-header" onclick="toggleRow(this.closest(\'.position-row\'))"><div class="score-col"><div class="score-ring none">—<span class="score-label">No Match</span></div></div><div class="main-col"><div class="title-row"><h5><a href="' + escapeHtml(pos.url) + '" target="_blank" onclick="event.stopPropagation()">' + escapeHtml(pos.title) + '</a></h5></div><div class="meta-row"><span class="institution"><i class="fas fa-university ms-1"></i>' + escapeHtml(pos.company || 'Unknown') + '</span>' + (pos.website_name ? '<span class="meta-item"><i class="fas fa-globe ms-1"></i>' + escapeHtml(pos.website_name) + '</span>' : '') + '<span class="badge-deadline safe"><i class="fas fa-hourglass-half"></i>Awaiting</span></div><div class="action-btn-group">' + ab + '</div></div><div class="right-col"><span class="badge-match-cat" style="background:var(--bg-subtle);color:var(--text-muted);">Not Matched</span><span class="expand-icon"><i class="fas fa-chevron-down"></i></span></div></div><div class="row-detail"><div class="detail-grid"><div class="detail-item"><div class="label">Status</div><div class="value">' + (pos.status_label || pos.status) + '</div></div><div class="detail-item"><div class="label">Scraped</div><div class="value">' + formatDate(pos.scraped_at) + '</div></div><div class="detail-item"><div class="label">Description Preview</div><div class="value small">' + escapeHtml((pos.cleaned_text || '').substring(0,200)) + '</div></div></div></div>';
+                return row;
             }
 
-            ab += '<button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation();confirmDeletePosition('+pos.id+')" title="Delete Position"><i class="fas fa-trash"></i></button>';
-            ab += '<a href="/api/v1/positions/'+pos.id+'/view/" target="_blank" class="btn btn-sm btn-outline-primary" title="View Details" onclick="event.stopPropagation()"><i class="fas fa-eye"></i></a>';
+            const sc = getScoreClass(score), days = m.days_until_deadline ?? null, di = getDeadlineBadge(days), rec = m.application_recommendation;
+            const sk = m.required_skills || {}, allSk = [...(sk.mandatory || []).map(s => ({text:s,type:'mandatory'})), ...(sk.core || []).map(s => ({text:s,type:'core'})), ...(sk.preferred || []).map(s => ({text:s,type:'preferred'}))];
+            const ev = m.evidence || {}, sb = [{label:'Eligibility',key:'eligibility_score'},{label:'Academic',key:'academic_fit_score'},{label:'Research',key:'research_fit_score'},{label:'Technical',key:'technical_methodological_fit_score'},{label:'Domain',key:'domain_fit_score'},{label:'Research Exp.',key:'research_experience_score'},{label:'Competitive',key:'competitiveness_score'}];
+            const catL = score >= 80 ? '🌟 Strong' : score >= 60 ? '✅ Good' : score >= 40 ? '📌 Possible' : '⚠️ Weak';
+            const catC = score >= 80 ? {bg:'var(--success-soft)',fg:'#065F46'} : score >= 60 ? {bg:'var(--brand-soft)',fg:'var(--brand)'} : score >= 40 ? {bg:'var(--warning-soft)',fg:'#92400E'} : {bg:'var(--danger-soft)',fg:'#9F1239'};
 
-            if(!has){const row=document.createElement('div');row.className='position-row';row.innerHTML='<div class="row-header" onclick="toggleRow(this.closest(\'.position-row\'))"><div class="score-col"><div class="score-ring none">—<span class="score-label">No Match</span></div></div><div class="main-col"><div class="title-row"><h5><a href="'+escapeHtml(pos.url)+'" target="_blank" onclick="event.stopPropagation()">'+escapeHtml(pos.title)+'</a></h5></div><div class="meta-row"><span class="institution"><i class="fas fa-university ms-1"></i>'+escapeHtml(pos.company||'Unknown')+'</span>'+(pos.website_name?'<span class="meta-item"><i class="fas fa-globe ms-1"></i>'+escapeHtml(pos.website_name)+'</span>':'')+'<span class="badge-deadline safe"><i class="fas fa-hourglass-half"></i>Awaiting</span></div><div class="action-btn-group">'+ab+'</div></div><div class="right-col"><span class="badge-match-cat" style="background:var(--bg-subtle);color:var(--text-muted);">Not Matched</span><span class="expand-icon"><i class="fas fa-chevron-down"></i></span></div></div><div class="row-detail"><div class="detail-grid"><div class="detail-item"><div class="label">Status</div><div class="value">'+(pos.status_label||pos.status)+'</div></div><div class="detail-item"><div class="label">Scraped</div><div class="value">'+formatDate(pos.scraped_at)+'</div></div><div class="detail-item"><div class="label">Description Preview</div><div class="value small">'+escapeHtml((pos.cleaned_text||'').substring(0,200))+'</div></div></div></div>';return row;}
-            const sc=getScoreClass(score),days=m.days_until_deadline??null,di=getDeadlineBadge(days),rec=m.application_recommendation;
-            const sk=m.required_skills||{},allSk=[...(sk.mandatory||[]).map(s=>({text:s,type:'mandatory'})),...(sk.core||[]).map(s=>({text:s,type:'core'})),...(sk.preferred||[]).map(s=>({text:s,type:'preferred'}))];
-            const ev=m.evidence||{},sb=[{label:'Eligibility',key:'eligibility_score'},{label:'Academic',key:'academic_fit_score'},{label:'Research',key:'research_fit_score'},{label:'Technical',key:'technical_methodological_fit_score'},{label:'Domain',key:'domain_fit_score'},{label:'Research Exp.',key:'research_experience_score'},{label:'Competitive',key:'competitiveness_score'}];
-            const catL=score>=80?'🌟 Strong':score>=60?'✅ Good':score>=40?'📌 Possible':'⚠️ Weak';
-            const catC=score>=80?{bg:'var(--success-soft)',fg:'#065F46'}:score>=60?{bg:'var(--brand-soft)',fg:'var(--brand)'}:score>=40?{bg:'var(--warning-soft)',fg:'#92400E'}:{bg:'var(--danger-soft)',fg:'#9F1239'};
-            const row=document.createElement('div');row.className='position-row';
-            row.innerHTML='<div class="row-header" onclick="toggleRow(this.closest(\'.position-row\'))"><div class="score-col"><div class="score-ring '+sc+'">'+score.toFixed(0)+'<span class="score-label">'+(m.match_category_label||'Match')+'</span></div></div><div class="main-col"><div class="title-row"><h5><a href="'+escapeHtml(pos.url)+'" target="_blank" onclick="event.stopPropagation()">'+escapeHtml(pos.title)+'</a></h5>'+(rec?'<span class="rec-badge '+getRecBadgeClass(rec)+'">'+rec.replace(/_/g,' ')+'</span>':'')+'</div><div class="meta-row"><span class="institution"><i class="fas fa-university ms-1"></i>'+escapeHtml(m.institution||pos.company||'Unknown')+'</span>'+(pos.website_name?'<span class="meta-item"><i class="fas fa-globe ms-1"></i>'+escapeHtml(pos.website_name)+'</span>':'')+(m.position_type?'<span class="meta-item"><i class="fas fa-tag ms-1"></i>'+escapeHtml(m.position_type)+'</span>':'')+(m.country?'<span class="meta-item"><i class="fas fa-map-pin ms-1"></i>'+escapeHtml(m.country)+(m.city?'، '+escapeHtml(m.city):'')+'</span>':'')+'<span class="badge-deadline '+di.cls+'"><i class="'+di.icon+'"></i>'+di.label+'</span>'+(m.application_deadline_iso?'<span class="badge-deadline '+di.cls+'">Deadline: '+escapeHtml(m.application_deadline_iso)+'</span>':'')+(m.start_date?'<span class="meta-item"><i class="far fa-calendar-plus ms-1"></i>'+formatDate(m.start_date)+'</span>':'')+'</div><div class="action-btn-group">'+ab+'</div></div><div class="right-col"><span class="badge-match-cat" style="background:'+catC.bg+';color:'+catC.fg+';">'+catL+'</span><span class="expand-icon"><i class="fas fa-chevron-down"></i></span></div></div><div class="row-detail"><div class="detail-grid"><div>'+(m.project_narrative_description?'<div class="detail-item"><div class="label">Summary</div><div class="value small" style="text-align:justify;">'+escapeHtml(m.project_narrative_description)+'</div></div>':'')+(m.summary?'<div class="detail-item"><div class="label">AI Summary</div><div class="value small" style="text-align:justify;">'+escapeHtml(m.summary)+'</div></div>':'')+(m.main_reason?'<div class="detail-item"><div class="label">Main Reason</div><div class="value small text-muted" style="text-align:justify;">'+escapeHtml(m.main_reason)+'</div></div>':'')+(m.funding_and_duration?'<div class="detail-item"><div class="label">Funding</div><div class="value small">'+escapeHtml(m.funding_and_duration)+'</div></div>':'')+(m.research_area&&m.research_area.length>0?'<div class="detail-item"><div class="label">Research Areas</div><div class="value">'+m.research_area.map(a=>'<span class="tag">'+escapeHtml(a)+'</span>').join(' ')+'</div></div>':'')+(allSk.length?'<div class="detail-item"><div class="label">Required Skills</div><div class="value">'+allSk.map(s=>'<span class="tag '+s.type+'">'+escapeHtml(s.text)+'</span>').join(' ')+'</div></div>':'')+(((ev.direct_matches||[]).length||(ev.transferable_matches||[]).length||(ev.missing_requirements||[]).length||(ev.unclear_requirements||[]).length)?'<div class="detail-item"><div class="label">Evidence</div><div class="value">'+renderEvidenceTags(ev,'direct_matches')+renderEvidenceTags(ev,'transferable_matches')+renderEvidenceTags(ev,'missing_requirements')+renderEvidenceTags(ev,'unclear_requirements')+'</div></div>':'')+'</div><div>'+(Object.keys(m.weighted_dimensions||{}).length?'<div class="detail-item"><div class="label">Weighted Dimensions</div><div class="value" style="display:flex;flex-wrap:wrap;gap:0.25rem 0.75rem;">'+Object.entries(m.weighted_dimensions).filter(([k,v])=>v!==undefined&&v!==null).map(([k,v])=>{const wl={mandatory_requirements:'Mandatory',research_project_fit:'Project Fit',research_experience:'Research Exp.',technical_methodological_fit:'Technical',domain_application_fit:'Domain',education_academic_record:'Education',research_outputs:'Outputs',lab_supervisor_fit:'Supervisor Fit',preferred_requirements:'Preferred'};return'<span style="font-size:0.7rem;background:var(--bg-subtle);padding:0.15rem 0.6rem;border-radius:4px;">'+(wl[k]||k)+': <strong>'+v+'%</strong></span>';}).join('')+'</div></div>':'')+'<div class="detail-item"><div class="label">Detailed Scores</div><div class="value">'+sb.map(x=>{const v=m[x.key]??0;const c=v>=70?'var(--success)':v>=50?'var(--warning)':'var(--danger)';return '<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.25rem;"><span style="font-size:0.72rem;font-weight:500;color:var(--text-body);min-width:90px;">'+x.label+'</span><div style="flex:1;height:6px;background:var(--bg-subtle);border-radius:999px;overflow:hidden;max-width:160px;"><div style="height:100%;border-radius:999px;width:'+Math.min(v,100)+'%;background:'+c+';transition:width 0.6s;"></div></div><span style="font-size:0.72rem;font-weight:600;color:var(--text-primary);">'+v.toFixed(0)+'</span></div>';}).join('')+'</div></div></div></div></div>';
+            const row = document.createElement('div'); row.className = 'position-row';
+            row.innerHTML = '<div class="row-header" onclick="toggleRow(this.closest(\'.position-row\'))"><div class="score-col"><div class="score-ring ' + sc + '">' + score.toFixed(0) + '<span class="score-label">' + (m.match_category_label || 'Match') + '</span></div></div><div class="main-col"><div class="title-row"><h5><a href="' + escapeHtml(pos.url) + '" target="_blank" onclick="event.stopPropagation()">' + escapeHtml(pos.title) + '</a></h5>' + (rec ? '<span class="rec-badge ' + getRecBadgeClass(rec) + '">' + rec.replace(/_/g,' ') + '</span>' : '') + '</div><div class="meta-row"><span class="institution"><i class="fas fa-university ms-1"></i>' + escapeHtml(m.institution || pos.company || 'Unknown') + '</span>' + (pos.website_name ? '<span class="meta-item"><i class="fas fa-globe ms-1"></i>' + escapeHtml(pos.website_name) + '</span>' : '') + (m.position_type ? '<span class="meta-item"><i class="fas fa-tag ms-1"></i>' + escapeHtml(m.position_type) + '</span>' : '') + (m.country ? '<span class="meta-item"><i class="fas fa-map-pin ms-1"></i>' + escapeHtml(m.country) + (m.city ? '، ' + escapeHtml(m.city) : '') + '</span>' : '') + '<span class="badge-deadline ' + di.cls + '"><i class="' + di.icon + '"></i>' + di.label + '</span>' + (m.application_deadline_iso ? '<span class="badge-deadline ' + di.cls + '">Deadline: ' + escapeHtml(m.application_deadline_iso) + '</span>' : '') + (m.start_date ? '<span class="meta-item"><i class="far fa-calendar-plus ms-1"></i>' + formatDate(m.start_date) + '</span>' : '') + '</div><div class="action-btn-group">' + ab + '</div></div><div class="right-col"><span class="badge-match-cat" style="background:' + catC.bg + ';color:' + catC.fg + ';">' + catL + '</span><span class="expand-icon"><i class="fas fa-chevron-down"></i></span></div></div><div class="row-detail"><div class="detail-grid"><div>' + (m.project_narrative_description ? '<div class="detail-item"><div class="label">Summary</div><div class="value small" style="text-align:justify;">' + escapeHtml(m.project_narrative_description) + '</div></div>' : '') + (m.summary ? '<div class="detail-item"><div class="label">AI Summary</div><div class="value small" style="text-align:justify;">' + escapeHtml(m.summary) + '</div></div>' : '') + (m.main_reason ? '<div class="detail-item"><div class="label">Main Reason</div><div class="value small text-muted" style="text-align:justify;">' + escapeHtml(m.main_reason) + '</div></div>' : '') + (m.funding_and_duration ? '<div class="detail-item"><div class="label">Funding</div><div class="value small">' + escapeHtml(m.funding_and_duration) + '</div></div>' : '') + (m.research_area && m.research_area.length > 0 ? '<div class="detail-item"><div class="label">Research Areas</div><div class="value">' + m.research_area.map(a => '<span class="tag">' + escapeHtml(a) + '</span>').join(' ') + '</div></div>' : '') + (allSk.length ? '<div class="detail-item"><div class="label">Required Skills</div><div class="value">' + allSk.map(s => '<span class="tag ' + s.type + '">' + escapeHtml(s.text) + '</span>').join(' ') + '</div></div>' : '') + (((ev.direct_matches || []).length || (ev.transferable_matches || []).length || (ev.missing_requirements || []).length || (ev.unclear_requirements || []).length) ? '<div class="detail-item"><div class="label">Evidence</div><div class="value">' + renderEvidenceTags(ev,'direct_matches') + renderEvidenceTags(ev,'transferable_matches') + renderEvidenceTags(ev,'missing_requirements') + renderEvidenceTags(ev,'unclear_requirements') + '</div></div>' : '') + '</div><div>' + (Object.keys(m.weighted_dimensions || {}).length ? '<div class="detail-item"><div class="label">Weighted Dimensions</div><div class="value" style="display:flex;flex-wrap:wrap;gap:0.25rem 0.75rem;">' + Object.entries(m.weighted_dimensions).filter(([k,v]) => v !== undefined && v !== null).map(([k,v]) => { const wl = {mandatory_requirements:'Mandatory',research_project_fit:'Project Fit',research_experience:'Research Exp.',technical_methodological_fit:'Technical',domain_application_fit:'Domain',education_academic_record:'Education',research_outputs:'Outputs',lab_supervisor_fit:'Supervisor Fit',preferred_requirements:'Preferred'}; return '<span style="font-size:0.7rem;background:var(--bg-subtle);padding:0.15rem 0.6rem;border-radius:4px;">' + (wl[k] || k) + ': <strong>' + v + '%</strong></span>'; }).join('') + '</div></div>' : '') + '<div class="detail-item"><div class="label">Detailed Scores</div><div class="value">' + sb.map(x => { const v = m[x.key] ?? 0; const c = v >= 70 ? 'var(--success)' : v >= 50 ? 'var(--warning)' : 'var(--danger)'; return '<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.25rem;"><span style="font-size:0.72rem;font-weight:500;color:var(--text-body);min-width:90px;">' + x.label + '</span><div style="flex:1;height:6px;background:var(--bg-subtle);border-radius:999px;overflow:hidden;max-width:160px;"><div style="height:100%;border-radius:999px;width:' + Math.min(v,100) + '%;background:' + c + ';transition:width 0.6s;"></div></div><span style="font-size:0.72rem;font-weight:600;color:var(--text-primary);">' + v.toFixed(0) + '</span></div>'; }).join('') + '</div></div></div></div></div>';
             return row;
         }
 
-        function toggleRow(r) { r.classList.toggle('expanded'); } window.toggleRow = toggleRow;
+        function toggleRow(r) { r.classList.toggle('expanded'); }
+        window.toggleRow = toggleRow;
 
-        function renderCards(positions) { container.innerHTML=''; if(!positions||!positions.length){noResults.classList.remove('d-none');return;} noResults.classList.add('d-none'); positions.forEach(p=>{const r=renderRow(p);if(r)container.appendChild(r);}); }
+        function renderCards(positions) {
+            container.innerHTML = '';
+            if (!positions || !positions.length) { noResults.classList.remove('d-none'); return; }
+            noResults.classList.add('d-none');
+            positions.forEach(p => { const r = renderRow(p); if (r) container.appendChild(r); });
+        }
 
         function renderPagination(count, activePage) {
-            const totalPages=Math.ceil(count/PAGE_SIZE);
-            if(totalPages<=1){paginationNav.classList.add('d-none');return;}
-            paginationNav.classList.remove('d-none'); paginationList.innerHTML='';
-            function pl(page,label,isActive){const li=document.createElement('li');li.className='page-item '+(isActive?'active':'');const a=document.createElement('a');a.className='page-link';a.href='#';a.textContent=label;a.addEventListener('click',e=>{e.preventDefault();currentPage=page;fetchPositions(currentPage);});li.appendChild(a);return li;}
-            if(activePage>1)paginationList.appendChild(pl(1,'First')); if(activePage>1)paginationList.appendChild(pl(activePage-1,'«'));
-            const s=Math.max(1,activePage-2),e=Math.min(totalPages,activePage+2);
-            for(let i=s;i<=e;i++)paginationList.appendChild(pl(i,i,i===activePage));
-            if(activePage<totalPages)paginationList.appendChild(pl(activePage+1,'»'));
-            if(activePage<totalPages)paginationList.appendChild(pl(totalPages,'Last'));
+            const totalPages = Math.ceil(count / PAGE_SIZE);
+            if (totalPages <= 1) { paginationNav.classList.add('d-none'); return; }
+            paginationNav.classList.remove('d-none'); paginationList.innerHTML = '';
+            function pl(page, label, isActive) {
+                const li = document.createElement('li'); li.className = 'page-item ' + (isActive ? 'active' : '');
+                const a = document.createElement('a'); a.className = 'page-link'; a.href = '#'; a.textContent = label;
+                a.addEventListener('click', e => { e.preventDefault(); currentPage = page; fetchPositions(currentPage); });
+                li.appendChild(a); return li;
+            }
+            if (activePage > 1) paginationList.appendChild(pl(1, 'First'));
+            if (activePage > 1) paginationList.appendChild(pl(activePage - 1, '«'));
+            const s = Math.max(1, activePage - 2), e = Math.min(totalPages, activePage + 2);
+            for (let i = s; i <= e; i++) paginationList.appendChild(pl(i, i, i === activePage));
+            if (activePage < totalPages) paginationList.appendChild(pl(activePage + 1, '»'));
+            if (activePage < totalPages) paginationList.appendChild(pl(totalPages, 'Last'));
         }
 
         async function fetchPositions(page) {
-            spinner.classList.remove('d-none'); container.innerHTML=''; noResults.classList.add('d-none'); paginationNav.classList.add('d-none');
+            spinner.classList.remove('d-none');
+            container.innerHTML = '';
+            noResults.classList.add('d-none');
+            paginationNav.classList.add('d-none');
             try {
-                const params=new URLSearchParams({page:page,view:currentView,status:currentStatus});
-                if(currentView==='shortlisted')params.append('app_status',currentStatus);
-                const res=await fetch(API_BASE+'?'+params.toString());
-                if(!res.ok)throw new Error('HTTP '+res.status);
-                const data=await res.json(); spinner.classList.add('d-none');
-                const results=data.results||[]; totalCount=data.count||0;
-                if(results.length){renderCards(results);renderPagination(totalCount,page);totalSpan.textContent=totalCount+' positions';}
-                else{noResults.classList.remove('d-none');totalSpan.textContent='0 positions';}
-            } catch(error) { spinner.classList.add('d-none'); container.innerHTML='<div class="text-center text-danger py-4"><i class="fas fa-exclamation-triangle fa-2x mb-2"></i><p>Failed to load.</p><p class="small text-muted">'+error.message+'</p></div>'; console.error(error); }
+                const params = new URLSearchParams({
+                    page: page,
+                    view: currentView,
+                });
+                if (currentStatus) params.append('status', currentStatus);
+                if (currentAppStatus) params.append('app_status', currentAppStatus);
+                if (Discovery.searchTerm) params.append('search', Discovery.searchTerm);
+                if (Discovery.selectedDate) params.append('deadline_date', Discovery.selectedDate);
+                if (Discovery.selectedNoDeadline) params.append('no_deadline', 'true');
+                if (Discovery.selectedScoreBuckets.size > 0) params.append('score_buckets', [...Discovery.selectedScoreBuckets].join(','));
+                if (Discovery.sortBy !== 'default') params.append('sort', Discovery.sortBy);
+
+                const res = await fetch(API_BASE + '?' + params.toString());
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                spinner.classList.add('d-none');
+                const results = data.results || [];
+                totalCount = data.count || 0;
+                if (results.length) {
+                    renderCards(results);
+                    renderPagination(totalCount, page);
+                    totalSpan.textContent = totalCount + ' positions';
+                } else {
+                    noResults.classList.remove('d-none');
+                    totalSpan.textContent = '0 positions';
+                }
+            } catch(error) {
+                spinner.classList.add('d-none');
+                container.innerHTML = '<div class="text-center text-danger py-4"><i class="fas fa-exclamation-triangle fa-2x mb-2"></i><p>Failed to load.</p><p class="small text-muted">' + error.message + '</p></div>';
+                console.error(error);
+            }
         }
 
+        async function checkDeadlines() {
+            try {
+                const r = await fetch('/api/v1/positions/check-deadlines/', { method:'POST', headers:{'X-CSRFToken':getCSRFToken()} });
+                const d = await r.json();
+                showToast(d.message || 'Checked', 'success');
+                fetchPositions(currentPage);
+                fetchCounts();
+                fetchHeatmapStats();
+            } catch(e) { showToast('Failed','error'); }
+        }
+
+        // ─── Delete position ─────────────────────────────────
         function confirmDeletePosition(id) {
             document.getElementById('deletePosId').value = id;
             new bootstrap.Modal(document.getElementById('deletePositionModal')).show();
@@ -273,80 +846,147 @@
         document.getElementById('confirmDeletePosBtn').addEventListener('click', async function() {
             const id = document.getElementById('deletePosId').value;
             if (!id) return;
-            
             const btn = this;
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Deleting...';
-            
             try {
-                const res = await fetch('/api/v1/positions/'+id+'/', {
-                    method: 'DELETE',
-                    headers: { 
-                        'X-CSRFToken': getCSRFToken(),
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
+                const res = await fetch('/api/v1/positions/' + id + '/', { method:'DELETE', headers:{'X-CSRFToken':getCSRFToken(),'Content-Type':'application/json'} });
                 if (res.ok || res.status === 204) {
                     bootstrap.Modal.getInstance(document.getElementById('deletePositionModal')).hide();
                     showToast('Position deleted', 'success');
-                    
-                    // Smoothly remove the card from the UI
-                    const card = document.querySelector('[onclick*="confirmDeletePosition('+id+')"]')?.closest('.position-row');
+                    const card = document.querySelector('[onclick*="confirmDeletePosition(' + id + ')"]')?.closest('.position-row');
                     if (card) {
                         card.style.transition = 'opacity 0.3s, transform 0.3s';
                         card.style.opacity = '0';
                         card.style.transform = 'translateX(20px)';
                         setTimeout(() => {
                             card.remove();
-                            // If page is now empty, go back a page
-                            if (container.querySelectorAll('.position-row').length === 0 && currentPage > 1) {
-                                currentPage--;
-                                fetchPositions(currentPage);
-                            } else {
-                                fetchCounts(); // Just update the stat counts
-                            }
+                            if (container.querySelectorAll('.position-row').length === 0 && currentPage > 1) { currentPage--; fetchPositions(currentPage); }
+                            else { fetchCounts(); fetchHeatmapStats(); }
                         }, 300);
-                    } else {
-                        fetchPositions(currentPage); // Fallback
-                    }
-                } else {
-                    showToast('Failed to delete position', 'error');
-                }
-            } catch (e) {
+                    } else { fetchPositions(currentPage); }
+                } else { showToast('Failed to delete position', 'error'); }
+            } catch(e) {
                 showToast('Error: ' + e.message, 'error');
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-trash me-1"></i> Delete';
             }
         });
-        // ─── CV Modal + Matching ──────────────────────────────
-        document.querySelectorAll('#cvSourceTabs .nav-link').forEach(b=>b.addEventListener('click',function(){document.querySelectorAll('#cvSourceTabs .nav-link').forEach(x=>x.classList.remove('active'));this.classList.add('active');const s=this.dataset.source;document.getElementById('sourceExisting').style.display=s==='existing'?'block':'none';document.getElementById('sourcePaste').style.display=s==='paste'?'block':'none';document.getElementById('sourceUpload').style.display=s==='upload'?'block':'none';}));
 
-        async function loadExistingCVs(){try{const r=await fetch('/api/v1/cvs/');if(!r.ok)throw 0;const d=await r.json();const cvs=Array.isArray(d)?d:(d.results||[]);const sel=document.getElementById('existingCvSelect'),prev=document.getElementById('existingCvPreview');if(!cvs.length){sel.innerHTML='<option value="">No CVs saved</option>';prev.textContent='Paste or upload a CV.';selectedCvId=null;return;}sel.innerHTML=cvs.map(c=>'<option value="'+c.id+'">'+escapeHtml(c.name)+' ('+c.language+')</option>').join('');sel.selectedIndex=0;selectedCvId=cvs[0].id;prev.textContent=cvs[0].text_preview||'(no preview)';sel.onchange=function(){selectedCvId=this.value||null;const c=cvs.find(x=>String(x.id)===String(selectedCvId));prev.textContent=c?(c.text_preview||'(no preview)'):'Select a CV';};}catch(e){}}
+        // ─── CV modal + matching ────────────────────────────
+        document.querySelectorAll('#cvSourceTabs .nav-link').forEach(b => b.addEventListener('click', function() {
+            document.querySelectorAll('#cvSourceTabs .nav-link').forEach(x => x.classList.remove('active'));
+            this.classList.add('active');
+            const s = this.dataset.source;
+            document.getElementById('sourceExisting').style.display = s === 'existing' ? 'block' : 'none';
+            document.getElementById('sourcePaste').style.display = s === 'paste' ? 'block' : 'none';
+            document.getElementById('sourceUpload').style.display = s === 'upload' ? 'block' : 'none';
+        }));
 
-        function openMatchModal(positionId){document.getElementById('matchPositionId').value=positionId||'';document.getElementById('matchMode').value=positionId?'single':'bulk';loadExistingCVs();document.querySelector('#cvSourceTabs .nav-link[data-source="existing"]').click();new bootstrap.Modal(document.getElementById('cvModal')).show();}
-
-        document.getElementById('startMatchBtn').addEventListener('click', async function() {
-            const src=document.querySelector('#cvSourceTabs .nav-link.active').dataset.source,lang=document.getElementById('matchLanguage').value,pid=document.getElementById('matchPositionId').value,mode=document.getElementById('matchMode').value;let cvId=null;
-            if(src==='existing'){cvId=selectedCvId;if(!cvId){showToast('Select a CV','warning');return;}}
-            else if(src==='paste'){const t=document.getElementById('pasteCvText').value.trim();if(!t){showToast('Paste CV text','warning');return;}const n=document.getElementById('pasteCvName').value.trim()||'CV';const r=await fetch('/api/v1/cvs/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCSRFToken()},body:JSON.stringify({name:n,content:t,file_type:'paste',language:lang,is_active:true})});if(!r.ok){showToast('Save failed','error');return;}cvId=(await r.json()).id;}
-            else if(src==='upload'){const f=document.getElementById('uploadCvFile').files[0];if(!f){showToast('Select file','warning');return;}const fd=new FormData();fd.append('name',f.name);fd.append('file',f);fd.append('file_type',f.name.endsWith('.pdf')?'pdf':'txt');fd.append('language',lang);fd.append('is_active','true');const r=await fetch('/api/v1/cvs/',{method:'POST',headers:{'X-CSRFToken':getCSRFToken()},body:fd});if(!r.ok){showToast('Upload failed','error');return;}cvId=(await r.json()).id;}
-            bootstrap.Modal.getInstance(document.getElementById('cvModal')).hide();
-            if(mode==='single'&&pid){await matchSinglePosition(pid,cvId,lang);}
-            else{try{const r=await fetch('/api/v1/match/start/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCSRFToken()},body:JSON.stringify({cv_id:cvId,language:lang})});if(!r.ok)throw 0;showToast('Match started for all positions','success');}catch(e){showToast('Start failed','error');}}
-        });
-
-        async function matchSinglePosition(pid,cvId,lang){
-            const p=document.getElementById('matchProgress'),t=document.getElementById('matchProgressText'),b=document.getElementById('matchProgressBar');
-            p.style.display='block';t.textContent='Matching position...';b.style.width='30%';
-            try{const r=await fetch('/api/v1/positions/'+pid+'/match/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCSRFToken()},body:JSON.stringify({cv_id:cvId,language:lang})});const d=await r.json();b.style.width='100%';if(d.status==='ok'){t.textContent='✅ '+Math.round(d.match_score)+'% — '+d.match_category;showToast('Match: '+Math.round(d.match_score)+'%','success');setTimeout(()=>{p.style.display='none';fetchPositions(currentPage);},2000);}else{t.textContent='❌ '+(d.error||'Failed');showToast('Match failed','error');setTimeout(()=>{p.style.display='none';},3000);}}catch(e){t.textContent='❌ '+e.message;setTimeout(()=>{p.style.display='none';},3000);}
+        async function loadExistingCVs() {
+            try {
+                const r = await fetch('/api/v1/cvs/');
+                if (!r.ok) throw 0;
+                const d = await r.json();
+                const cvs = Array.isArray(d) ? d : (d.results || []);
+                const sel = document.getElementById('existingCvSelect'), prev = document.getElementById('existingCvPreview');
+                if (!cvs.length) { sel.innerHTML = '<option value="">No CVs saved</option>'; prev.textContent = 'Paste or upload a CV.'; selectedCvId = null; return; }
+                sel.innerHTML = cvs.map(c => '<option value="' + c.id + '">' + escapeHtml(c.name) + ' (' + c.language + ')</option>').join('');
+                sel.selectedIndex = 0;
+                selectedCvId = cvs[0].id;
+                prev.textContent = cvs[0].text_preview || '(no preview)';
+                sel.onchange = function() {
+                    selectedCvId = this.value || null;
+                    const c = cvs.find(x => String(x.id) === String(selectedCvId));
+                    prev.textContent = c ? (c.text_preview || '(no preview)') : 'Select a CV';
+                };
+            } catch(e) {}
         }
 
-        async function deletePositionMatch(pid){if(!confirm('Delete match? Position will be re-matchable.'))return;try{const r=await fetch('/api/v1/positions/'+pid+'/delete-match/',{method:'DELETE',headers:{'X-CSRFToken':getCSRFToken()}});if(r.ok){showToast('Match deleted','success');fetchPositions(currentPage);}}catch(e){showToast('Error','error');}}
+        function openMatchModal(positionId) {
+            document.getElementById('matchPositionId').value = positionId || '';
+            document.getElementById('matchMode').value = positionId ? 'single' : 'bulk';
+            loadExistingCVs();
+            document.querySelector('#cvSourceTabs .nav-link[data-source="existing"]').click();
+            new bootstrap.Modal(document.getElementById('cvModal')).show();
+        }
 
-        // Init
-        fetchCounts(); buildStatusFilterButtons('pending'); fetchPositions(1);
+        document.getElementById('startMatchBtn').addEventListener('click', async function() {
+            const src = document.querySelector('#cvSourceTabs .nav-link.active').dataset.source,
+                  lang = document.getElementById('matchLanguage').value,
+                  pid = document.getElementById('matchPositionId').value,
+                  mode = document.getElementById('matchMode').value;
+            let cvId = null;
+            if (src === 'existing') { cvId = selectedCvId; if (!cvId) { showToast('Select a CV', 'warning'); return; } }
+            else if (src === 'paste') {
+                const t = document.getElementById('pasteCvText').value.trim();
+                if (!t) { showToast('Paste CV text', 'warning'); return; }
+                const n = document.getElementById('pasteCvName').value.trim() || 'CV';
+                const r = await fetch('/api/v1/cvs/', { method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken':getCSRFToken()}, body:JSON.stringify({name:n,content:t,file_type:'paste',language:lang,is_active:true}) });
+                if (!r.ok) { showToast('Save failed', 'error'); return; }
+                cvId = (await r.json()).id;
+            } else if (src === 'upload') {
+                const f = document.getElementById('uploadCvFile').files[0];
+                if (!f) { showToast('Select file', 'warning'); return; }
+                const fd = new FormData();
+                fd.append('name', f.name); fd.append('file', f);
+                fd.append('file_type', f.name.endsWith('.pdf') ? 'pdf' : 'txt');
+                fd.append('language', lang); fd.append('is_active', 'true');
+                const r = await fetch('/api/v1/cvs/', { method:'POST', headers:{'X-CSRFToken':getCSRFToken()}, body:fd });
+                if (!r.ok) { showToast('Upload failed', 'error'); return; }
+                cvId = (await r.json()).id;
+            }
+            bootstrap.Modal.getInstance(document.getElementById('cvModal')).hide();
+            if (mode === 'single' && pid) { await matchSinglePosition(pid, cvId, lang); }
+            else {
+                try {
+                    const r = await fetch('/api/v1/match/start/', { method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken':getCSRFToken()}, body:JSON.stringify({cv_id:cvId, language:lang}) });
+                    if (!r.ok) throw 0;
+                    showToast('Match started for all positions', 'success');
+                } catch(e) { showToast('Start failed', 'error'); }
+            }
+        });
+
+        async function matchSinglePosition(pid, cvId, lang) {
+            const p = document.getElementById('matchProgress'), t = document.getElementById('matchProgressText'), b = document.getElementById('matchProgressBar');
+            p.style.display = 'block'; t.textContent = 'Matching position...'; b.style.width = '30%';
+            try {
+                const r = await fetch('/api/v1/positions/' + pid + '/match/', { method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken':getCSRFToken()}, body:JSON.stringify({cv_id:cvId, language:lang}) });
+                const d = await r.json();
+                b.style.width = '100%';
+                if (d.status === 'ok') {
+                    t.textContent = '✅ ' + Math.round(d.match_score) + '% — ' + d.match_category;
+                    showToast('Match: ' + Math.round(d.match_score) + '%', 'success');
+                    setTimeout(() => { p.style.display = 'none'; fetchPositions(currentPage); fetchHeatmapStats(); }, 2000);
+                } else {
+                    t.textContent = '❌ ' + (d.error || 'Failed');
+                    showToast('Match failed', 'error');
+                    setTimeout(() => { p.style.display = 'none'; }, 3000);
+                }
+            } catch(e) {
+                t.textContent = '❌ ' + e.message;
+                setTimeout(() => { p.style.display = 'none'; }, 3000);
+            }
+        }
+
+        async function deletePositionMatch(pid) {
+            if (!confirm('Delete match? Position will be re-matchable.')) return;
+            try {
+                const r = await fetch('/api/v1/positions/' + pid + '/delete-match/', { method:'DELETE', headers:{'X-CSRFToken':getCSRFToken()} });
+                if (r.ok) {
+                    showToast('Match deleted', 'success');
+                    fetchPositions(currentPage);
+                    fetchHeatmapStats();
+                }
+            } catch(e) { showToast('Error', 'error'); }
+        }
+
+        // ─── Init ─────────────────────────────────────────────
+        fetchCounts();
+        buildStatusFilterButtons('pending');
+        fetchPositions(1);
+        fetchHeatmapStats();
     </script>
 </body>
 </html>
